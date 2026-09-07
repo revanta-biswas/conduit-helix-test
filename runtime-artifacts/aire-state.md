@@ -66,7 +66,7 @@
 ## Story Tracker
 | Story | Title | Requires | Tracker ID | Status | PR | Merged | Start | End | Recorded |
 |-------|-------|----------|------------|--------|----|--------|-------|-----|----------|
-| 1 | Next.js application scaffold | none | #1 | 🔵 In Development | — | — | 2026-09-07 | | 2026-09-07T19:03:45Z |
+| 1 | Next.js application scaffold | none | #1 | 🔵 In Development | https://github.com/revanta-biswas/conduit-helix-test/pull/18 | no | 2026-09-07 | | 2026-09-08T01:55:00Z |
 | 2 | Sequelize data layer port | 1 | #2 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
 | 3 | Cookie-based authentication | 2 | #3 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
 | 4 | Users & current-user API | 3 | #4 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |

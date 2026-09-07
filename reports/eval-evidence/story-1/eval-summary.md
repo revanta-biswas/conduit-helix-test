@@ -32,3 +32,14 @@ failure. Full reasoning and rejected alternatives: `reports/unit-test-evidence/s
 take effect — a plain `npm install` on top of an existing lockfile did not apply it. Confirmed the
 override does not break the running application (dev server still starts, HTTP 200, full test suite
 still 15/15 green after the reinstall).
+
+**CI Attestation Gate finding (post-PR-raise)**: `npm ci` (used by CI's `Install dependencies` step,
+never `npm install`) failed on the committed lockfile with an `EUSAGE` peer-conflict:
+`@swc/helpers@0.5.15` (pinned by `next@15.5.25` as a real dependency) did not satisfy the `>=0.5.17`
+**optional** peer declared by `@swc/core@1.16.2` (pre-existing test tooling, via
+`@vitejs/plugin-react-swc`). Reproduced locally (`rm -rf node_modules && npm ci` failed identically),
+confirming this was a genuine manifest defect this story introduced (the pre-Story-1 lockfile had no
+`@swc/helpers` installed at all, so there was nothing for the peer range to conflict with). Fixed by
+adding `@swc/helpers: 0.5.17` to root `overrides`. Re-verified after a full clean reinstall: `npm ci`
+now succeeds, `next dev`/`next build --turbopack` both still work correctly, and the full test suite
+is still 15/15 green.
