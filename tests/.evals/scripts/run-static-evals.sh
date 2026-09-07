@@ -310,6 +310,20 @@ delta_diff() { # gate_id  "cmd producing 'rule\tfile\tmessage' lines"  [root]  [
   #    committed baseline and skip the whole checkout dance in that case; only recompute via checkout
   #    when no baseline is committed yet (the pre-story epic-level smoke test, which has no story
   #    branch to have captured one — ci-pipeline-generation.md Section 4.0.6).
+  #
+  # 🔴 RESTORE FROM GIT BEFORE TRUSTING "MISSING" (fixes a real CI FATAL, Story 1): the generated
+  #    pipeline's own "Purge inherited evidence" step (ci-pipeline-generation.md Section 4.0e)
+  #    `rm -rf`s the WHOLE reports/eval-evidence/${EVAL_KEY}/ tree at the start of every CI run,
+  #    including this tracked baseline/ subfolder — deliberately, so a gate that fails to produce
+  #    fresh output can never publish a stale result. That purge removes the file from disk but NOT
+  #    from git's index, so `[ ! -f "$base" ]` alone cannot tell "genuinely never committed" apart
+  #    from "committed, but this run's Purge step just deleted it from disk". Treating the latter as
+  #    the former is exactly what triggered the checkout-dance FATAL above. Distinguish them: if git
+  #    tracks this exact path AT THE CURRENT COMMIT, restore it from the index (cheap, no checkout,
+  #    no stash) before deciding whether to recompute.
+  if [ ! -f "$base" ] && git cat-file -e "HEAD:${base}" 2>/dev/null; then
+    git checkout -q -- "$base" 2>/dev/null || true
+  fi
   if [ ! -f "$base" ]; then
     before_stash="$(git stash list | wc -l | tr -d ' ')"
     git stash push -q --include-untracked 2>/dev/null || true
