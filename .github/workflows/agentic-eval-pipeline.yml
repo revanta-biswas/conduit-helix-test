@@ -276,16 +276,28 @@ jobs:
           echo "skip=false" >> "$GITHUB_OUTPUT"
           echo "Sonar scope resolved - sources: ${existing}${texisting:+ | tests: ${texisting}}"
 
-      # SonarQube SKIPPED at the Section 4.1.2 setup gate (user answered "skip", 2026-09-07 —
-      # runtime-artifacts/aire-state.md ## SonarQube Setup Gate). semgrep (D3) and the Security
-      # Baseline diff review remain the non-optional security floor in the meantime.
-      #
-      # To re-enable: add the SONAR_TOKEN and SONAR_HOST_URL repository secrets, then restore this
-      # step from spec/plans/architecture.md's derivation source — templates/ci/agentic-eval-pipeline
-      # .yml.template's own SONAR_STEPS block — which already carries the required
-      # `if: steps.sonarscope.outputs.skip != 'true'` run-time scope guard (Section 4.1.1). Do not
-      # hand-type the action reference here; copy it from the template so the guard is never
-      # accidentally dropped.
+      # SonarQube ACTIVE — the Section 4.1.2 setup gate was answered "proceed" (2026-09-08).
+      # SONAR_TOKEN, SONAR_HOST_URL, and CLAUDE_CODE_OAUTH_TOKEN are confirmed present as repo
+      # secrets. Both steps below carry the `if: steps.sonarscope.outputs.skip != 'true'` run-time
+      # scope guard (Section 4.1.1) — copied verbatim from ci-pipeline-generation.md Section 4.1.1b,
+      # never hand-typed, so the guard is never accidentally dropped.
+      - name: "SonarQube scan"
+        id: sonar
+        if: always() && steps.sonarscope.outputs.skip != 'true'
+        continue-on-error: true
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: "SonarQube quality gate"
+        id: sonarqg
+        # 🔴 ALSO requires the scan to have produced its report — without this the gate step fails
+        #    with ".scannerwork/report-task.txt does not exist" whenever the scan was skipped OR failed.
+        if: always() && steps.sonarscope.outputs.skip != 'true' && hashFiles('.scannerwork/report-task.txt') != ''
+        continue-on-error: true
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
 
       - name: "Record SonarQube gate status"
         id: sonarstatus

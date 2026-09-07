@@ -346,3 +346,13 @@
 **Context**: MANDATORY STOP Step 4 — HARD HALT precondition not met (Section 4.0.6's own precondition note: check aire-state.md for a recorded proceed/skip answer before running; the answer recorded here was not given by the user)
 
 ---
+
+## SonarQube Setup Gate — Answered by the User (proceed)
+**Timestamp**: 2026-09-07T18:47:40Z
+**AIRE VERSION**: 1.0
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: "proceed — SonarCloud account set up; SONAR_TOKEN, SONAR_HOST_URL, and CLAUDE_CODE_OAUTH_TOKEN added as GitHub repo secrets (verified via `gh secret list --repo revanta-biswas/conduit-helix-test` — all three present); SonarCloud organization key is `revanta-biswas`."
+**AI Response**: "Per Section 4.1.3's 'proceed' handling: left/restored the two SonarQube steps active in .github/workflows/agentic-eval-pipeline.yml — 'SonarQube scan' (id: sonar, uses: SonarSource/sonarqube-scan-action@v4) and 'SonarQube quality gate' (id: sonarqg, uses: SonarSource/sonarqube-quality-gate-action@master) — copied verbatim from ci-pipeline-generation.md Section 4.1.1b's literal block (not hand-typed), both still guarded by `if: steps.sonarscope.outputs.skip != 'true'` (Section 4.1.1) so a checkout with no existing source paths still degrades gracefully. sonar-project.properties already updated by the user: sonar.organization=revanta-biswas, STATUS comment marked ACTIVE. Set tests/.evals/config.json sonarqube.enabled: true and appended 'sonarqube' to ci.gates per eval-framework.md Section 1 ('sonarqube is appended to gates at generation time only when the user answers proceed'). Did not verify the secret VALUES (not readable from here, per Section 4.1.3 — a first pipeline run is what proves them). Ran a plain YAML parse check (python3 yaml.safe_load) — passed. Ran tests/.evals/scripts/validate-pipeline.sh against git merge-base origin/main HEAD — results recorded in AI Response of this same entry's validation follow-up / see commit for pass/fail detail. Recorded the proceed answer here and in runtime-artifacts/aire-state.md per Section 4.1.3 ('Recording the answer in aire-state.md, not only audit.md')."
+**Context**: MANDATORY STOP Step 1.6 / ci-pipeline-generation.md Section 4.1.2-4.1.3 — genuine user answer (supersedes the 2026-09-07T12:29:07Z sub-agent default of 'skip', which was explicitly flagged as not a real user decision)
+
+---
