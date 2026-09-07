@@ -690,9 +690,11 @@ if [ "$COVERAGE_ONLY" -eq 0 ]; then
      # (bash treats an if-body containing only comments as empty, which is a syntax error)
 # >>> STACK-RESOLVED D-GATES START <<<
 # D1 Lint — eslint, recommended preset (backend/eslint.config.js, frontend/eslint.config.js,
-# bootstrapped per common/eval-framework.md Section 2.3).
+# bootstrapped per common/eval-framework.md Section 2.3). conduit-next/eslint.config.mjs added by
+# Story 1 (tests/.evals/ci-manifest.d/story-1.json establishes conduit-next as a third root).
 delta_diff D1_lint "bash '${GATE_HELPERS}/eslint-tsv.sh'" "backend" "package.json"
 delta_diff D1_lint "bash '${GATE_HELPERS}/eslint-tsv.sh'" "frontend" "package.json"
+delta_diff D1_lint "bash '${GATE_HELPERS}/eslint-tsv.sh'" "conduit-next" "package.json"
 
 # D2 Types — plain JavaScript, no type checker in this stack (REQ-NF-06 explicit non-goal: no
 # TypeScript). Earned N/A, not a silent skip — recorded once for the whole gate, never per-root.
@@ -701,12 +703,14 @@ record_multi_root D2_types "." N/A "project is plain JavaScript (ES Modules), no
 # D4 Dependency vulnerabilities — npm audit --json.
 delta_diff D4_deps "bash '${GATE_HELPERS}/npm-audit-tsv.sh'" "backend" "package.json"
 delta_diff D4_deps "bash '${GATE_HELPERS}/npm-audit-tsv.sh'" "frontend" "package.json"
+delta_diff D4_deps "bash '${GATE_HELPERS}/npm-audit-tsv.sh'" "conduit-next" "package.json"
 
 # D5 Licences — license-checker, filtered against AIRE_DISALLOWED_LICENSES (Section 3.0c). The
 # threshold env var is referenced directly here (not only inside the wrapper) so it is reachable
 # by a static grep of this region (V35) as well as consumed at run time by the wrapper script.
 delta_diff D5_licenses "AIRE_DISALLOWED_LICENSES=\"\$AIRE_DISALLOWED_LICENSES\" bash '${GATE_HELPERS}/license-checker-tsv.sh'" "backend" "package.json"
 delta_diff D5_licenses "AIRE_DISALLOWED_LICENSES=\"\$AIRE_DISALLOWED_LICENSES\" bash '${GATE_HELPERS}/license-checker-tsv.sh'" "frontend" "package.json"
+delta_diff D5_licenses "AIRE_DISALLOWED_LICENSES=\"\$AIRE_DISALLOWED_LICENSES\" bash '${GATE_HELPERS}/license-checker-tsv.sh'" "conduit-next" "package.json"
 
 # D6 Complexity — eslint's own `complexity` rule, configured at AIRE_MAX_CYCLOMATIC_COMPLEXITY in
 # each root's eslint.config.js (Section 2.3). Filtered to the complexity rule only, so D1 and D6 do
@@ -714,6 +718,7 @@ delta_diff D5_licenses "AIRE_DISALLOWED_LICENSES=\"\$AIRE_DISALLOWED_LICENSES\" 
 # directly here for the same reason as D5 above (V35).
 delta_diff D6_complexity "AIRE_MAX_CYCLOMATIC_COMPLEXITY=\"\$AIRE_MAX_CYCLOMATIC_COMPLEXITY\" bash '${GATE_HELPERS}/eslint-tsv.sh' complexity" "backend" "package.json"
 delta_diff D6_complexity "AIRE_MAX_CYCLOMATIC_COMPLEXITY=\"\$AIRE_MAX_CYCLOMATIC_COMPLEXITY\" bash '${GATE_HELPERS}/eslint-tsv.sh' complexity" "frontend" "package.json"
+delta_diff D6_complexity "AIRE_MAX_CYCLOMATIC_COMPLEXITY=\"\$AIRE_MAX_CYCLOMATIC_COMPLEXITY\" bash '${GATE_HELPERS}/eslint-tsv.sh' complexity" "conduit-next" "package.json"
 # >>> STACK-RESOLVED D-GATES END <<<
   collapse_multi_root
 fi

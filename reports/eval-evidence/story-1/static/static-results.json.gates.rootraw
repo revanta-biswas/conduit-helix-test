@@ -1,0 +1,13 @@
+D1_lint	backend	N/A	no changed files under root 'backend' for this PR (diff-scoped)
+D1_lint	frontend	N/A	no changed files under root 'frontend' for this PR (diff-scoped)
+D1_lint	conduit-next	PASS	no findings at base or head — QUALIFIED: the tool produced zero output at BOTH ends, so 'clean' and 'scanned nothing' are indistinguishable here. Confirm this gate's command actually covers root 'conduit-next' sourcePaths (V9: prove it can fail).
+D2_types	.	N/A	project is plain JavaScript (ES Modules), no TypeScript adoption in scope (REQ-NF-06) — no type checker applies to this stack
+D4_deps	backend	N/A	no changed files under root 'backend' for this PR (diff-scoped)
+D4_deps	frontend	N/A	no changed files under root 'frontend' for this PR (diff-scoped)
+D4_deps	conduit-next	PASS	no findings at base or head — QUALIFIED: the tool produced zero output at BOTH ends, so 'clean' and 'scanned nothing' are indistinguishable here. Confirm this gate's command actually covers root 'conduit-next' sourcePaths (V9: prove it can fail).
+D5_licenses	backend	N/A	no changed files under root 'backend' for this PR (diff-scoped)
+D5_licenses	frontend	N/A	no changed files under root 'frontend' for this PR (diff-scoped)
+D5_licenses	conduit-next	PASS	no findings at base or head — QUALIFIED: the tool produced zero output at BOTH ends, so 'clean' and 'scanned nothing' are indistinguishable here. Confirm this gate's command actually covers root 'conduit-next' sourcePaths (V9: prove it can fail).
+D6_complexity	backend	N/A	no changed files under root 'backend' for this PR (diff-scoped)
+D6_complexity	frontend	N/A	no changed files under root 'frontend' for this PR (diff-scoped)
+D6_complexity	conduit-next	PASS	no findings at base or head — QUALIFIED: the tool produced zero output at BOTH ends, so 'clean' and 'scanned nothing' are indistinguishable here. Confirm this gate's command actually covers root 'conduit-next' sourcePaths (V9: prove it can fail).
