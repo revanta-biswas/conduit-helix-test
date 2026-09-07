@@ -1,0 +1,112 @@
+version: 1
+generated_at: 2026-09-07
+team_size: 2
+
+shared_files:
+  - conduit-next/package.json          # touched by Story 1, then read by every later story
+  - conduit-next/lib/db/index.js       # touched by Story 2, then imported by every API story
+  - conduit-next/middleware.ts         # touched by Story 3, then relied on by every authenticated route/page
+  - conduit-next/app/api/articles/[...slug]/route.ts   # touched by Stories 5, 5a, 6 — same route file, sequenced not parallel
+
+stories:
+  - id: "1"
+    title: Next.js application scaffold
+    tracker_id: "1"
+    requires: []
+    enables: ["2"]
+
+  - id: "2"
+    title: Sequelize data layer port
+    tracker_id: "2"
+    requires: ["1"]
+    enables: ["3"]
+
+  - id: "3"
+    title: Cookie-based authentication
+    tracker_id: "3"
+    requires: ["2"]
+    enables: ["4", "5", "7", "11"]
+
+  - id: "4"
+    title: Users & current-user API
+    tracker_id: "4"
+    requires: ["3"]
+    enables: ["12"]
+
+  - id: "5"
+    title: Article CRUD API
+    tracker_id: "5"
+    requires: ["3"]
+    enables: ["5a", "6", "9"]
+
+  - id: "5a"
+    title: Article feeds API (N+1 fix)
+    tracker_id: "6"
+    requires: ["5"]
+    enables: ["8"]
+
+  - id: "6"
+    title: Favorites & comments API
+    tracker_id: "7"
+    requires: ["5"]
+    enables: ["8", "9"]
+
+  - id: "7"
+    title: Profiles, follow, and tags API
+    tracker_id: "8"
+    requires: ["3"]
+    enables: ["8", "10"]
+
+  - id: "8"
+    title: Home and Article-view pages
+    tracker_id: "9"
+    requires: ["5a", "6", "7"]
+    enables: ["13"]
+
+  - id: "9"
+    title: Article editor page
+    tracker_id: "10"
+    requires: ["5", "6"]
+    enables: ["14"]
+
+  - id: "10"
+    title: Profile page
+    tracker_id: "11"
+    requires: ["7"]
+    enables: ["14"]
+
+  - id: "11"
+    title: Auth pages (Login / SignUp)
+    tracker_id: "12"
+    requires: ["3"]
+    enables: ["14"]
+
+  - id: "12"
+    title: Settings page
+    tracker_id: "13"
+    requires: ["4"]
+    enables: ["14"]
+
+  - id: "13"
+    title: Feed filtering re-architecture
+    tracker_id: "14"
+    requires: ["8"]
+    enables: ["14", "16"]
+
+  - id: "14"
+    title: Production cutover to Fly.io
+    tracker_id: "15"
+    requires: ["9", "10", "11", "12", "13", "16"]
+    enables: ["15"]
+
+  - id: "15"
+    title: Decommission old stack
+    tracker_id: "16"
+    requires: ["14"]
+    enables: []
+
+  - id: "16"
+    title: Playwright E2E coverage of the new application
+    tracker_id: "17"
+    requires: ["8", "9", "10", "11", "12", "13"]
+    enables: ["14"]

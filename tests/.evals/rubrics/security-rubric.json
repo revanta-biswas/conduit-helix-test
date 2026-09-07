@@ -1,0 +1,71 @@
+{
+  "rubricName": "Security — OWASP Top 10:2025 — conduit-helix-test (Next.js Modernization)",
+  "rubricVersion": "1.0.0",
+  "derivedFrom": ["OWASP Top 10:2025", "spec/plans/architecture.md"],
+  "evalCriteria": [
+    {
+      "id": "SEC-01",
+      "owasp": "A01:2025",
+      "metric": "Broken Access Control",
+      "weight": 0.20,
+      "prompt": "Review every endpoint in the diff under app/api/** that reads or mutates an article, comment, or user-owned resource. Score 0 if any changed endpoint updates or deletes an article/comment without verifying the caller is its author, or exposes another user's private data (e.g. email) in a profile response. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/"
+    },
+    {
+      "id": "SEC-02",
+      "owasp": "A07:2025",
+      "metric": "Authentication Failures",
+      "weight": 0.20,
+      "prompt": "Review every changed file touching session/cookie/JWT handling (lib/auth.js, middleware.ts, app/api/users/**). Score 0 if any changed path issues a session cookie without HttpOnly, Secure, and SameSite attributes, accepts a JWT with alg:none or an unpinned algorithm, or stores a raw password/token in a client-readable location. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/"
+    },
+    {
+      "id": "SEC-03",
+      "owasp": "A05:2025",
+      "metric": "Injection",
+      "weight": 0.15,
+      "prompt": "Check every changed path in the diff where user-supplied input reaches a Sequelize query or is interpolated into any string used for a database or shell operation. Score 0 if any changed path concatenates or interpolates unsanitised external input into a raw query or Sequelize.literal() call instead of using parameterised query builders/model methods. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A05_2025-Injection/"
+    },
+    {
+      "id": "SEC-04",
+      "owasp": "A04:2025",
+      "metric": "Cryptographic Failures",
+      "weight": 0.15,
+      "prompt": "Review every changed file handling passwords, JWT signing, or the DATABASE_URL/secrets. Score 0 if any changed path stores a password without bcrypt hashing, hardcodes a JWT signing secret or DATABASE_URL in source (outside fly secrets / .env.local, gitignored), or disables TLS verification on the PostgreSQL connection. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/"
+    },
+    {
+      "id": "SEC-05",
+      "owasp": "A06:2025",
+      "metric": "Insecure Design",
+      "weight": 0.10,
+      "prompt": "Review every changed Route Handler under app/api/** that accepts a create/update request body. Score 0 if any changed endpoint binds the full parsed request body to a model create/update call instead of an explicit field allowlist, allowing mass assignment of server-controlled fields (id, slug, author, role). Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A06_2025-Insecure_Design/"
+    },
+    {
+      "id": "SEC-06",
+      "owasp": "A02:2025",
+      "metric": "Security Misconfiguration",
+      "weight": 0.10,
+      "prompt": "Review changed configuration (next.config.js, middleware.ts, deployment config). Score 0 if any changed path removes or weakens a required security header (CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy), enables permissive CORS for a same-origin-only app, or leaves a debug/verbose-error mode enabled for production. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A02_2025-Security_Misconfiguration/"
+    },
+    {
+      "id": "SEC-07",
+      "owasp": "A03:2025",
+      "metric": "Software Supply Chain Failures",
+      "weight": 0.05,
+      "prompt": "Review changed package.json/package-lock.json files. Score 0 if any changed dependency is added without a corresponding lockfile update, or a postinstall/build script is introduced that fetches and executes remote code without justification. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/"
+    },
+    {
+      "id": "SEC-08",
+      "owasp": "A09:2025",
+      "metric": "Security Logging and Alerting Failures",
+      "weight": 0.05,
+      "prompt": "Review every changed log statement (console.*, a logging helper) in Route Handlers and services. Score 0 if any changed log call includes a raw password, JWT/session cookie value, or a full unredacted user/request object. Cite the file and line.",
+      "source": "https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/"
+    }
+  ]
+}

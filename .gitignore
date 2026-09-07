@@ -41,3 +41,7 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# AIRE eval framework — CI-local scratch state, never committed (common/directory-structure.md
+# Artifact Ownership). Per-run failed-gates.txt / *.status / self-repair retry counter.
+tests/.evals/_run/

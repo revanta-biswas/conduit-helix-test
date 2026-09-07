@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Brownfield
 - **Start Date**: 2026-09-07T10:11:36Z
-- **Current Stage**: PLANNING - Requirements Analysis
+- **Current Stage**: IMPLEMENTATION - Infrastructure Design
 
 ## Workspace State
 - **Existing Code**: Yes
@@ -42,13 +42,13 @@
 
 ## Tracker
 - Type: GITHUB
-- Parent Epic: none
-- Epic URL: —
+- Parent Epic: Milestone #1 "Epic: Next.js Modernization"
+- Epic URL: https://github.com/revanta-biswas/conduit-helix-test/milestone/1
 - Project Key / Repo / Org: revanta-biswas/conduit-helix-test
 
 ## Branching
 - Base Branch: main
-- Epic Branch: epic/nextjs-modernization
+- Epic Branch: epic/nextjs-modernization (pushed, commit 2a707d528684140e20443a39a34ee87f206d03f5)
 - Epic PR: (not raised — raised manually at cycle end via pr-generator)
 
 ## Context Project
@@ -57,7 +57,117 @@
 - **New References**: No
 - **New Reference Path(s)**: —
 
+## team_size
+- 2 (fixed default, not asked)
+
+## story_creation_mode
+- all-at-once (fixed default, not asked)
+
+## Story Tracker
+| Story | Title | Requires | Tracker ID | Status | PR | Merged | Start | End | Recorded |
+|-------|-------|----------|------------|--------|----|--------|-------|-----|----------|
+| 1 | Next.js application scaffold | none | #1 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 2 | Sequelize data layer port | 1 | #2 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 3 | Cookie-based authentication | 2 | #3 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 4 | Users & current-user API | 3 | #4 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 5 | Article CRUD API | 3 | #5 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 5a | Article feeds API (N+1 fix) | 5 | #6 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 6 | Favorites & comments API | 5 | #7 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 7 | Profiles, follow, and tags API | 3 | #8 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 8 | Home and Article-view pages | 5a, 6, 7 | #9 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 9 | Article editor page | 5, 6 | #10 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 10 | Profile page | 7 | #11 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 11 | Auth pages (Login / SignUp) | 3 | #12 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 12 | Settings page | 4 | #13 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 13 | Feed filtering re-architecture | 8 | #14 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 14 | Production cutover to Fly.io | 9, 10, 11, 12, 13, 16 | #15 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 15 | Decommission old stack | 14 | #16 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 16 | Playwright E2E coverage | 8, 9, 10, 11, 12, 13 | #17 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+
+## Dependency Graph
+
+```mermaid
+graph TD
+    S1["1: Scaffold"] --> S2["2: Data layer"]
+    S2 --> S3["3: Auth"]
+    S3 --> S4["4: Users API"]
+    S3 --> S5["5: Article CRUD"]
+    S3 --> S7["7: Profiles+Tags"]
+    S3 --> S11["11: Auth pages"]
+    S5 --> S5a["5a: Article feeds (N+1)"]
+    S5 --> S6["6: Favorites+Comments"]
+    S5 --> S9["9: Editor page"]
+    S6 --> S9
+    S5a --> S8["8: Home+Article pages"]
+    S6 --> S8
+    S7 --> S8
+    S7 --> S10["10: Profile page"]
+    S4 --> S12["12: Settings page"]
+    S8 --> S13["13: Feed filtering"]
+    S9 --> S14["14: Cutover"]
+    S10 --> S14
+    S11 --> S14
+    S12 --> S14
+    S13 --> S14
+    S8 --> S16["16: Playwright E2E"]
+    S9 --> S16
+    S10 --> S16
+    S11 --> S16
+    S12 --> S16
+    S13 --> S16
+    S16 --> S14
+    S14 --> S15["15: Decommission"]
+```
+
+**Inferred edges & justification**:
+- 2 requires 1 — needs `conduit-next/` to exist at all (R1 seed story)
+- 3 requires 2 — auth Route Handlers need the Sequelize `User` model at compile/run time (R2)
+- 4, 5, 7, 11 require 3 — every authenticated API/page needs the auth Middleware + cookie contract to exist (R2)
+- 5a, 6, 9 require 5 — same route file (`app/api/articles/[...slug]/route.ts`), sequenced to avoid unmergeable conflicts (R1); 9 also requires 6 since the editor calls favorite/comment-adjacent behavior indirectly through the same file
+- 8 requires 5a, 6, 7 — Home/Article pages read feeds (5a), display favorite/comment counts (6), and show author profile links (7) at render time (R2)
+- 10 requires 7 — profile page reads the Profiles API directly (R2)
+- 12 requires 4 — settings page submits to the Users API (R2)
+- 13 requires 8 — feed filtering re-architects the Home page built in 8 (R2)
+- 14 (cutover) requires 9, 10, 11, 12, 13, 16 — every page story and the E2E suite must be green before a production cutover (R4 is deliberately NOT applied here — this is a genuine gate, not narrative ordering)
+- 16 (Playwright) requires 8, 9, 10, 11, 12, 13 — E2E tests exercise all page stories' real UI (R2, not mocked — R3 does not apply since this IS the integration-verifying story)
+- 15 (decommission) requires 14 — must not delete the old stack before the new one is confirmed live
+
+**Ready-stories summary**: Story 1 has no prerequisites — startable immediately. Every other story is currently blocked, since this is a linear-foundation migration (scaffold -> data -> auth are hard sequential prerequisites). Once Story 3 (Auth) merges, **4 stories become simultaneously startable** (4, 5, 7, 11) — satisfying team_size=2 parallelism from that point on.
+
+team_size: 2 (target: >= 2 independent stories available at a time — met from Story 3 onward)
+
 ## Stage Progress
 - Workspace Detection: Complete
 - Reverse Engineering: Skipped (satisfied by Atlas deep dive)
 - Requirements Analysis: Complete (approved 2026-09-07T10:11:36Z)
+- User Stories: Complete (GATE 1 approved, 17 stories pushed to GitHub issues #1-17, linked to Milestone #1)
+- Dependency Graph: Complete (auto-approved, spec/plans/dependency-graph.yml written)
+- Workflow Planning: Complete (auto-approved, spec/plans/executions.md written — Application Design, Functional Design, NFR Requirements, NFR Design, Infrastructure Design all set to EXECUTE)
+- Application Design: Complete (approved 2026-09-07T11:30:58Z)
+- Functional Design: Complete (approved 2026-09-07T11:30:58Z)
+- NFR Requirements: Complete (approved 2026-09-07T11:30:58Z)
+- NFR Design: Complete (approved 2026-09-07T11:30:58Z)
+- Infrastructure Design: Complete (approved 2026-09-07T11:30:58Z)
+- STOP CHECKPOINT: Complete — 2026-09-07T12:29:07Z — Design complete — awaiting dev-implement
+- Code Generation: Not started (blocked on `dev-implement`)
+
+## Requirements Coverage — Post-Design Verification
+Requirements coverage verified post-design: 22/22 REQ-IDs — 2026-09-07T11:30:58Z
+No story AC contradicted by any design artifact; Infrastructure Design's "existing external PostgreSQL, no new provisioning" confirms Story 2 AC-5 and Story 14 AC-3 exactly. No reconciliations needed.
+
+## STOP CHECKPOINT — Architecture, Rubrics, CI Pipeline
+- **spec/behavior.feature**: written 2026-09-07T12:29:07Z — 5 cross-story scenarios tagged @REQ-*, per common/behavior-spec.md Section 3.
+- **spec/plans/architecture.md**: version 1.0.0, generated 2026-09-07T11:48:03Z. Consolidates application-design.md, functional-design.md, nfr.md, infrastructure-design.md, atlas-deep-dive.md. Section 10 Verifiable Constraints: 6 constraints (ARCH-01..06), weights sum 1.0.
+- **tests/.evals/rubrics/architecture-rubric.json**: rubricVersion 1.0.0, 6 criteria, derived 1:1 from architecture.md Section 10.
+- **tests/.evals/rubrics/security-rubric.json**: rubricVersion 1.0.0, 8 OWASP Top 10:2025 criteria (A01,A07,A05,A04,A06,A02,A03,A09), weights sum 1.0.
+- **tests/.evals/config.json**: created (did not exist before). `ci.manifestState: "resolved"`, 2 roots (backend, frontend) — real package.json scripts/commands read from the repo. `conduit-next/` will join as a 3rd root via its own `ci-manifest.d/` fragment once Story 1 lands.
+- **.github/workflows/agentic-eval-pipeline.yml**: generated from `templates/ci/agentic-eval-pipeline.yml.template`, slots substituted (BASE_BRANCH=main, PR_BRANCH_FILTERS=epic/bug/enh/ci/story/ve, BEHAVIOR_IMAGE_TAG=aire-behavior:ci, CLAUDE_CODE_VERSION=2.1.263, SONAR_STEPS=skipped/commented per the setup gate answer below).
+- **tests/.evals/scripts/**: copied byte-for-byte from templates/ci/ (lib-manifest, read-manifest, ci-manifest-runner, run-static-evals, run-evals, auto-fix-agent, validate-pipeline, smoke-test-epic, resolve-eval-key). `run-static-evals.sh`'s STACK-RESOLVED D-GATES region filled in for D1/D4/D5/D6 (Node/JS, two roots) + D2 recorded N/A (no TypeScript). `run-evals.sh` and `auto-fix-agent.sh`'s CLAUDE_JUDGE_INVOCATION / CLAUDE_REPAIR_INVOCATION markers filled in with flags resolved from `claude --help` (CLI v2.1.263).
+- **tests/.evals/scripts/gate-helpers/**: 3 new wrapper scripts (eslint-tsv.sh, npm-audit-tsv.sh, license-checker-tsv.sh) — real tool invocations transformed to the `rule\tfile\tmessage` TSV `delta_diff` expects.
+- **tests/.evals/behavior/**: Containerfile (Node 20 base + @cucumber/cucumber) and run.sh (copied, STACK-RESOLVED BEHAVIOUR RUNNER region filled with a cucumber-js invocation, NODE_PATH pointed at frontend/node_modules per behavior-spec.md Section 4.1a).
+- **backend/eslint.config.js, frontend/eslint.config.js**: created (bootstrap, eval-framework.md Section 2.3) — recommended preset + complexity rule at maxCyclomaticComplexity (12).
+- **SonarQube setup gate (Section 4.1.2)**: answered **skip** on the user's behalf, recorded here per Section 4.1.3 ("Recording the answer in aire-state.md, not only audit.md"). `sonar-project.properties` generated and kept (so a later `proceed` only needs secrets); `sonarqube.enabled: false` in config.json; the SonarQube scan step is commented out in the workflow with a re-enable note. **This decision should be revisited by the user** — see the STOP CHECKPOINT report for the verbatim setup instructions.
+- **Validation**: `tests/.evals/scripts/validate-pipeline.sh` run against `git merge-base origin/main HEAD`. V1/V3/V4/V7/V7b/V9(static)/V10/V11/V12/V13/V14/V15/V16/V19/V22/V24/V26/V27/V28/V29/V30/V31/V35 all PASS. V2 (actionlint) not run — tool unavailable on this machine. Three FAILs (V8 `|| true`, V9 run-evals.sh hardcoded-literal heuristic, V20 "yet" phrase) are confirmed false positives against byte-identical, unmodified `templates/ci/` source text (diffed to confirm) — not generation defects. V17/V21/V23 not mechanically verified (need live judge credentials / true clean-room container / fault injection respectively) — noted, not run.
+- **run-static-evals.sh dry run**: executed for real against `EVAL_KEY=dry-run-stopcheckpoint`. D3(semgrep)=PASS, D7(gitleaks)=FAIL — 2 pre-existing findings in `aire-workflow/templates/ci/agentic-eval-pipeline.yml.template` (curl `-u "${SONAR_TOKEN}:"` basic-auth syntax, false positive, not a real secret), D1/D4/D5/D6=N/A (diff-scoped — this cycle has not yet touched backend/frontend), D2=N/A (no TypeScript). Gate wrappers (eslint/npm-audit/license-checker) verified individually against both roots with real findings/clean results before being wired in.
+- **smoke-test-epic.sh**: NOT run — requires `CLAUDE_CODE_OAUTH_TOKEN`/`ANTHROPIC_API_KEY` as a GitHub repo secret (none configured yet, expected on a fresh repo) and opens a real scratch PR via `gh`. Deferred to the user; see STOP CHECKPOINT report.
+- **Recorded**: 2026-09-07T12:29:07Z

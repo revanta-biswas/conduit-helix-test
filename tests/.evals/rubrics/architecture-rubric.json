@@ -1,0 +1,49 @@
+{
+  "rubricName": "Architectural Alignment — conduit-helix-test (Next.js Modernization)",
+  "rubricVersion": "1.0.0",
+  "derivedFrom": ["spec/plans/architecture.md#10-verifiable-constraints"],
+  "evalCriteria": [
+    {
+      "id": "ARCH-01",
+      "metric": "No direct database access outside the service layer",
+      "weight": 0.25,
+      "prompt": "Any changed file under conduit-next/app/** or conduit-next/components/** that imports from lib/db/models or calls a Sequelize model method directly scores 0.",
+      "source": "spec/plans/application-design.md (Section 3 — Services Orchestration)"
+    },
+    {
+      "id": "ARCH-02",
+      "metric": "Client Components never import server-only modules",
+      "weight": 0.20,
+      "prompt": "Any changed Client Component file containing an import from lib/services, lib/db, or lib/auth scores 0.",
+      "source": "spec/plans/application-design.md (Section 3), spec/plans/functional-design.md (Section 5)"
+    },
+    {
+      "id": "ARCH-03",
+      "metric": "Session validation happens only in middleware.ts",
+      "weight": 0.20,
+      "prompt": "Any changed Route Handler or service file that reads the session cookie or calls a JWT-verify function directly (outside middleware.ts or lib/auth.js's own exported helper) scores 0.",
+      "source": "spec/plans/nfr.md (NFR Design — middleware.ts deny-by-default auth gate), spec/plans/application-design.md (Section 3)"
+    },
+    {
+      "id": "ARCH-04",
+      "metric": "No secrets, tokens, or PII in log output",
+      "weight": 0.15,
+      "prompt": "Any changed log call (console.*, a logging helper) that passes a password field, a raw JWT/cookie value, or a full request/user object without redaction scores 0.",
+      "source": "spec/plans/nfr.md (Security — SECURITY-03)"
+    },
+    {
+      "id": "ARCH-05",
+      "metric": "No sequelize.sync({ alter: true }) in the ported code path",
+      "weight": 0.10,
+      "prompt": "Any changed file under lib/db/** containing sync( with an alter option (or a bare sync() used as a migration mechanism) scores 0.",
+      "source": "spec/plans/stories.md (Story 2, AC-3), spec/plans/atlas-deep-dive.md (flagged production risk)"
+    },
+    {
+      "id": "ARCH-06",
+      "metric": "Mass-assignment protection via explicit field allowlists",
+      "weight": 0.10,
+      "prompt": "Any changed Route Handler under app/api/** that passes req.body (or an equivalent parsed-body object) directly into a service call or model create/update without an intervening allowlist/DTO scores 0.",
+      "source": "spec/plans/stories.md (Story 4 AC-4, Story 5 AC-4 — SECURITY-08 mass-assignment protection)"
+    }
+  ]
+}
