@@ -1,0 +1,9 @@
+
+> conduit-realworld-example-app@1.0.0 test
+> vitest --coverage --passWithNoTests
+
+[31m[7m[31m MISSING DEPENDENCY [31m[27m Cannot find dependency 'jsdom'
+
+[39m[31m[7m[31m MISSING DEPENDENCY [31m[27m Cannot find dependency '@vitest/coverage-v8'
+
+[39mRecording baseline state explicitly: repo test suite (npm test / vitest) CANNOT EXECUTE at baseline — missing devDependencies 'jsdom' and '@vitest/coverage-v8' referenced by vitest.config.js (test.environment: jsdom; --coverage flag) but not declared in any package.json nor present in package-lock.json as installable top-level packages. This is PRE-EXISTING debt on the epic branch (inherited from prior repo state), not introduced by Story 1. 3 pre-existing test files exist (backend/helper/helpers.test.js, frontend/src/helpers/dateFormatter.test.js, frontend/src/helpers/errorHandler.test.js) but none can run until this is fixed by whichever story/commit owns that fix. Per workflows/dev-implement.md Step 1.5 Item 4.5: baseline failures are recorded and NOT fixed by this story. The post-implementation Full Regression Gate (Step 6.5) will compare against this exact broken baseline -- since Story 1 does not touch backend/ or frontend/, it will reproduce the identical failure, which is expected and not a NEW failure attributable to Story 1.

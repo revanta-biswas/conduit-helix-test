@@ -4,6 +4,12 @@ FROM docker.io/library/node:20-slim
 
 WORKDIR /work
 
+# git is required by story-1's own step definitions (tests/behavior/steps/story-1.steps.js), which
+# bind an AC-4 scenario to `git diff --stat` against the epic branch — the node:20-slim base image
+# does not include it. Installed once here, outside the stack-resolved marker block below (this is a
+# general repo-tooling need, not a Gherkin-runner dependency).
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
 # The generator appends the stack's Gherkin runner install between the markers (Section 3):
 #   JS/TS   : npm i -g @cucumber/cucumber
 # >>> STACK-RESOLVED BEHAVIOUR DEPS START <<<

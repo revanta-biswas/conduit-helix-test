@@ -1,0 +1,421 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "next.js-application-scaffold;conduit-next-is-a-registered-npm-workspace-member-running-next.js-15-app-router",
+        "keyword": "Scenario",
+        "line": 8,
+        "name": "conduit-next is a registered npm workspace member running Next.js 15 App Router",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the repository root contains a root \"package.json\" with an npm \"workspaces\" array",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1526408
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "the existing \"backend\" and \"frontend\" workspace members are present",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 404176
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "the root \"package.json\" \"workspaces\" array is inspected",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 477927
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "it includes \"conduit-next\"",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 99211
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "\"conduit-next/package.json\" declares a \"next\" dependency on major version 15",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:51"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 923769
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "\"conduit-next/app\" exists as the App Router entry directory",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:59"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 346757
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 98626
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-1",
+            "line": 7
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-application-scaffold;the-conduit-next-dev-server-starts-without-errors-on-a-non-colliding-port",
+        "keyword": "Scenario",
+        "line": 15,
+        "name": "The conduit-next dev server starts without errors on a non-colliding port",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the repository root contains a root \"package.json\" with an npm \"workspaces\" array",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 569471
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "the existing \"backend\" and \"frontend\" workspace members are present",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 122836
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 16,
+            "name": "\"npm run dev -w conduit-next\" is started",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2748137816
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 17,
+            "name": "the process starts without throwing or exiting non-zero",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:90"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 617013
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "it listens on port 3002",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:95"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2539031518
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 19,
+            "name": "an HTTP request to \"http://localhost:3002/\" returns a successful response",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:100"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 162661685
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 20,
+            "name": "ports 3000 and 3001 remain owned by \"frontend\" and \"backend\" respectively (no collision)",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1947126
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 86210
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-2",
+            "line": 14
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-application-scaffold;eslint-and-prettier-are-configured-for-conduit-next-in-plain-javascript",
+        "keyword": "Scenario",
+        "line": 23,
+        "name": "ESLint and Prettier are configured for conduit-next in plain JavaScript",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the repository root contains a root \"package.json\" with an npm \"workspaces\" array",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 881853
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "the existing \"backend\" and \"frontend\" workspace members are present",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 412092
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 24,
+            "name": "\"npm run lint -w conduit-next\" is executed",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:118"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2759335773
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 25,
+            "name": "it runs to completion using \"conduit-next/eslint.config.mjs\"",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:123"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 153211
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 26,
+            "name": "no \"tsconfig.json\" exists anywhere under \"conduit-next/\"",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:127"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9496501
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 27,
+            "name": "a Prettier configuration is present and used by \"conduit-next\"'s format script",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:135"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 862059
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 69626
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-3",
+            "line": 22
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-application-scaffold;backend-and-frontend-are-unmodified-by-this-story",
+        "keyword": "Scenario",
+        "line": 30,
+        "name": "backend and frontend are unmodified by this story",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the repository root contains a root \"package.json\" with an npm \"workspaces\" array",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 622389
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "the existing \"backend\" and \"frontend\" workspace members are present",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 120752
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 31,
+            "name": "\"git diff --stat\" is computed between the epic branch and this story's branch",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:142"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 28250917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 32,
+            "name": "no changed path starts with \"backend/\"",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:153"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 190086
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "no changed path starts with \"frontend/\"",
+            "match": {
+              "location": "tests/behavior/steps/story-1.steps.js:153"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48126
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 31958
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-4",
+            "line": 29
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "next.js-application-scaffold",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Next.js application scaffold",
+    "tags": [],
+    "uri": "spec/behavior/story-1.feature"
+  }
+]

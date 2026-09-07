@@ -225,6 +225,13 @@
 
 ---
 
+## Development Handoff — Presented
+**Timestamp**: 2026-09-07T18:52:11Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, STOP CHECKPOINT Step 5)
+**AI Response**: "Presented the Development Handoff message verbatim per common/development-handoff.md: 17 stories on GitHub (revanta-biswas/conduit-helix-test), linked to Milestone #1. Dependency Graph: 1 story (Story 1) ready to start now. Design stages: all 5 executed (Application Design, Functional Design, NFR Requirements, NFR Design, Infrastructure Design) — none skipped. Epic branch epic/nextjs-modernization, design artifacts committed and pushed at 99177bfb96802d3adcd47b9daf4cf95808c16926. HALTING — workflow will not proceed to Code Generation until the user types dev-implement."
+**Context**: STOP CHECKPOINT Step 5-6 — Development Handoff presented, HALT
+
 ## NFR Design — Approved
 **Timestamp**: 2026-09-07T11:30:58Z
 **User Email**: revanta.biswas@3pillarglobal.com
@@ -354,5 +361,149 @@
 **User Input**: "proceed — SonarCloud account set up; SONAR_TOKEN, SONAR_HOST_URL, and CLAUDE_CODE_OAUTH_TOKEN added as GitHub repo secrets (verified via `gh secret list --repo revanta-biswas/conduit-helix-test` — all three present); SonarCloud organization key is `revanta-biswas`."
 **AI Response**: "Per Section 4.1.3's 'proceed' handling: left/restored the two SonarQube steps active in .github/workflows/agentic-eval-pipeline.yml — 'SonarQube scan' (id: sonar, uses: SonarSource/sonarqube-scan-action@v4) and 'SonarQube quality gate' (id: sonarqg, uses: SonarSource/sonarqube-quality-gate-action@master) — copied verbatim from ci-pipeline-generation.md Section 4.1.1b's literal block (not hand-typed), both still guarded by `if: steps.sonarscope.outputs.skip != 'true'` (Section 4.1.1) so a checkout with no existing source paths still degrades gracefully. sonar-project.properties already updated by the user: sonar.organization=revanta-biswas, STATUS comment marked ACTIVE. Set tests/.evals/config.json sonarqube.enabled: true and appended 'sonarqube' to ci.gates per eval-framework.md Section 1 ('sonarqube is appended to gates at generation time only when the user answers proceed'). Did not verify the secret VALUES (not readable from here, per Section 4.1.3 — a first pipeline run is what proves them). Ran a plain YAML parse check (python3 yaml.safe_load) — passed. Ran tests/.evals/scripts/validate-pipeline.sh against git merge-base origin/main HEAD — results recorded in AI Response of this same entry's validation follow-up / see commit for pass/fail detail. Recorded the proceed answer here and in runtime-artifacts/aire-state.md per Section 4.1.3 ('Recording the answer in aire-state.md, not only audit.md')."
 **Context**: MANDATORY STOP Step 1.6 / ci-pipeline-generation.md Section 4.1.2-4.1.3 — genuine user answer (supersedes the 2026-09-07T12:29:07Z sub-agent default of 'skip', which was explicitly flagged as not a real user decision)
+
+---
+
+## dev-implement Invocation — Sequential-Development Banner
+**Timestamp**: 2026-09-07T18:58:46Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: "dev-implement" (story selected: Story 1: Next.js application scaffold, GitHub issue #1)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "dev-implement invoked. Displayed the mandatory sequential-development banner (Step 1.75): stories are NOT developed in parallel in this session — one story at a time, sequentially, each story branch cut from the epic branch. Proceeding to Story Selection."
+**Context**: Step 1.75 — banner shown before Story Selection
+
+---
+
+## Story Selection — Story 1: Next.js application scaffold
+**Timestamp**: 2026-09-07T18:58:46Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: "Story 1 (GitHub issue #1)"
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Resolved Story 1 from stories.md and the Story Tracker: 'Next.js application scaffold', Tracker ID #1, Covers REQ-F-01. Verified GitHub CLI authenticated (`gh auth status` — logged in as revanta-biswas). Doability Gate: dependency-graph.yml records requires: [] for Story 1 — no prerequisites to check, gate passes trivially. Proceeding to move the story to In Development."
+**Context**: implementation/story-selection.md Steps 1-4 (tracker verification, resolution, Doability Gate)
+
+---
+
+## Story 1 — Moved to In Development (Tracker + Story Tracker, Automatic)
+**Timestamp**: 2026-09-07T18:59:51Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic transition on story pick, no confirmation per story-selection.md Step 5)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "GitHub issue #1 label swapped: removed status:ready-for-dev, added status:in-development (created the status:in-development label first — it did not yet exist in this repo). Posted comment 'Development started via aire (story moved to In Development).' Verified via `gh issue view 1 --json labels` — status:in-development confirmed present, status:ready-for-dev confirmed absent. Updated runtime-artifacts/aire-state.md Story Tracker: Story 1 Status -> 🔵 In Development, Start -> 2026-09-07, Recorded -> 2026-09-07T18:58:46Z. FIRST STORY OF THE EPIC: also transitioned the Parent Epic (Milestone #1 'Epic: Next.js Modernization') to reflect In Development — GitHub Milestones have no status/label field beyond open/closed, so recorded 'Status: In Development (started 2026-09-07)' in the milestone's description via `gh api .../milestones/1 -X PATCH`, verified by reading the milestone back. ASSIGNMENT SKIPPED (non-blocking): per common/tracker-sync.md Section 5, GitHub assignment requires a cached GitHub Username in ## Tracker, which is not yet recorded, and this workflow (dev-implement) must ask NOTHING after the story key was typed — asking for a username now would violate that. Left issue #1 unassigned; this is a non-blocking skip and does not block development. Operator's session email (revanta.biswas@3pillarglobal.com) is recorded here instead."
+**Context**: implementation/story-selection.md Step 5-6 (automatic transition, Epic sync, assignment)
+
+---
+
+## Story Branch Created — story/1-nextjs-application-scaffold
+**Timestamp**: 2026-09-07T19:00:12Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, branch name derived from Story ID + title per common/branching-strategy.md Section 3)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Refreshed epic branch (`git fetch origin && git checkout epic/nextjs-modernization && git pull --ff-only` — already up to date). Story 1 requires: [] (dependency-graph.yml) — no prerequisite merge check needed (Case A). Created story/1-nextjs-application-scaffold from epic/nextjs-modernization. Verified active branch via `git branch --show-current`. Note: working tree had pre-existing uncommitted changes (runtime-artifacts/aire-state.md, runtime-artifacts/audit.md modifications from the prior session's SonarQube-proceed answer, plus an untracked reports/eval-evidence/local/ directory from a prior dry-run) — these carried over onto the new branch as-is (git branches share the working tree); they are pre-existing repo state, not introduced by this story, and will not be included in this story's commit."
+**Context**: common/branching-strategy.md Section 3 — Story Branch Creation
+
+---
+
+## Baseline Regression Capture (Step 1.5 Item 4.5)
+**Timestamp**: 2026-09-07T19:02:30Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, no prompt)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Ran `npm install` at repo root first (36 packages were missing from node_modules vs package-lock.json — legitimate environment bootstrap, reused existing node_modules, did not create a second environment). Then ran the repo's own `npm test -- --coverage --passWithNoTests` (root package.json's pinned `test` script, `vitest --coverage --passWithNoTests`) on the fresh story branch BEFORE any code was generated. Result: the suite CANNOT EXECUTE — vitest.config.js declares `test.environment: 'jsdom'` and requests `--coverage`, but neither `jsdom` nor `@vitest/coverage-v8` is declared in any package.json or resolvable via `npm ls` — a genuine PRE-EXISTING gap in the repo's own dependency manifest, not something Story 1 introduced (Story 1 does not touch backend/ or frontend/ or vitest.config.js). 3 pre-existing test files exist (backend/helper/helpers.test.js, frontend/src/helpers/dateFormatter.test.js, frontend/src/helpers/errorHandler.test.js) but none can run until this gap is fixed by whichever story/commit owns it. Saved raw output + this explicit finding to reports/unit-test-evidence/story-1/baseline-regression.log. Per workflows/dev-implement.md Step 1.5 Item 4.5, this is logged and NOT fixed by Story 1 — it defines 'already broken' for the Step 6.5 Full Regression Gate diff, which will reproduce the identical failure (expected, not a NEW failure) since this story never touches backend/frontend/vitest.config.js."
+**Context**: workflows/dev-implement.md Step 1.5 Item 4.5 — BASELINE regression run, before any code generated
+
+---
+
+## Baseline Static Eval Capture (Step 1.5 Item 4.6)
+**Timestamp**: 2026-09-07T19:03:45Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, no prompt)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Bootstrap check: backend/eslint.config.js and frontend/eslint.config.js already exist (created at the STOP CHECKPOINT, prior session) — used AS-IS, not regenerated. conduit-next/ does not exist yet, so it has no eslint config to bootstrap at this point; its own config will be created as part of Story 1's Part 2 Generation (Step 7), which is BEFORE this story's own post-change static eval run (Step 6.6), preserving bootstrap-before-measurement ordering for the NEW root. Ran `EVAL_KEY=story-1 bash tests/.evals/scripts/run-static-evals.sh <HEAD-SHA=99177bfb96802d3adcd47b9daf4cf95808c16926>` on the fresh story branch (BASE_SHA == current HEAD, since no code has been generated yet — a genuine zero-diff baseline moment). Result: D3_sast PASS (no findings), D7_secrets PASS (no findings), D1/D4/D5/D6 N/A (diff-scoped — no changed files under backend/ or frontend/ at this moment, correctly earned per eval-framework.md Section 2.5.1 reason 4), D2_types N/A (plain JavaScript project, REQ-NF-06 — no TypeScript, correctly earned per reason 1). Saved raw output to reports/eval-evidence/story-1/static/baseline/ (static-results.json.gates, static-results.json.gates.rootraw, semgrep-delta.json, gitleaks-delta.json). These become the pre-existing-debt reference point for Step 6.6's post-change diff."
+**Context**: workflows/dev-implement.md Step 1.5 Item 4.6 — BASELINE static eval run, before any code generated
+
+---
+
+## Code Generation Part 1 — Plan Finalized (auto-approved, no gate) (Story 1)
+**Timestamp**: 2026-09-07T19:06:00Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — no approval gate in this workflow)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Wrote spec/spec-generation/story-1-code-generation.md — 6 steps (Project Structure Setup, Workspace wiring + dev port, ESLint+Prettier config, dev-server verification, backend/frontend untouched verification, Unit Test & Coverage). Grounded in stories.md AC-1..4, requirements.md REQ-F-01, application-design.md (Story 1 = anchor node, no components of its own), architecture.md Section 10 (all 6 ARCH constraints assessed as N/A for this diff — a pure scaffold exercises none of them; stated as the plan's own self-check). REQ/AC trace completeness self-check PASSED: REQ-F-01 tagged on every step; AC-1/AC-2/AC-3/AC-4 each appear in >=1 step. No Design References apply. API & Contract Testing Gate marked N/A in the plan (no API Layer Generation step). Announcing and proceeding directly to Part 2 Generation — no approval gate in this workflow."
+**Context**: implementation/code-generation.md Steps 1-9 (Planning)
+
+---
+
+## Behaviour Spec Written — spec/behavior/story-1.feature
+**Timestamp**: 2026-09-07T19:07:15Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, written before code per common/behavior-spec.md Section 2)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Wrote spec/behavior/story-1.feature — 4 scenarios, one per AC, tagged @AC-1..@AC-4. AC-1/AC-2 are genuinely observable application behaviour (workspace member registered + Next.js 15 App Router present; dev server starts and responds on port 3002 without colliding with 3000/3001). AC-3 (ESLint/Prettier configured, no TypeScript) phrased as an observable lint-run + absence-of-tsconfig check. AC-4 (backend/frontend unmodified) phrased as an observable git-diff check rather than marked N/A — it IS mechanically checkable via 'git diff --stat', so it gets a real scenario rather than invoking the pure-build-config N/A allowance. All 4 ACs present with >=1 scenario each — satisfies the 'every AC must appear' rule."
+**Context**: implementation/code-generation.md Step 4.5 / common/behavior-spec.md Section 2
+
+---
+
+## Code Generation Part 2 — Generation Complete (Story 1)
+**Timestamp**: 2026-09-07T19:41:00Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic execution of the announced plan, no gate)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Executed all 5 implementation steps of spec/spec-generation/story-1-code-generation.md. Step 1: scaffolded conduit-next/ via `npx create-next-app@15 conduit-next --js --no-tailwind --eslint --app --no-src-dir --use-npm --skip-install --disable-git` -> Next.js 15.5.25, plain JavaScript, App Router (app/layout.js, app/page.js), no TypeScript anywhere (verified: zero tsconfig*.json files exist under conduit-next/). Step 2: added 'conduit-next' to root package.json workspaces array; set conduit-next/package.json dev/start scripts to `-p 3002` (frontend=3000 via vite.config.js, backend=3001 via .env.example/index.js -- verified no collision). Step 3: conduit-next/eslint.config.mjs (flat config, next/core-web-vitals via FlatCompat, generated by create-next-app itself) kept as-is; added conduit-next/.prettierrc.json + format/format:check scripts. Step 4: ran `npm install` at root (added conduit-next's Next.js dependency tree); started `npm run dev -w conduit-next` as a real child process, confirmed 'Ready in 3.9s' and HTTP 200 from http://localhost:3002/, then stopped it cleanly -- this is the literal proof for AC-2. Step 5: `git diff --stat epic/nextjs-modernization -- backend frontend` returned empty and `git status --short` shows zero backend/frontend paths touched -- AC-4 verified. SECURITY REMEDIATION (found during Step 4's npm install, not part of the original plan but required before this story's own dependency tree could be called clean): `npm audit --workspace conduit-next` surfaced 4 vulnerabilities transitively pulled in by create-next-app@15.5.25's own tree (nanoid high, picomatch high, postcss high, next moderate). Added root package.json `overrides`: nanoid->3.3.18, picomatch->4.0.7 (both non-major patch fixes, verified compatible with postcss@8.4.31's own nanoid ^3.3.6 peer range) -- resolved both highs. postcss (high, XSS/path-traversal in sourceMappingURL handling) and next (moderate) have NO non-major fix available -- npm audit's own fixAvailable field names next@16.3.4 as the only fix, which would violate REQ-F-01/AC-1's explicit Next.js 15 requirement. This is recorded as an accepted, upstream-only limitation of Next.js 15.5.25 itself (the latest stable 15.x release), not a defect this story introduced or can remediate without breaking its own acceptance criteria -- to be revisited if/when Next.js ships a 15.x patch that bumps its bundled postcss, or is explicitly accepted as migration debt at cutover (Story 14)."
+**Context**: implementation/code-generation.md Steps 10-13 (Part 2 Generation)
+
+---
+
+## Unit Test & Coverage Gate — Story 1 (SH-LOOP-1, attempt 0 / initial run)
+**Timestamp**: 2026-09-07T19:45:00Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, no prompt)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Attempted an in-process render test of conduit-next/app/page.js via @testing-library/react -- FAILED at Vite's import-analysis stage ('contains invalid JS syntax') because Next.js's App-Router-mandated page.js/layout.js filenames contain JSX inside a plain .js extension, which Vite/esbuild does not auto-parse as JSX (unlike Next's own SWC/Turbopack pipeline) and cannot be renamed without breaking the App Router. Tried an esbuild.loader/optimizeDeps override in vitest.config.js to force JSX parsing for .js under conduit-next/ -- still failed, since vite:import-analysis's own syntax check runs before the loader override is consulted; reverted that config change (added no value). Root-caused: this story's only 'code' is Next's own generated boilerplate + an empty next.config.mjs -- genuinely nothing meaningful to instrument in-process. Wrote tests/unit/conduit-next/scaffold.test.js instead: spawns the real `next dev --turbopack -p 3002` process (the literal AC-2 command) and asserts on real HTTP behaviour. Added jsdom + @vitest/coverage-v8 as root devDependencies (they were referenced by the pre-existing vitest.config.js's `environment: jsdom` and this repo's --coverage flag but never actually installed -- a pre-existing baseline gap now fixed because Story 1's own test genuinely needs jsdom to be present; recorded in the baseline-regression.log finding). Ran `npx vitest run tests/unit/conduit-next/ --coverage --reporter=verbose`: 3/3 tests PASS. Coverage: 0/0 statements -- the spawned child process is out-of-process from Vitest's V8 instrumentation, so no conduit-next source is captured; genuinely unreachable per the reasons in evidence-manifest.md (JSX-in-.js unrenamble filenames; empty next.config.mjs; refused to pad with artificial uncovered-by-need code). Saved unit-test-run.log, coverage-report/ (lcov.info, coverage-summary.json), and evidence-manifest.md documenting this narrow, surfaced exception to reports/unit-test-evidence/story-1/. unitTestCoverageMin (90%) recorded N/A for this story's diff ONLY, with the exact reason -- threshold in tests/.evals/config.json left UNCHANGED (still 90.0) for every other story. This satisfies code-generation.md's own waiver clause: 'if the threshold is genuinely unreachable... surface the gap... never silently accept below-target coverage.' Gate treated as passed-with-documented-exception; no SH-LOOP-1 remediation attempt was needed since the tests themselves are green and the gap is structural, not a defect."
+**Context**: workflows/dev-implement.md Step 6 / implementation/code-generation.md Step 11a
+
+---
+
+## Behavioural Test Gate — B1/B2/B3 (Story 1)
+**Timestamp**: 2026-09-08T01:28:30Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, no prompt)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Wrote step definitions tests/behavior/steps/story-1.steps.js bound to conduit-next's public surface (package.json manifests, real `next dev` HTTP responses, `git diff --stat`). Podman confirmed available (`command -v podman` -> /opt/homebrew/bin/podman, v5.8.2) -- containerisation MANDATORY, no native-run exception applies. Built tests/.evals/behavior/Containerfile -> localhost/aire-behavior:local. BOOTSTRAP required to make this tier runnable (first story to reach this gate): (1) added @cucumber/cucumber ^11.3.0 as a ROOT devDependency -- resolves via npm workspace hoisting into `npx --prefix frontend cucumber-js` without touching frontend/package.json, preserving AC-4 for the Gherkin tooling itself, verified via `npx --prefix frontend cucumber-js --version` -> 11.3.0; (2) added `git` to the Containerfile via apt-get, OUTSIDE the template's marked STACK-RESOLVED BEHAVIOUR DEPS block (general tooling need, not a Gherkin-runner dependency) -- this story's own AC-4 step needs `git diff --stat` inside the container; (3) added `git config --global --add safe.directory` inside the AC-4 step (bind-mounted repo has a UID mismatch inside the container, git refuses to operate otherwise); (4) fixed the step file's naming mismatch (eslint.config.js -> actual eslint.config.mjs, a plan-vs-reality correction, logged and applied to both the feature file and the code-generation plan document); (5) spawned next dev `detached: true` and killed via `process.kill(-pid, SIGTERM)` instead of killing only the direct child -- Turbopack's own worker subprocesses were orphaned by a plain `.kill()`, which kept the container's PID 1 blocked and the container running indefinitely even after cucumber-js itself had finished and reported all-green (observed: containers still Up 27-36 minutes post-test, force-removed manually before the fix). Confirmed fixed: container now exits cleanly EXIT=0 on its own. RAN B1: `podman run --rm --timeout 60 -v $PWD:/work:Z -w /work -e AIRE_STORY_KEY=story-1 aire-behavior:local bash tests/.evals/behavior/run.sh b1` -> 4/4 scenarios PASS, 24/24 steps PASS, all @AC-1..@AC-4 tags executed, containerised:true, image sha256:89cc4183c3600c79389967ae78a8c84603d593e06ba8e49678e508d553ee0c5e. Evidence saved to reports/behavior-test-evidence/story-1/b1/ (behavior-test-run.log, behavior-test-report.json via a supplementary identical invocation with --format json added since run.sh's own marked runner block emits --format progress only, evidence-manifest.md). RAN B2: run.sh b2 mechanically re-ran story-1.feature against itself (only file present) -- 4/4 PASS, but this is NOT a genuine 'every OTHER feature file' check since none exists; recorded B2 as N/A per common/behavior-spec.md Section 6.3's explicit allowance ('B2 only when no other feature file exists'), with the literal run.sh output noted transparently in evidence-manifest.md rather than overclaiming a PASS. B3: NOT run -- Story 1 is not the last work unit (16 other stories remain 🟢 Ready for Development with no PRs raised at all); recorded 'B3: N/A -- deferred, 16 units with unmerged/no PRs'."
+**Context**: workflows/dev-implement.md Step 6.1 / common/behavior-spec.md Section 4.4, Section 6
+
+---
+
+## Full Regression Gate — Story 1 (Step 6.5)
+**Timestamp**: 2026-09-08T01:30:15Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: (none — automatic, no prompt)
+**TRACKER ITEM**: "[#1](https://github.com/revanta-biswas/conduit-helix-test/issues/1)"
+**Epic Link**: "[Epic: Next.js Modernization](https://github.com/revanta-biswas/conduit-helix-test/milestone/1)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Re-ran `npm test -- --coverage --passWithNoTests` (entire repo suite) post-implementation. Result: 4 test files passed, 15 tests passed, 0 failures -- saved to reports/unit-test-evidence/story-1/full-regression.log. Diffed against baseline-regression.log: baseline had 0 executable tests (missing jsdom/@vitest/coverage-v8, logged as pre-existing debt). Post-change: all 4 files run and pass (3 pre-existing test files now unblocked + this story's own new test file). Zero NEW failures -- nothing regressed, since baseline had nothing passing to regress from. Full Regression Gate: CLEAN. Recorded in reports/unit-test-evidence/story-1/evidence-manifest.md."
+**Context**: workflows/dev-implement.md Step 6.5 / implementation/code-generation.md Step 11b
 
 ---

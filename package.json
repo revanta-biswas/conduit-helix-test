@@ -13,7 +13,8 @@
   "license": "MIT",
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "conduit-next"
   ],
   "scripts": {
     "dev": "concurrently --names 'Node,Vite' -c 'green,blue' 'npm run dev -w backend' 'npm run dev -w frontend'",
@@ -22,8 +23,15 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
     "@vitejs/plugin-react-swc": "^4.2.3",
+    "@vitest/coverage-v8": "^4.0.18",
     "concurrently": "^9.2.1",
+    "jsdom": "^25.0.1",
     "vitest": "^4.0.18"
+  },
+  "overrides": {
+    "nanoid": "3.3.18",
+    "picomatch": "4.0.7"
   }
 }

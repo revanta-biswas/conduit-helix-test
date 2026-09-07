@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Brownfield
 - **Start Date**: 2026-09-07T10:11:36Z
-- **Current Stage**: IMPLEMENTATION - Infrastructure Design
+- **Current Stage**: Code Generation — Story 1 In Development
 
 ## Workspace State
 - **Existing Code**: Yes
@@ -66,7 +66,7 @@
 ## Story Tracker
 | Story | Title | Requires | Tracker ID | Status | PR | Merged | Start | End | Recorded |
 |-------|-------|----------|------------|--------|----|--------|-------|-----|----------|
-| 1 | Next.js application scaffold | none | #1 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
+| 1 | Next.js application scaffold | none | #1 | 🔵 In Development | — | — | 2026-09-07 | | 2026-09-07T19:03:45Z |
 | 2 | Sequelize data layer port | 1 | #2 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
 | 3 | Cookie-based authentication | 2 | #3 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |
 | 4 | Users & current-user API | 3 | #4 | 🟢 Ready for Development | — | — | | | 2026-09-07T10:42:34Z |

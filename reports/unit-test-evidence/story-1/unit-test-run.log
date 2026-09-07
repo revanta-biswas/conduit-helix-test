@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /Users/revanta.biswas/Desktop/conduit-helix-test
+      Coverage enabled with v8
+
+ ✓ tests/unit/conduit-next/scaffold.test.js > conduit-next scaffold — real `next dev` server > starts without throwing or exiting non-zero (AC-2) 1ms
+ ✓ tests/unit/conduit-next/scaffold.test.js > conduit-next scaffold — real `next dev` server > listens on port 3002 and serves a successful response (AC-2) 1794ms
+ ✓ tests/unit/conduit-next/scaffold.test.js > conduit-next scaffold — real `next dev` server > serves the App Router home page content (AC-1) 61ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:40:41
+   Duration  3.80s (transform 17ms, setup 45ms, import 13ms, tests 3.37s, environment 238ms)
+
+ % Coverage report from v8
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------|---------|----------|---------|---------|-------------------
+All files |       0 |        0 |       0 |       0 |                   
+----------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : Unknown% ( 0/0 )
+Branches     : Unknown% ( 0/0 )
+Functions    : Unknown% ( 0/0 )
+Lines        : Unknown% ( 0/0 )
+================================================================================

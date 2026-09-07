@@ -1,0 +1,31 @@
+
+> conduit-realworld-example-app@1.0.0 test
+> vitest --coverage --passWithNoTests
+
+
+ RUN  v4.1.11 /Users/revanta.biswas/Desktop/conduit-helix-test
+      Coverage enabled with v8
+
+
+ Test Files  4 passed (4)
+      Tests  15 passed (15)
+   Start at  01:29:57
+   Duration  4.49s (transform 99ms, setup 364ms, import 76ms, tests 3.75s, environment 1.91s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   36.36 |       10 |   42.85 |      40 |                   
+ backend/helper    |      24 |        0 |      20 |   26.08 |                   
+  helpers.js       |      24 |        0 |      20 |   26.08 | 6-9,13-17,22-38   
+ ...nd/src/helpers |      75 |       50 |     100 |   85.71 |                   
+  errorHandler.js  |   71.42 |       50 |     100 |   83.33 | 11                
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 36.36% ( 12/33 )
+Branches     : 10% ( 2/20 )
+Functions    : 42.85% ( 3/7 )
+Lines        : 40% ( 12/30 )
+================================================================================
