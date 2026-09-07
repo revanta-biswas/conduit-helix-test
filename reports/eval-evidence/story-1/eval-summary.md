@@ -17,10 +17,12 @@
 | Behaviour B2 | N/A | no other feature file exists yet (first story of the cycle) |
 | Behaviour B3 | N/A | deferred — not the last work unit (16 stories with no PR yet) |
 | API & Contract | N/A | no API layer touched by this story |
-| J1 Architecture | *pending Code Review* | |
-| J2 Security (OWASP) | *pending Code Review* | |
+| J1 Architecture | N/A | all 6 architecture-rubric.json criteria scoped to `lib/**`/`middleware.ts`/`app/api/**`, none of which exist in this diff; N/A never blocks — `reports/eval-evidence/story-1/judge/architecture-score.json` |
+| J2 Security (OWASP) | PASS (1.00 / min 0.85) | 6/8 criteria N/A (no auth/API/data/logging surface); 2 scoreable (SEC-06 config, SEC-07 supply chain) both 1.0 — `reports/eval-evidence/story-1/judge/security-score.json` |
 
 **Static Eval Verdict**: PASS (5 of 7 D1-D7 checks ran; 2 N/A with earned reasons — see above)
+
+**Overall Eval Verdict**: **PASS** — all gates PASS or N/A; J1 is N/A (never blocks), J2 = 1.00 clears the 0.85 minimum. Computed in Code Review Phase 3.5 (`reports/reviews/story-1-code-review-v1.md`).
 
 **Coverage note**: 0/0 in-process coverage is a documented, surfaced exception, not a suppressed
 failure. Full reasoning and rejected alternatives: `reports/unit-test-evidence/story-1/evidence-manifest.md`.

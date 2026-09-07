@@ -1,0 +1,78 @@
+{
+  "key": "story-1",
+  "gate": "J2_security",
+  "judgeModel": "claude-sonnet-5",
+  "rubricVersion": "1.0.0",
+  "rubricSource": "tests/.evals/rubrics/security-rubric.json",
+  "scope": "changed-files (99177bfb96802d3adcd47b9daf4cf95808c16926...HEAD)",
+  "criteria": [
+    {
+      "id": "SEC-01",
+      "owasp": "A01:2025 — Broken Access Control",
+      "weight": 0.20,
+      "score": "N/A",
+      "reason": "No app/api/** endpoint exists in this diff to read or mutate an article/comment/user resource."
+    },
+    {
+      "id": "SEC-02",
+      "owasp": "A07:2025 — Authentication Failures",
+      "weight": 0.20,
+      "score": "N/A",
+      "reason": "No lib/auth.js, middleware.ts, or app/api/users/** file exists in this diff; no session/cookie/JWT handling introduced."
+    },
+    {
+      "id": "SEC-03",
+      "owasp": "A05:2025 — Injection",
+      "weight": 0.15,
+      "score": "N/A",
+      "reason": "No Sequelize query or database/shell string construction exists anywhere in this diff."
+    },
+    {
+      "id": "SEC-04",
+      "owasp": "A04:2025 — Cryptographic Failures",
+      "weight": 0.15,
+      "score": "N/A",
+      "reason": "No password handling, JWT signing, or DATABASE_URL/secret handling exists in this diff. conduit-next/.gitignore correctly ignores .env* (verified by reading the file) so no secret-handling regression is introduced either."
+    },
+    {
+      "id": "SEC-05",
+      "owasp": "A06:2025 — Insecure Design",
+      "weight": 0.10,
+      "score": "N/A",
+      "reason": "No Route Handler accepting a create/update body exists in this diff."
+    },
+    {
+      "id": "SEC-06",
+      "owasp": "A02:2025 — Security Misconfiguration",
+      "weight": 0.10,
+      "score": 1.0,
+      "reason": "conduit-next/next.config.mjs is the unmodified create-next-app default (empty config object) -- reviewed in full, no header/CORS/debug-mode change is present to weaken. Scored (not N/A) because the file is genuinely part of the diff and was reviewed line-by-line; it introduces no misconfiguration.",
+      "citation": "conduit-next/next.config.mjs:1-4"
+    },
+    {
+      "id": "SEC-07",
+      "owasp": "A03:2025 — Software Supply Chain Failures",
+      "weight": 0.05,
+      "score": 1.0,
+      "reason": "package-lock.json is updated and committed alongside every package.json dependency change (root overrides for nanoid/picomatch/postcss; conduit-next's new dependencies). No postinstall/build script fetching remote code was added. Verified via git diff on both package.json files and confirmation the lockfile diff (7847 lines) corresponds to the same reinstall documented in reports/eval-evidence/story-1/eval-summary.md.",
+      "citation": "package.json:24-28, conduit-next/package.json:1-24, package-lock.json (full regeneration)"
+    },
+    {
+      "id": "SEC-08",
+      "owasp": "A09:2025 — Security Logging and Alerting Failures",
+      "weight": 0.05,
+      "score": "N/A",
+      "reason": "No log statement exists in conduit-next/app/layout.js or page.js (verified by reading both files in full); nothing to score for unredacted sensitive data in logs."
+    }
+  ],
+  "scoredCriteria": ["SEC-06", "SEC-07"],
+  "naCriteria": ["SEC-01", "SEC-02", "SEC-03", "SEC-04", "SEC-05", "SEC-08"],
+  "renormalisedWeights": {
+    "SEC-06": 0.6667,
+    "SEC-07": 0.3333
+  },
+  "weightedTotal": 1.0,
+  "verdict": 1.0,
+  "gateResult": "PASS (1.0 >= llmJudgeSecurityScoreMin 0.85)",
+  "notes": "Only SEC-06 and SEC-07 have any reviewable surface in this diff (next.config.mjs and the dependency/lockfile changes); both are clean. The remaining 6 criteria are N/A because their required surface (API endpoints, auth/session code, Sequelize queries, secrets handling, logging) does not exist anywhere in this diff -- confirmed by reading every changed file's full content, not assumed from the story description."
+}

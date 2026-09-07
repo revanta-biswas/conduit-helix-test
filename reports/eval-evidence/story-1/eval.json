@@ -27,10 +27,10 @@
     "behaviorB2":     { "status": "N/A", "reason": "no other feature file exists yet — Story 1 is the first work unit of the cycle" },
     "behaviorB3":     { "status": "N/A", "reason": "deferred — 16 other stories have no PR raised at all yet; Story 1 is not the last work unit" },
     "apiContract":    { "status": "N/A", "reason": "no API Layer Generation step in this story's plan — pure package scaffold" },
-    "J1_architecture": { "status": "PENDING", "reason": "computed inside Code Review Phase 3.5, not here — this file is refreshed after that pass completes" },
-    "J2_security":    { "status": "PENDING", "reason": "computed inside Code Review Phase 3.5, not here — this file is refreshed after that pass completes" }
+    "J1_architecture": { "status": "N/A", "score": "N/A", "min": 0.85, "judgeModel": "claude-sonnet-5", "rubricVersion": "1.0.0", "reason": "All 6 architecture-rubric.json criteria (ARCH-01..06) are scoped to conduit-next/lib/**, middleware.ts, or app/api/**, none of which exist in this pure-scaffold diff. N/A never blocks. Breakdown: reports/eval-evidence/story-1/judge/architecture-score.json" },
+    "J2_security":    { "status": "PASS", "score": 1.0, "min": 0.85, "judgeModel": "claude-sonnet-5", "rubricVersion": "1.0.0", "reason": "6/8 security-rubric.json criteria N/A (no auth/API/data/logging surface in diff); the 2 scoreable criteria (SEC-06 config, SEC-07 supply chain) both scored 1.0. Breakdown: reports/eval-evidence/story-1/judge/security-score.json" }
   },
-  "verdict": "PENDING — static gates PASS/N/A; J1/J2 computed in Code Review",
+  "verdict": "PASS",
   "checksRun": 5,
   "checksTotal": 7,
   "checksNA": ["D2_typecheck"]

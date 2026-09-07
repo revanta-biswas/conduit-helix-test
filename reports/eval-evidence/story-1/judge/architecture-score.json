@@ -1,0 +1,57 @@
+{
+  "key": "story-1",
+  "gate": "J1_architecture",
+  "judgeModel": "claude-sonnet-5",
+  "rubricVersion": "1.0.0",
+  "rubricSource": "tests/.evals/rubrics/architecture-rubric.json",
+  "scope": "changed-files (99177bfb96802d3adcd47b9daf4cf95808c16926...HEAD)",
+  "criteria": [
+    {
+      "id": "ARCH-01",
+      "metric": "No direct database access outside the service layer",
+      "weight": 0.25,
+      "score": "N/A",
+      "reason": "No lib/db/models or Sequelize model exists anywhere in this diff; conduit-next/app/ contains only the generated layout.js and page.js, neither of which imports any data-access module."
+    },
+    {
+      "id": "ARCH-02",
+      "metric": "Client Components never import server-only modules",
+      "weight": 0.20,
+      "score": "N/A",
+      "reason": "No lib/services, lib/db, or lib/auth module exists yet in the diff, and no changed file is marked \"use client\"; there is nothing for this criterion to exercise."
+    },
+    {
+      "id": "ARCH-03",
+      "metric": "Session validation happens only in middleware.ts",
+      "weight": 0.20,
+      "score": "N/A",
+      "reason": "No middleware.ts, Route Handler, or session/JWT-handling code exists in this diff (REQ-F-03 auth is a later story)."
+    },
+    {
+      "id": "ARCH-04",
+      "metric": "No secrets, tokens, or PII in log output",
+      "weight": 0.15,
+      "score": "N/A",
+      "reason": "conduit-next/app/layout.js and page.js contain zero console.*/logging calls; verified by reading both files in full."
+    },
+    {
+      "id": "ARCH-05",
+      "metric": "No sequelize.sync({ alter: true }) in the ported code path",
+      "weight": 0.10,
+      "score": "N/A",
+      "reason": "No lib/db/** path exists in this diff; Story 2 introduces the Sequelize data layer."
+    },
+    {
+      "id": "ARCH-06",
+      "metric": "Mass-assignment protection via explicit field allowlists",
+      "weight": 0.10,
+      "score": "N/A",
+      "reason": "No Route Handler under app/api/** exists in this diff; this story is a pure package scaffold (REQ-F-01)."
+    }
+  ],
+  "weightedTotal": "N/A",
+  "renormalisedWeightSum": 0.0,
+  "verdict": "N/A",
+  "gateResult": "PASS (N/A never blocks per common/eval-framework.md Section 4.1 item 5)",
+  "notes": "All 6 constraints in architecture-rubric.json are scoped to conduit-next/lib/**, middleware.ts, or app/api/** — none of which this diff touches or creates. Confirmed by reading the full diff (git diff --stat and per-file content) rather than assuming from the story description. Every criterion is genuinely inapplicable, not weakened or suppressed; the remaining-weight renormalisation described in eval-framework.md Section 4.1 item 5 does not apply because there is no scoreable criterion left to renormalise onto — the whole rubric is N/A for this diff."
+}
