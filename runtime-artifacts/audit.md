@@ -362,3 +362,14 @@
 **Context**: dev-implement parallel batch — Story 1.4 done.
 
 ---
+
+## dev-implement — Story 1.8 complete (PR #34) — parallel batch closed
+**Timestamp**: 2026-09-09T12:50:00Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**TRACKER ITEM**: "[#26](https://github.com/revanta-biswas/conduit-helix-test/issues/26) — Story 1.8"
+**Epic Link**: "[Milestone #2](https://github.com/revanta-biswas/conduit-helix-test/milestone/2)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Story 1.8 (Article Editor & Profile Page) built (minimal functional; Story 1.9 does component/CSS port). editor-payload builder + profile-page assembler (composes existing N+1-free services) + 3 pages (editor create/edit Client, profile Server Component). Gates ALL PASS (local): unit 98/98 @96.53%, B1 6/6 + B2 43/43 containerised, regression 98/98, D1-D7 clean, J1=1.0, J2=1.0. API&Contract N/A. Test isolation: 1.8 requires only 1.3+1.4 (not 1.5), so favorite setup uses model association directly. PR #34 raised (scorecard+labels verified), auto-review COMMENTED. This CLOSES the 1.5+1.6+1.8 parallel batch — PRs #32 (1.5), #33 (1.6), #34 (1.8) all open, awaiting user approve+merge."
+**Context**: dev-implement parallel batch complete — 3 PRs open (#32, #33, #34).
+
+---
