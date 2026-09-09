@@ -384,3 +384,15 @@
 **Context**: dev-implement parallel batch — Story 1.6 done, moving to 1.8.
 
 ---
+
+## Conflict Resolution + SonarCloud Decision (PR #33)
+**Timestamp**: 2026-09-09T13:00:00Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: "Checks awaiting conflict resolution ... SonarCloud Code Analysis Failing ... This branch has conflicts (audit.md)" then chose "Ignore it — merge anyway"
+**TRACKER ITEM**: "[#24](https://github.com/revanta-biswas/conduit-helix-test/issues/24) — Story 1.6"
+**Epic Link**: "[Milestone #2](https://github.com/revanta-biswas/conduit-helix-test/milestone/2)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "PR #32 (1.5) and #34 (1.8) merged; #33 (1.6) conflicted on audit.md (append-only log). Resolved by keeping BOTH the 1.5 (12:20) and 1.6 (12:35) entries in chronological order; aire-state.md + the 1.4 follows->is-following step rename auto-merged (identical change across #32/#33/#34). Verified 0 conflict markers and ran the full merged suite (1.1-1.6+1.8) -> 126/126 pass. Pushed the merge -> #33 now MERGEABLE/CLEAN. SONARCLOUD: investigated the failing 'SonarCloud Code Analysis' check — confirmed NO sonar-project.properties, NO .github/workflows/, NO committed sonar config exists in the repo (only the unused framework template aire-workflow/templates/ci/sonar-project.properties.tmpl). SonarCloud is an EXTERNAL GitHub-App/Automatic-Analysis integration on the user's account, NOT created by this cycle (CI generation was explicitly skipped per the user's original request). It fails its default Quality Gate because it never receives our coverage reports (which would require the skipped CI). User decision: IGNORE it and merge anyway — it is an advisory external check reporting a false low-coverage signal; local gates measured 94-96% coverage on every story. Not a required/blocking check unless branch protection makes it so."
+**Context**: Merge-conflict resolution for the parallel batch + explicit decision to treat the external SonarCloud check as advisory.
+
+---
