@@ -350,3 +350,15 @@
 **Context**: dev-implement 3rd invocation (parallel batch) — story-selection for 1.3 + 1.4, both doable and independent.
 
 ---
+
+## dev-implement — Story 1.3 complete (PR #30)
+**Timestamp**: 2026-09-09T10:40:04Z
+**User Email**: revanta.biswas@3pillarglobal.com
+**User Input**: N/A — automatic (parallel batch)
+**TRACKER ITEM**: "[#21](https://github.com/revanta-biswas/conduit-helix-test/issues/21) — Story 1.3"
+**Epic Link**: "[Milestone #2](https://github.com/revanta-biswas/conduit-helix-test/milestone/2)"
+**AIRE VERSION**: "1.0"
+**AI Response**: "Story 1.3 built: user + profiles services + 4 Route Handlers. Gates ALL PASS (local): unit 67/67 @96.79%, API-contract 12/12, B1 8/8 + B2 25/25 containerised (SH-LOOP-7 attempt 1 fixed a Given/When step-text ambiguity), regression 67/67 0-new, D1-D7 clean, J1=1.0, J2=1.0. Code Review CLEAN. Committed d4e78d9, PR #30 raised into epic (scorecard+labels verified), auto pr-review COMMENTED. Story Tracker: PR=#30, Merged=no, stays In Development. N+1 avoided via count/has pair (ARCH-02); fixed legacy updateUser always-rehash bug; self-follow prevention added. Now proceeding to Story 1.4 (the parallel-independent story) in the same session."
+**Context**: dev-implement parallel batch — Story 1.3 done, moving to 1.4.
+
+---
