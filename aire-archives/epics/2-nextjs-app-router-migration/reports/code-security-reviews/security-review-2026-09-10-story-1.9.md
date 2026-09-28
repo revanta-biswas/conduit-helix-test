@@ -1,0 +1,1 @@
+Security review 1.9: component port (next/link, no axios/react-router — guard-tested); branding change; npm audit fix cleared BOTH criticals (concurrently/shell-quote) + most highs (20->5 total). Remaining 5 need breaking majors (Next16/Sequelize3) — documented, not applied. No Critical/High on the changed surface. SEC-ISS: NONE.

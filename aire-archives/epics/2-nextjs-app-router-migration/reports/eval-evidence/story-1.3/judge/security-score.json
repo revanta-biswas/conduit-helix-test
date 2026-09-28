@@ -1,0 +1,15 @@
+{
+  "gate": "J2_security", "rubricVersion": "1.0.0", "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (user/profiles services + handlers)",
+  "criteria": [
+    { "id": "SEC-01", "owasp": "A01:2025", "weight": 0.20, "score": 1.0, "citation": "src/app/api/user/route.js, .../follow/route.js", "reason": "GET/PUT /api/user and follow/unfollow all call requireSessionUser; a user can only update their own record (the session's user). Public profile GET is intentionally anonymous." },
+    { "id": "SEC-02", "owasp": "A07:2025", "weight": 0.20, "score": 1.0, "reason": "Session resolved via the httpOnly-cookie auth library (inherited); password re-hash on update uses bcrypt." },
+    { "id": "SEC-03", "owasp": "A05:2025", "weight": 0.15, "score": 1.0, "reason": "All queries via Sequelize where-clause objects; no raw SQL." },
+    { "id": "SEC-04", "owasp": "A04:2025", "weight": 0.15, "score": "N/A", "reason": "No new secret/crypto handling in this story. Excluded." },
+    { "id": "SEC-05", "owasp": "A02:2025", "weight": 0.10, "score": 1.0, "reason": "Errors mapped to the Conduit envelope; no verbose disclosure." },
+    { "id": "SEC-06", "owasp": "A06:2025", "weight": 0.10, "score": 1.0, "citation": "src/lib/services/profiles.js", "reason": "Self-follow prevented (ValidationError); follow/unfollow idempotent — the two threat-model controls this story's design requires are present." },
+    { "id": "SEC-07", "owasp": "A10:2025", "weight": 0.10, "score": 1.0, "reason": "Every handler try/catches and maps to the error envelope; no leak." }
+  ],
+  "weightedScore": 1.0, "min": 0.85, "verdict": "PASS",
+  "note": "6 of 7 applicable, all 1.0; SEC-04 N/A."
+}

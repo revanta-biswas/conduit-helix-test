@@ -1,0 +1,19 @@
+{
+  "gate": "J1_architecture",
+  "rubricVersion": "1.0.0",
+  "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (src/lib/{errors,helpers,auth,services/users}.js, src/app/api/users/**, src/middleware.js)",
+  "criteria": [
+    { "id": "ARCH-01", "weight": 0.20, "score": 1.0, "citation": "src/app/api/users/route.js, src/app/api/users/login/route.js", "reason": "Both Route Handlers import only from lib/services/users, lib/auth, lib/errors — never from lib/db/models. Sequelize access is fully behind the users service." },
+    { "id": "ARCH-02", "weight": 0.20, "score": "N/A", "reason": "No list/feed code in this story. Excluded." },
+    { "id": "ARCH-03", "weight": 0.20, "score": 1.0, "citation": "src/lib/auth.js", "reason": "Session token is set and read exclusively via an httpOnly cookie; no localStorage/sessionStorage reference anywhere in the diff." },
+    { "id": "ARCH-04", "weight": 0.15, "score": 1.0, "citation": "src/app/api/users/*/route.js + src/lib/errors.js", "reason": "Register returns 201 {user:{email,username,...,token}}, login 200, matching the legacy backend/controllers/users.js shape; errors map to the Conduit {errors:{body:[...]}} envelope with the same 401/403/404/422/500 codes." },
+    { "id": "ARCH-05", "weight": 0.15, "score": 1.0, "citation": "src/**", "reason": "No sequelize.sync with alter/force in any changed file; a behaviour scenario re-asserts it against src/lib/db/index.js." },
+    { "id": "ARCH-06", "weight": 0.10, "score": 1.0, "citation": "src/**", "reason": "No axios or react-router-dom import in any changed file." }
+  ],
+  "applicableWeightSum": 0.80,
+  "weightedScore": 1.0,
+  "min": 0.85,
+  "verdict": "PASS",
+  "note": "5 of 6 criteria applicable and all scored 1.0; ARCH-02 N/A excluded, weights renormalised."
+}

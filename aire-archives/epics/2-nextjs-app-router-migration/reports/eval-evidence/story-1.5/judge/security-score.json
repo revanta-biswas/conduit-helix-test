@@ -1,0 +1,11 @@
+{"gate":"J2_security","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (favorites/comments services + handlers)",
+"criteria":[
+{"id":"SEC-01","owasp":"A01:2025","weight":0.20,"score":1.0,"reason":"favorite/comment-create require a session; comment-delete is author-only (403 ForbiddenError). Comment list is public read."},
+{"id":"SEC-02","owasp":"A07:2025","weight":0.20,"score":"N/A","reason":"No new auth code. Excluded."},
+{"id":"SEC-03","owasp":"A05:2025","weight":0.15,"score":1.0,"reason":"Sequelize builder only, no raw SQL."},
+{"id":"SEC-04","owasp":"A04:2025","weight":0.15,"score":"N/A","reason":"No crypto/secrets. Excluded."},
+{"id":"SEC-05","owasp":"A02:2025","weight":0.10,"score":1.0,"reason":"Errors mapped to envelope; no disclosure."},
+{"id":"SEC-06","owasp":"A06:2025","weight":0.10,"score":1.0,"reason":"Idempotent favorite toggle + comment-delete author-only are the design-level controls."},
+{"id":"SEC-07","owasp":"A10:2025","weight":0.10,"score":1.0,"reason":"Handlers try/catch -> mapped envelope; no leak."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"5 of 7 applicable, all 1.0; SEC-02/04 N/A."}

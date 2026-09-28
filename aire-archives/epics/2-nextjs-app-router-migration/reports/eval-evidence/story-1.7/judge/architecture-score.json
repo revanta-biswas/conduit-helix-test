@@ -1,0 +1,10 @@
+{"gate":"J1_architecture","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (src/lib/feed-params.js, src/lib/services/{home-page,article-page}.js, src/app/(home)/**, src/app/article/**)",
+"criteria":[
+{"id":"ARCH-01","weight":0.20,"score":"N/A","reason":"No Route Handlers — Server Components compose services directly. Excluded."},
+{"id":"ARCH-02","weight":0.20,"score":1.0,"reason":"home-page + article-page assemblers compose the existing N+1-free articles/tags/comments services; no per-row loop introduced."},
+{"id":"ARCH-03","weight":0.20,"score":1.0,"reason":"Server session (getServerSession) used; FeedContext eliminated -> feed state is a URL search param (feed-params.js), no localStorage."},
+{"id":"ARCH-04","weight":0.15,"score":"N/A","reason":"No new API responses. Excluded."},
+{"id":"ARCH-05","weight":0.15,"score":1.0,"reason":"No sequelize.sync."},
+{"id":"ARCH-06","weight":0.10,"score":1.0,"reason":"next/link + markdown-to-jsx; no axios/react-router."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"4 of 6 applicable (ARCH-02/03/05/06), all 1.0."}

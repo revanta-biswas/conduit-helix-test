@@ -1,0 +1,47 @@
+{
+  "key": "story-1.1",
+  "trackerId": "#19",
+  "evalFrameworkVersion": "1.0.0",
+  "rubricVersion": "1.0.0",
+  "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files",
+  "changedFiles": 20,
+  "bootstrap": {
+    "created": [
+      { "check": "D1_lint", "path": "eslint.config.js", "tool": "eslint@9.39.5", "preset": "recommended + complexity:12 + node/browser globals + jsx" },
+      { "check": "D7_secrets", "path": ".gitleaks.toml", "tool": "gitleaks@8.30.1", "preset": "default ruleset" },
+      { "check": "behavior", "path": "tests/.evals/behavior/Containerfile", "tool": "cucumber-js@13.2.1", "preset": "node:22 + sqlite3 from source" }
+    ],
+    "reused": []
+  },
+  "toolchain": {
+    "eslint": "9.39.5",
+    "semgrep": "1.176.0",
+    "gitleaks": "8.30.1",
+    "license-checker": "npx",
+    "vitest": "4.x",
+    "@vitest/coverage-v8": "4.1.11",
+    "cucumber-js": "13.2.1",
+    "podman": "present"
+  },
+  "gates": {
+    "D1_lint": { "status": "PASS", "newFindings": 0 },
+    "D2_types": { "status": "N/A", "reason": "project is plain JavaScript; no type checker applies" },
+    "D3_sast": { "status": "PASS", "newFindings": 0 },
+    "D4_deps": { "status": "PASS", "newFindings": 0, "note": "critical 3->2, total 21->20 vs baseline; no new vulns introduced" },
+    "D5_licenses": { "status": "PASS", "disallowed": 0 },
+    "D6_complexity": { "status": "PASS", "newFindings": 0, "note": "resolveDbConfig refactored from complexity 13 to under cap" },
+    "D7_secrets": { "status": "PASS", "newFindings": 0, "note": "2 baseline leaks are in aire-workflow/templates (untouched by this story)" },
+    "unitCoverage": { "status": "PASS", "coverage": 94.0, "min": 90.0, "tests": "16/16" },
+    "behaviorB1": { "status": "PASS", "scenarios": "5/5", "containerised": true, "image": "aire-behavior:local@sha256:19799b21265b9ed128fe58f96cb290393c0fb863ec8ff899482f7be543fb4b7e" },
+    "behaviorB2": { "status": "N/A", "reason": "story-1.1.feature is the only feature file in the repo" },
+    "behaviorB3": { "status": "N/A", "reason": "not the last work unit — 8 stories (1.2-1.9) have no merged PR" },
+    "J1_architecture": { "status": "PASS", "score": 1.0, "min": 0.85, "applicable": 2, "na": 4 },
+    "J2_security": { "status": "PASS", "score": 1.0, "min": 0.85, "applicable": 3, "na": 4 }
+  },
+  "overall": "PASS",
+  "checksRun": 9,
+  "checksTotal": 13,
+  "checksNA": ["D2_types", "behaviorB2", "behaviorB3"],
+  "ciNote": "CI pipeline generation skipped this cycle per user request; all gates above ran LOCAL-only."
+}

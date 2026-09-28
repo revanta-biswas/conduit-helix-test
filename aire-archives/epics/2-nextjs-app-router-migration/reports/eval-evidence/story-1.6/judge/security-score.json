@@ -1,0 +1,11 @@
+{"gate":"J2_security","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (session + client-api + auth pages)",
+"criteria":[
+{"id":"SEC-01","owasp":"A01:2025","weight":0.20,"score":"N/A","reason":"No owned-resource mutation logic added; pages call existing authorised APIs. Excluded."},
+{"id":"SEC-02","owasp":"A07:2025","weight":0.20,"score":1.0,"citation":"src/lib/session.js","reason":"Session resolved from the httpOnly cookie server-side; logout clears it; no token in any JS-readable store (ARCH-03). No credential handling weakened."},
+{"id":"SEC-03","owasp":"A05:2025","weight":0.15,"score":"N/A","reason":"No queries added (User.findOne via the existing model). Excluded."},
+{"id":"SEC-04","owasp":"A04:2025","weight":0.15,"score":"N/A","reason":"No new secret/crypto handling. Excluded."},
+{"id":"SEC-05","owasp":"A02:2025","weight":0.10,"score":1.0,"reason":"fetch uses credentials:'include' correctly; no permissive config, no verbose error leak (client shows only the server's envelope messages)."},
+{"id":"SEC-06","owasp":"A06:2025","weight":0.10,"score":"N/A","reason":"No business-logic threat-model surface. Excluded."},
+{"id":"SEC-07","owasp":"A10:2025","weight":0.10,"score":"N/A","reason":"No server error paths added. Excluded."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"2 of 7 applicable (SEC-02/05), all 1.0."}

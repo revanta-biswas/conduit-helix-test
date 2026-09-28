@@ -1,0 +1,10 @@
+{"gate":"J1_architecture","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (src/lib/editor-payload.js, src/lib/services/profile-page.js, src/app/{editor,profile}/**)",
+"criteria":[
+{"id":"ARCH-01","weight":0.20,"score":"N/A","reason":"No new Route Handlers — reuses 1.3/1.4 endpoints. Excluded."},
+{"id":"ARCH-02","weight":0.20,"score":1.0,"citation":"src/lib/services/profile-page.js","reason":"Composes profiles.getProfile + articles.list (author) + articles.list (favorited), all already N+1-free; adds no per-row loop."},
+{"id":"ARCH-03","weight":0.20,"score":1.0,"reason":"Profile page uses the server-side cookie session (getServerSession); no localStorage anywhere."},
+{"id":"ARCH-04","weight":0.15,"score":"N/A","reason":"No new API responses. Excluded."},
+{"id":"ARCH-05","weight":0.15,"score":1.0,"reason":"No sequelize.sync."},
+{"id":"ARCH-06","weight":0.10,"score":1.0,"reason":"Editor uses client-api fetch; no axios/react-router."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"4 of 6 applicable (ARCH-02/03/05/06), all 1.0."}

@@ -1,0 +1,11 @@
+{"gate":"J2_security","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (components + tests + audit fix)",
+"criteria":[
+{"id":"SEC-01","owasp":"A01:2025","weight":0.20,"score":"N/A","reason":"Presentational components; no access-control surface. Excluded."},
+{"id":"SEC-02","owasp":"A07:2025","weight":0.20,"score":"N/A","reason":"No auth code (Navbar reuses the existing session helper). Excluded."},
+{"id":"SEC-03","owasp":"A05:2025","weight":0.15,"score":"N/A","reason":"No queries. Excluded."},
+{"id":"SEC-04","owasp":"A04:2025","weight":0.15,"score":"N/A","reason":"No secrets/crypto. Excluded."},
+{"id":"SEC-05","owasp":"A02:2025","weight":0.10,"score":1.0,"reason":"Tag values URL-encoded in links; no permissive config. Supply-chain posture IMPROVED: npm audit fix cleared both criticals (2->0) and most highs (11->1); the remaining 5 require breaking major changes (Next 16 / Sequelize 3 downgrade) and are documented, not applied."},
+{"id":"SEC-06","owasp":"A06:2025","weight":0.10,"score":"N/A","reason":"No business logic. Excluded."},
+{"id":"SEC-07","owasp":"A10:2025","weight":0.10,"score":"N/A","reason":"No server error paths added. Excluded."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"1 of 7 applicable (SEC-05), scored 1.0. Net security improvement from the dependency audit fix."}

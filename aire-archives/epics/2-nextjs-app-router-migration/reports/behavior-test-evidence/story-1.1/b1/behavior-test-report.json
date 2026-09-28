@@ -1,0 +1,419 @@
+[
+  {
+    "description": "  As a solo developer\n  I want a working Next.js 15 App Router scaffold with the existing database layer ported over\n  So that I have a foundation to build the API and pages on, without touching the live backend/frontend system",
+    "elements": [
+      {
+        "description": "",
+        "id": "next.js-foundation-&-database-layer;next.js-app-router-app-scaffold-exists-alongside-the-untouched-legacy-workspaces",
+        "keyword": "Scenario",
+        "line": 13,
+        "name": "Next.js App Router app scaffold exists alongside the untouched legacy workspaces",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 233917
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 240999
+            },
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 14,
+            "name": "the repository has an existing backend/ and frontend/ workspace",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:45"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 52583
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 15,
+            "name": "the Next.js application is scaffolded under src/",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:50"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 42209
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "the src/ directory contains a Next.js 15 App Router structure",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:54"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 49916
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "the existing backend/ and frontend/ directories are unchanged",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:60"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 72583
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "ESLint and Prettier are configured for the src/ app in JavaScript",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:66"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-1",
+            "line": 12
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-foundation-&-database-layer;all-four-sequelize-models-are-ported-with-their-associations-intact",
+        "keyword": "Scenario",
+        "line": 21,
+        "name": "All four Sequelize models are ported with their associations intact",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 13458
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 198208
+            },
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 22,
+            "name": "the Sequelize models from backend/models are ported into src/lib/db/models",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:72"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 25207875
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 23,
+            "name": "the models are loaded",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:83"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 76249
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 24,
+            "name": "the models Article, User, Tag, and Comment are all defined",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:87"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 35584
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 25,
+            "name": "the User model has the Favorites, followers, and following associations",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:91"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 41625
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 26,
+            "name": "the Article model has the tagList, author, and comments associations",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:100"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-2",
+            "line": 20
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-foundation-&-database-layer;the-sequelize-instance-is-a-singleton-that-survives-repeated-loads",
+        "keyword": "Scenario",
+        "line": 29,
+        "name": "The Sequelize instance is a singleton that survives repeated loads",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 9208
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 394625
+            },
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 30,
+            "name": "the DB layer initialises Sequelize via a singleton pattern",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:113"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 7586875
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 31,
+            "name": "the DB layer module is loaded more than once in the same process",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:119"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 67250
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 32,
+            "name": "the same Sequelize instance is returned each time",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:137"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 28624
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "no additional connection pool is created on the second load",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:141"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-3",
+            "line": 28
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-foundation-&-database-layer;database-configuration-is-read-from-environment-variables",
+        "keyword": "Scenario",
+        "line": 36,
+        "name": "Database configuration is read from environment variables",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 9917
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 23417
+            },
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 37,
+            "name": "a DATABASE_URL (or DB_* variables) is present in the environment",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:146"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 26250
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 38,
+            "name": "the DB config is resolved",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:153"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 17667
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 39,
+            "name": "the Sequelize connection uses the values from the environment",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:157"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 148167
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 40,
+            "name": "no database credentials are hardcoded in the config module",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:161"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-4",
+            "line": 35
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "next.js-foundation-&-database-layer;the-app-boots,-connects-to-the-database,-and-loads-all-models-with-queryable-associations",
+        "keyword": "Scenario",
+        "line": 43,
+        "name": "The app boots, connects to the database, and loads all models with queryable associations",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 7624
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2501459
+            },
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 44,
+            "name": "a reachable PostgreSQL database",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:169"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 4948416
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 45,
+            "name": "the DB layer authenticates the connection",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:174"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 32249
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 46,
+            "name": "the connection succeeds without error",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:179"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 19230750
+            },
+            "arguments": [],
+            "keyword": "And ",
+            "line": 47,
+            "name": "a smoke query that includes an association (for example Article with Tag and User) executes without error",
+            "match": {
+              "location": "tests/behavior/steps/story-1.1_steps.js:183"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@AC-5",
+            "line": 42
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "next.js-foundation-&-database-layer",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Next.js Foundation & Database Layer",
+    "tags": [],
+    "uri": "spec/behavior/story-1.1.feature"
+  }
+]

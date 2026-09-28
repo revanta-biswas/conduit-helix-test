@@ -49,14 +49,20 @@ restore() {
     git commit -qm "test fixture: framework under test (CR workflow + supporting rules)" || true
   fi
 
-  echo "restoring live cycle from the archive..."
+  # Source the cycle from the archive, or from the parked copy if a previous
+  # restore already moved it aside (makes restore safely re-runnable).
+  SRC="$ARCHIVE"
+  [ -d "$SRC/spec/plans" ] || SRC=".cr-test-parked/$(basename "$ARCHIVE")"
+  [ -d "$SRC/spec/plans" ] || die "no archive source found (looked in $ARCHIVE and .cr-test-parked/)"
+
+  echo "restoring live cycle from $SRC ..."
   mkdir -p spec/plans
-  cp -R "$ARCHIVE/spec/plans/." spec/plans/
-  [ -d "$ARCHIVE/spec/behavior" ]   && cp -R "$ARCHIVE/spec/behavior" spec/   || true
-  [ -f "$ARCHIVE/spec/behavior.feature" ] && cp "$ARCHIVE/spec/behavior.feature" spec/ || true
-  [ -d "$ARCHIVE/spec/test-plans" ] && cp -R "$ARCHIVE/spec/test-plans" spec/ || true
-  cp -R "$ARCHIVE/runtime-artifacts" .
-  [ -d "$ARCHIVE/reports" ] && cp -R "$ARCHIVE/reports" . || true
+  cp -R "$SRC/spec/plans/." spec/plans/
+  [ -d "$SRC/spec/behavior" ]   && cp -R "$SRC/spec/behavior" spec/   || true
+  [ -f "$SRC/spec/behavior.feature" ] && cp "$SRC/spec/behavior.feature" spec/ || true
+  [ -d "$SRC/spec/test-plans" ] && cp -R "$SRC/spec/test-plans" spec/ || true
+  cp -R "$SRC/runtime-artifacts" .
+  [ -d "$SRC/reports" ] && cp -R "$SRC/reports" . || true
 
   # --- make the restored cycle actually satisfy epic-change-request Phase 0 ---
   if [ -f runtime-artifacts/aire-state.md ]; then
@@ -82,8 +88,10 @@ restore() {
   # (d) Phase 0 item 6 halts when aire-archives/epics/<EPIC-ID>-*/ exists.
   #     Park the archive out of the glob's way; teardown puts it back.
   if [ -d "$ARCHIVE" ]; then
-    mkdir -p .cr-test-parked
-    cp -R "$ARCHIVE" ".cr-test-parked/$(basename "$ARCHIVE")"
+    if [ ! -d ".cr-test-parked/$(basename "$ARCHIVE")" ]; then
+      mkdir -p .cr-test-parked
+      cp -R "$ARCHIVE" ".cr-test-parked/$(basename "$ARCHIVE")"
+    fi
     rm -rf "$ARCHIVE"
     echo "archive parked at .cr-test-parked/ so the cycle reads as OPEN (restored via teardown)."
   fi
@@ -118,7 +126,14 @@ teardown() {
   fi
 
   # The restored cycle trees belong to the fixture only — remove them from $orig.
-  rm -rf spec/plans spec/behavior spec/behavior.feature spec/test-plans runtime-artifacts reports 2>/dev/null || true
+  # 🔴 Only ever the REPO-ROOT copies. Never a path under aire-archives/ or
+  # .cr-test-parked/ — those are the originals and deleting them destroys the archive.
+  for d in spec/plans spec/behavior spec/test-plans spec/spec-generation runtime-artifacts reports; do
+    case "$d" in aire-archives/*|.cr-test-parked/*) continue ;; esac
+    [ -e "./$d" ] && rm -rf "./$d"
+  done
+  [ -f ./spec/behavior.feature ] && rm -f ./spec/behavior.feature
+  true
 
   # Put the parked archive back.
   if [ -d ".cr-test-parked" ]; then

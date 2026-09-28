@@ -1,0 +1,14 @@
+{
+  "gate": "J1_architecture", "rubricVersion": "1.0.0", "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (src/lib/services/{user,profiles}.js, src/app/api/{user,profiles}/**)",
+  "criteria": [
+    { "id": "ARCH-01", "weight": 0.20, "score": 1.0, "citation": "src/app/api/{user,profiles}/**", "reason": "All handlers import only from lib/services + lib/auth + lib/errors; no model import." },
+    { "id": "ARCH-02", "weight": 0.20, "score": 1.0, "citation": "src/lib/services/profiles.js", "reason": "following/followersCount use a bounded hasFollower()+countFollowers() pair per request — not a per-row loop over a list. No N+1." },
+    { "id": "ARCH-03", "weight": 0.20, "score": 1.0, "reason": "No localStorage/sessionStorage anywhere; auth via httpOnly cookie (inherited)." },
+    { "id": "ARCH-04", "weight": 0.15, "score": 1.0, "citation": "handlers", "reason": "Responses match Conduit {profile:{...}} / {user:{...}}; 200/401/404 codes preserved." },
+    { "id": "ARCH-05", "weight": 0.15, "score": 1.0, "reason": "No sequelize.sync in changed files." },
+    { "id": "ARCH-06", "weight": 0.10, "score": 1.0, "reason": "No axios/react-router import." }
+  ],
+  "weightedScore": 1.0, "min": 0.85, "verdict": "PASS",
+  "note": "All 6 criteria applicable this story, all scored 1.0."
+}

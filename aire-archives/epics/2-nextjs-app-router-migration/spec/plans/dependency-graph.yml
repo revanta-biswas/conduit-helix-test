@@ -1,0 +1,65 @@
+version: 1
+generated_at: 2026-09-09
+team_size: 2
+
+shared_files:
+  - src/lib/db/models/index.js   # Story 1.1 creates; every other story's Route Handlers import from it
+  - src/lib/auth.js              # Story 1.2 creates; Stories 1.3, 1.4, 1.5 import for auth checks
+  - src/lib/errors.js            # Story 1.2 creates; consumed by all API stories
+  - src/lib/helpers.js           # Story 1.2 creates; consumed by Story 1.4 (slugify, appendTagList)
+  - src/components/              # Story 1.9 ports components consumed by Stories 1.6, 1.7, 1.8
+
+stories:
+  - id: "1.1"
+    title: Next.js Foundation & Database Layer
+    tracker_id: "19"
+    requires: []
+    enables: ["1.2"]
+
+  - id: "1.2"
+    title: "Auth API — Register, Login & httpOnly Cookie Session"
+    tracker_id: "20"
+    requires: ["1.1"]
+    enables: ["1.3", "1.4", "1.6"]
+
+  - id: "1.3"
+    title: "User Profile API — Current User, Public Profiles & Follow"
+    tracker_id: "21"
+    requires: ["1.2"]
+    enables: ["1.6", "1.8"]
+
+  - id: "1.4"
+    title: "Articles API — CRUD, Feed & Tags"
+    tracker_id: "22"
+    requires: ["1.2"]
+    enables: ["1.5", "1.7", "1.8"]
+
+  - id: "1.5"
+    title: Favorites & Comments API
+    tracker_id: "23"
+    requires: ["1.4"]
+    enables: ["1.7"]
+
+  - id: "1.6"
+    title: "Auth Pages & Session — Login, Register, Settings"
+    tracker_id: "24"
+    requires: ["1.2", "1.3"]
+    enables: ["1.9"]
+
+  - id: "1.7"
+    title: "Home & Article Pages (Server Components)"
+    tracker_id: "25"
+    requires: ["1.4", "1.5"]
+    enables: ["1.9"]
+
+  - id: "1.8"
+    title: Article Editor & Profile Page
+    tracker_id: "26"
+    requires: ["1.3", "1.4"]
+    enables: ["1.9"]
+
+  - id: "1.9"
+    title: "Shared UI Components, Service Layer Elimination & Test Baseline"
+    tracker_id: "27"
+    requires: ["1.6", "1.7", "1.8"]
+    enables: []

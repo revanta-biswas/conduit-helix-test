@@ -1,0 +1,20 @@
+{
+  "gate": "J2_security",
+  "rubricVersion": "1.0.0",
+  "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (auth + users service + route handlers)",
+  "criteria": [
+    { "id": "SEC-01", "owasp": "A01:2025", "weight": 0.20, "score": "N/A", "reason": "register/login are intentionally public endpoints; no owned-resource read/mutation in this story. Excluded." },
+    { "id": "SEC-02", "owasp": "A07:2025", "weight": 0.20, "score": 1.0, "citation": "src/lib/auth.js, src/lib/services/users.js", "reason": "JWT set with httpOnly + sameSite=lax + secure-in-production; password stored/compared via bcrypt (cost 10); tightened validation (email format, 8-char min, username format+uniqueness) present in register; JWT algorithm is the library default (HS256), never 'none'." },
+    { "id": "SEC-03", "owasp": "A05:2025", "weight": 0.15, "score": 1.0, "citation": "src/lib/services/users.js", "reason": "All user lookups use Sequelize where-clause objects; no raw/interpolated SQL." },
+    { "id": "SEC-04", "owasp": "A04:2025", "weight": 0.15, "score": 1.0, "citation": "src/lib/auth.js", "reason": "JWT secret read from process.env (JWT_SECRET ?? JWT_KEY); bcrypt used for hashing; nothing hardcoded." },
+    { "id": "SEC-05", "owasp": "A02:2025", "weight": 0.10, "score": 1.0, "citation": "src/app/api/users/*/route.js", "reason": "Errors are mapped to the Conduit envelope (no stack traces to the client); no permissive CORS introduced; cookie carries httpOnly/sameSite." },
+    { "id": "SEC-06", "owasp": "A06:2025", "weight": 0.10, "score": "N/A", "reason": "No follow/favorite/comment business logic in this story. Excluded." },
+    { "id": "SEC-07", "owasp": "A10:2025", "weight": 0.10, "score": 1.0, "citation": "src/app/api/users/*/route.js", "reason": "Every handler wraps its logic in try/catch and returns a mapped error envelope via statusFor/toErrorResponse — no raw exception or internal message leaks to the client." }
+  ],
+  "applicableWeightSum": 0.70,
+  "weightedScore": 1.0,
+  "min": 0.85,
+  "verdict": "PASS",
+  "note": "5 of 7 criteria applicable, all 1.0; SEC-01/06 N/A excluded. securityVulnerabilitiesAllowed=0 respected."
+}

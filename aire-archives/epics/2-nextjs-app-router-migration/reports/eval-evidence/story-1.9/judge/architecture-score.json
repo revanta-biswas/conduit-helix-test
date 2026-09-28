@@ -1,0 +1,10 @@
+{"gate":"J1_architecture","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (src/components/**, src/app/** layout/pages, tests/**)",
+"criteria":[
+{"id":"ARCH-01","weight":0.20,"score":"N/A","reason":"No Route Handlers. Excluded."},
+{"id":"ARCH-02","weight":0.20,"score":"N/A","reason":"Components/tests, no queries. Excluded."},
+{"id":"ARCH-03","weight":0.20,"score":1.0,"reason":"Navbar uses the server-side session; no localStorage anywhere in the ported components."},
+{"id":"ARCH-04","weight":0.15,"score":"N/A","reason":"No API responses. Excluded."},
+{"id":"ARCH-05","weight":0.15,"score":1.0,"reason":"No sequelize.sync."},
+{"id":"ARCH-06","weight":0.10,"score":1.0,"citation":"tests/unit/guards/no-legacy-deps.test.js","reason":"No axios/react-router in src/ — and now ENFORCED by a guard test that scans the whole src tree (the ported components use next/link)."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"3 of 6 applicable (ARCH-03/05/06), all 1.0. ARCH-06 is now guard-tested, not just observed."}
