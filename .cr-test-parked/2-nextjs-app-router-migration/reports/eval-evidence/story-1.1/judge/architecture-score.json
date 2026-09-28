@@ -1,0 +1,39 @@
+{
+  "gate": "J1_architecture",
+  "rubricVersion": "1.0.0",
+  "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (src/lib/db, src/app)",
+  "criteria": [
+    {
+      "id": "ARCH-01", "weight": 0.20, "score": "N/A",
+      "reason": "No Route Handlers in this story (foundation + DB layer only). Excluded from the weighted total."
+    },
+    {
+      "id": "ARCH-02", "weight": 0.20, "score": "N/A",
+      "reason": "No list/feed code in this story. Excluded."
+    },
+    {
+      "id": "ARCH-03", "weight": 0.20, "score": "N/A",
+      "reason": "No auth/session code in this story. Excluded."
+    },
+    {
+      "id": "ARCH-04", "weight": 0.15, "score": "N/A",
+      "reason": "No Route Handlers / API responses in this story. Excluded."
+    },
+    {
+      "id": "ARCH-05", "weight": 0.15, "score": 1.0,
+      "citation": "src/lib/db/index.js",
+      "reason": "authenticate() is the only startup DB call; no sequelize.sync with alter/force anywhere. A dedicated unit test (singleton.test.js) and a Gherkin step statically guard this."
+    },
+    {
+      "id": "ARCH-06", "weight": 0.10, "score": 1.0,
+      "citation": "src/**",
+      "reason": "No import of axios or react-router-dom in any src/ file."
+    }
+  ],
+  "applicableWeightSum": 0.25,
+  "weightedScore": 1.0,
+  "min": 0.85,
+  "verdict": "PASS",
+  "note": "4 of 6 criteria N/A (excluded, weights renormalised to 1.0 over the 2 applicable criteria per eval-framework.md Section 4.1). Both applicable criteria scored 1.0."
+}

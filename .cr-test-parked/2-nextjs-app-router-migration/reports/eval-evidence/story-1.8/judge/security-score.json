@@ -1,0 +1,11 @@
+{"gate":"J2_security","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (editor + profile-page + pages)",
+"criteria":[
+{"id":"SEC-01","owasp":"A01:2025","weight":0.20,"score":"N/A","reason":"Editor uses the existing author-guarded article endpoints; profile is a public read. No new access-control surface. Excluded."},
+{"id":"SEC-02","owasp":"A07:2025","weight":0.20,"score":"N/A","reason":"No new auth code. Excluded."},
+{"id":"SEC-03","owasp":"A05:2025","weight":0.15,"score":"N/A","reason":"No new queries (composes existing services). Excluded."},
+{"id":"SEC-04","owasp":"A04:2025","weight":0.15,"score":"N/A","reason":"No crypto/secrets. Excluded."},
+{"id":"SEC-05","owasp":"A02:2025","weight":0.10,"score":1.0,"reason":"fetch uses credentials:'include'; no permissive config or verbose leak."},
+{"id":"SEC-06","owasp":"A06:2025","weight":0.10,"score":"N/A","reason":"No new business-logic threat surface. Excluded."},
+{"id":"SEC-07","owasp":"A10:2025","weight":0.10,"score":1.0,"reason":"Profile Server Component catches NotFoundError and renders a not-found view; other errors re-thrown to the framework boundary, no state disclosure."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"2 of 7 applicable (SEC-05/07), all 1.0."}

@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /Users/revanta.biswas/Desktop/conduit-helix-test
+      Coverage enabled with v8
+
+(node:35053) [DEP0170] DeprecationWarning: The URL sqlite::memory: is invalid. Future versions of Node.js will throw an error.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:35054) [DEP0170] DeprecationWarning: The URL sqlite::memory: is invalid. Future versions of Node.js will throw an error.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  12:32:20
+   Duration  462ms (transform 103ms, setup 0ms, import 276ms, tests 298ms, environment 0ms)
+
+ % Coverage report from v8
+-------------|---------|----------|---------|---------|-------------------
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------|---------|----------|---------|---------|-------------------
+All files    |      94 |    85.29 |   81.25 |   93.87 |                   
+ db          |   96.15 |    85.29 |      75 |      96 |                   
+  config.js  |     100 |     92.3 |     100 |     100 | 27-28             
+  index.js   |   94.11 |     62.5 |      50 |   94.11 | 65                
+ db/models   |   91.66 |      100 |   83.33 |   91.66 |                   
+  Comment.js |      80 |      100 |   66.66 |      80 | 13                
+  Tag.js     |      75 |      100 |   66.66 |      75 | 17                
+-------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 94% ( 47/50 )
+Branches     : 85.29% ( 29/34 )
+Functions    : 81.25% ( 13/16 )
+Lines        : 93.87% ( 46/49 )
+================================================================================

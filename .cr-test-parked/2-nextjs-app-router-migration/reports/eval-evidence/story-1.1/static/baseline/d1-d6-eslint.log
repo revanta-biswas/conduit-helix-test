@@ -1,0 +1,394 @@
+(node:26175) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/revanta.biswas/Desktop/conduit-helix-test/eslint.config.js?mtime=1788936664738 is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/revanta.biswas/Desktop/conduit-helix-test/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/config/config.js
+   2:1   error  'module' is not defined   no-undef
+   4:15  error  'process' is not defined  no-undef
+   5:15  error  'process' is not defined  no-undef
+   6:15  error  'process' is not defined  no-undef
+   7:11  error  'process' is not defined  no-undef
+   8:14  error  'process' is not defined  no-undef
+   9:14  error  'process' is not defined  no-undef
+  12:15  error  'process' is not defined  no-undef
+  13:15  error  'process' is not defined  no-undef
+  14:15  error  'process' is not defined  no-undef
+  15:11  error  'process' is not defined  no-undef
+  16:14  error  'process' is not defined  no-undef
+  17:14  error  'process' is not defined  no-undef
+  20:15  error  'process' is not defined  no-undef
+  21:15  error  'process' is not defined  no-undef
+  22:15  error  'process' is not defined  no-undef
+  23:11  error  'process' is not defined  no-undef
+  24:14  error  'process' is not defined  no-undef
+  25:14  error  'process' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/controllers/articles.js
+    7:5   error  'require' is not defined  no-undef
+   13:5   error  'require' is not defined  no-undef
+   14:32  error  'require' is not defined  no-undef
+  235:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/controllers/comments.js
+   6:5   error  'require' is not defined                   no-undef
+   7:29  error  'require' is not defined                   no-undef
+   8:36  error  'require' is not defined                   no-undef
+  70:13  error  'slug' is assigned a value but never used  no-unused-vars
+  87:1   error  'module' is not defined                    no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/controllers/favorites.js
+   1:46  error  'require' is not defined  no-undef
+   6:5   error  'require' is not defined  no-undef
+   7:32  error  'require' is not defined  no-undef
+  47:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/controllers/profiles.js
+   1:46  error  'require' is not defined  no-undef
+   2:29  error  'require' is not defined  no-undef
+   3:18  error  'require' is not defined  no-undef
+  53:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/controllers/user.js
+   1:31  error  'require' is not defined  no-undef
+   2:24  error  'require' is not defined  no-undef
+  48:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/controllers/users.js
+   1:18  error  'require' is not defined  no-undef
+   2:21  error  'require' is not defined  no-undef
+   3:39  error  'require' is not defined  no-undef
+   9:5   error  'require' is not defined  no-undef
+  59:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/helper/bcrypt.js
+  1:16  error  'require' is not defined  no-undef
+  3:1   error  'module' is not defined   no-undef
+  7:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/helper/customErrors.js
+  38:1  error  'module' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/helper/helpers.js
+  42:1  error  'module' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/helper/helpers.test.js
+   1:21  error  'require' is not defined   no-undef
+   3:1   error  'describe' is not defined  no-undef
+  13:3   error  'test' is not defined      no-undef
+  14:5   error  'expect' is not defined    no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/helper/jwt.js
+   1:13  error  'require' is not defined  no-undef
+   2:20  error  'process' is not defined  no-undef
+   4:1   error  'module' is not defined   no-undef
+  11:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/index.js
+   1:1   error  'require' is not defined  no-undef
+   2:13  error  'process' is not defined  no-undef
+   3:14  error  'process' is not defined  no-undef
+   4:17  error  'require' is not defined  no-undef
+   5:14  error  'require' is not defined  no-undef
+   6:23  error  'require' is not defined  no-undef
+   7:22  error  'require' is not defined  no-undef
+   9:21  error  'require' is not defined  no-undef
+  10:20  error  'require' is not defined  no-undef
+  11:24  error  'require' is not defined  no-undef
+  12:24  error  'require' is not defined  no-undef
+  13:20  error  'require' is not defined  no-undef
+  22:5   error  'console' is not defined  no-undef
+  24:5   error  'console' is not defined  no-undef
+  28:5   error  'process' is not defined  no-undef
+  44:3   error  'console' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/middleware/authentication.js
+   1:27  error  'require' is not defined  no-undef
+   2:23  error  'require' is not defined  no-undef
+   3:18  error  'require' is not defined  no-undef
+  32:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/middleware/errorHandler.js
+   6:5   error  'require' is not defined          no-undef
+   8:40  error  'next' is defined but never used  no-unused-vars
+   9:3   error  'console' is not defined          no-undef
+  12:5   error  'console' is not defined          no-undef
+  16:5   error  'console' is not defined          no-undef
+  20:5   error  'console' is not defined          no-undef
+  24:5   error  'console' is not defined          no-undef
+  27:5   error  'console' is not defined          no-undef
+  31:3   error  'console' is not defined          no-undef
+  34:1   error  'module' is not defined           no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/migrations/20220129140530-create-tag.js
+   2:1   error  'module' is not defined                no-undef
+  12:30  error  'Sequelize' is defined but never used  no-unused-vars
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/migrations/20220129140808-create-article.js
+   2:1   error  'module' is not defined                no-undef
+  33:30  error  'Sequelize' is defined but never used  no-unused-vars
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/migrations/20220129140956-create-user.js
+   2:1   error  'module' is not defined                no-undef
+  38:30  error  'Sequelize' is defined but never used  no-unused-vars
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/migrations/20220129141319-create-comment.js
+   2:1   error  'module' is not defined                no-undef
+  24:30  error  'Sequelize' is defined but never used  no-unused-vars
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/models/Article.js
+  2:19  error  'require' is not defined  no-undef
+  3:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/models/Comment.js
+  2:19  error  'require' is not defined  no-undef
+  3:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/models/Tag.js
+  2:19  error  'require' is not defined  no-undef
+  3:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/models/User.js
+  2:19  error  'require' is not defined  no-undef
+  3:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/models/index.js
+   3:12  error  'require' is not defined     no-undef
+   4:14  error  'require' is not defined     no-undef
+   5:19  error  'require' is not defined     no-undef
+   6:32  error  '__filename' is not defined  no-undef
+   7:13  error  'process' is not defined     no-undef
+   8:16  error  'require' is not defined     no-undef
+   8:24  error  '__dirname' is not defined   no-undef
+  18:16  error  '__dirname' is not defined   no-undef
+  25:19  error  'require' is not defined     no-undef
+  25:37  error  '__dirname' is not defined   no-undef
+  41:1   error  'module' is not defined      no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/articles.js
+   1:17  error  'require' is not defined  no-undef
+   3:21  error  'require' is not defined  no-undef
+  11:5   error  'require' is not defined  no-undef
+  26:25  error  'require' is not defined  no-undef
+  27:24  error  'require' is not defined  no-undef
+  34:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/articles/comments.js
+   1:17  error  'require' is not defined  no-undef
+   3:21  error  'require' is not defined  no-undef
+   8:5   error  'require' is not defined  no-undef
+  17:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/articles/favorites.js
+   1:17  error  'require' is not defined  no-undef
+   3:21  error  'require' is not defined  no-undef
+   4:29  error  'require' is not defined  no-undef
+  11:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/profiles.js
+   1:17  error  'require' is not defined  no-undef
+   3:21  error  'require' is not defined  no-undef
+   4:39  error  'require' is not defined  no-undef
+  15:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/tags.js
+   1:17  error  'require' is not defined  no-undef
+   3:17  error  'require' is not defined  no-undef
+   4:27  error  'require' is not defined  no-undef
+  19:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/user.js
+   1:17  error  'require' is not defined  no-undef
+   3:21  error  'require' is not defined  no-undef
+   4:37  error  'require' is not defined  no-undef
+  11:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/routes/users.js
+   1:17  error  'require' is not defined  no-undef
+   3:28  error  'require' is not defined  no-undef
+  10:1   error  'module' is not defined   no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/seeders/20220427123216-create-users.js
+   3:1   error  'module' is not defined                no-undef
+   4:28  error  'Sequelize' is defined but never used  no-unused-vars
+  18:30  error  'Sequelize' is defined but never used  no-unused-vars
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/backend/seeders/20220427123222-create-articles.js
+   3:18  error  'require' is not defined               no-undef
+   5:1   error  'module' is not defined                no-undef
+   6:28  error  'Sequelize' is defined but never used  no-unused-vars
+  26:30  error  'Sequelize' is defined but never used  no-unused-vars
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/App.jsx
+  7:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticleAuthorButtons/ArticleAuthorButtons.jsx
+  21:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticleEditorForm/ArticleEditorForm.jsx
+  60:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticleMeta/ArticleMeta.jsx
+  9:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticleTags/ArticleTags.jsx
+  4:7  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticlesButtons/ArticlesButtons.jsx
+  21:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticlesPagination/ArticlesPagination.jsx
+  22:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ArticlesPreview/ArticlesPreview.jsx
+  20:9  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/AuthPageContainer/AuthPageContainer.jsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/AuthorInfo/AuthorInfo.jsx
+  34:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/Avatar/Avatar.jsx
+  5:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/BannerContainer/BannerContainer.jsx
+  3:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/CommentEditor/CommentEditor.jsx
+  29:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/CommentList/CommentAuthor.jsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/CommentList/CommentList.jsx
+  32:9  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/ContainerRow/ContainerRow.jsx
+  3:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/FavButton/FavButton.jsx
+  25:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/FeedToggler/FeedNavLink.jsx
+  11:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/FeedToggler/FeedToggler.jsx
+  10:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/FollowButton/FollowButton.jsx
+  25:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/Footer/Footer.jsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/FormFieldset/FormFieldset.jsx
+  14:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/LoginForm/LoginForm.jsx
+  29:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/NavItem/NavItem.jsx
+  7:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/Navbar/DropdownItem.jsx
+  5:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/Navbar/DropdownMenu.jsx
+  21:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/Navbar/Navbar.jsx
+  11:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/PopularTags/PopularTags.jsx
+  19:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/PopularTags/TagButton.jsx
+  11:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/SettingsForm/SettingsForm.jsx
+  45:7  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/SignUpForm/SignUpForm.jsx
+  33:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/components/SourceCodeLink/SourceCodeLink.jsx
+  5:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/context/AuthContext.jsx
+  38:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/context/FeedContext.jsx
+  28:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/helpers/dateFormatter.test.js
+  3:1  error  'it' is not defined      no-undef
+  6:3  error  'expect' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/helpers/errorHandler.js
+   2:31  error  'console' is not defined  no-undef
+   7:5   error  'console' is not defined  no-undef
+  11:3   error  'console' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/helpers/errorHandler.test.js
+   3:1   error  'describe' is not defined  no-undef
+   6:3   error  'test' is not defined      no-undef
+   8:21  error  'Response' is not defined  no-undef
+  11:5   error  'expect' is not defined    no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/hooks/useArticles.js
+  20:14  error  'console' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/main.jsx
+  23:3  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Article/Article.jsx
+  31:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Article/CommentsSection.jsx
+  13:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/ArticleEditor.jsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Home.jsx
+  13:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/HomeArticles.jsx
+  16:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Login.jsx
+  13:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/NotFound.jsx
+  5:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Profile/Profile.jsx
+  10:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Profile/ProfileArticles.jsx
+  15:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Profile/ProfileFavArticles.jsx
+  15:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/Settings.jsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/routes/SignUp.jsx
+  13:5  error  Parsing error: Unexpected token <
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/services/userLogin.js
+  17:5  error  'localStorage' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/services/userLogout.js
+  2:3  error  'localStorage' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/services/userSignUp.js
+  17:5  error  'localStorage' is not defined  no-undef
+
+/Users/revanta.biswas/Desktop/conduit-helix-test/frontend/src/services/userUpdate.js
+  17:5  error  'localStorage' is not defined  no-undef
+
+✖ 211 problems (211 errors, 0 warnings)
+

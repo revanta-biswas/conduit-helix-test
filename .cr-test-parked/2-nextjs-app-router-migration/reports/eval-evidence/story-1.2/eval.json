@@ -1,0 +1,29 @@
+{
+  "key": "story-1.2",
+  "trackerId": "#20",
+  "evalFrameworkVersion": "1.0.0",
+  "rubricVersion": "1.0.0",
+  "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files",
+  "toolchain": { "jsonwebtoken": "9.0.3", "bcryptjs": "3.x", "eslint": "9.39.5", "semgrep": "1.176.0", "gitleaks": "8.30.1", "cucumber-js": "13.2.1" },
+  "gates": {
+    "D1_lint": { "status": "PASS", "newFindings": 0 },
+    "D2_types": { "status": "N/A", "reason": "plain JavaScript" },
+    "D3_sast": { "status": "PASS", "newFindings": 0 },
+    "D4_deps": { "status": "PASS", "newFindings": 0, "note": "jsonwebtoken/bcryptjs added no new vulns (total 20)" },
+    "D5_licenses": { "status": "PASS", "disallowed": 0 },
+    "D6_complexity": { "status": "PASS", "newFindings": 0 },
+    "D7_secrets": { "status": "PASS", "newFindings": 0 },
+    "unitCoverage": { "status": "PASS", "coverage": 95.41, "min": 90.0, "tests": "42/42" },
+    "behaviorB1": { "status": "PASS", "scenarios": "12/12", "containerised": true, "image": "aire-behavior:local@sha256:25629cf870c639950be38e57c33e9c05bdc5cb51152ae755289ab69f78dd9c77" },
+    "behaviorB2": { "status": "PASS", "scenarios": "17/17", "containerised": true },
+    "behaviorB3": { "status": "N/A", "reason": "not the last work unit" },
+    "apiContract": { "status": "PASS", "tests": "7/7", "endpoints": ["POST /api/users", "POST /api/users/login"] },
+    "regression": { "status": "PASS", "newFailures": 0, "suite": "49/49" },
+    "J1_architecture": { "status": "PASS", "score": 1.0, "min": 0.85, "applicable": 5, "na": 1 },
+    "J2_security": { "status": "PASS", "score": 1.0, "min": 0.85, "applicable": 5, "na": 2 }
+  },
+  "overall": "PASS",
+  "checksNA": ["D2_types", "behaviorB3"],
+  "ciNote": "CI pipeline generation skipped this cycle per user request; all gates ran locally."
+}

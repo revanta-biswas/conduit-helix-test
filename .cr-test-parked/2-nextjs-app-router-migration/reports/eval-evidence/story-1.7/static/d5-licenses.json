@@ -1,0 +1,426 @@
+{
+  "@img/colour@1.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lovell/colour",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@img/colour",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@img/colour/LICENSE.md"
+  },
+  "@img/sharp-darwin-arm64@0.35.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/lovell/sharp",
+    "publisher": "Lovell Fuller",
+    "email": "npm@lovell.info",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@img/sharp-darwin-arm64",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@img/sharp-darwin-arm64/LICENSE"
+  },
+  "@img/sharp-libvips-darwin-arm64@1.3.3": {
+    "licenses": "LGPL-3.0-or-later",
+    "repository": "https://github.com/lovell/sharp-libvips",
+    "publisher": "Lovell Fuller",
+    "email": "npm@lovell.info",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@img/sharp-libvips-darwin-arm64",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@img/sharp-libvips-darwin-arm64/README.md"
+  },
+  "@next/env@15.5.25": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vercel/next.js",
+    "publisher": "Next.js Team",
+    "email": "support@vercel.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@next/env",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@next/env/README.md"
+  },
+  "@next/swc-darwin-arm64@15.5.25": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vercel/next.js",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@next/swc-darwin-arm64",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@next/swc-darwin-arm64/README.md"
+  },
+  "@swc/helpers@0.5.15": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/swc-project/swc",
+    "publisher": "강동윤",
+    "email": "kdy1997.dev@gmail.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/next/node_modules/@swc/helpers",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/next/node_modules/@swc/helpers/LICENSE"
+  },
+  "@types/debug@4.1.12": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/debug",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/debug/LICENSE"
+  },
+  "@types/ms@2.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/ms",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/ms/LICENSE"
+  },
+  "@types/node@25.4.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/node",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/node/LICENSE"
+  },
+  "@types/validator@13.15.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/validator",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/@types/validator/LICENSE"
+  },
+  "bcryptjs@3.0.3": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/bcrypt.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode@dcode.io",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/bcryptjs",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/bcryptjs/LICENSE"
+  },
+  "buffer-equal-constant-time@1.0.1": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/goinstant/buffer-equal-constant-time",
+    "publisher": "GoInstant Inc., a salesforce.com company",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/buffer-equal-constant-time",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/buffer-equal-constant-time/LICENSE.txt"
+  },
+  "caniuse-lite@1.0.30001810": {
+    "licenses": "CC-BY-4.0",
+    "repository": "https://github.com/browserslist/caniuse-lite",
+    "publisher": "Ben Briggs",
+    "email": "beneb.info@gmail.com",
+    "url": "http://beneb.info",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/caniuse-lite",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/caniuse-lite/LICENSE"
+  },
+  "client-only@0.0.1": {
+    "licenses": "MIT",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/client-only"
+  },
+  "conduit-realworld-example-app@1.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/TonyMckes/conduit-realworld-example-app",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/LICENSE"
+  },
+  "debug@4.4.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/debug-js/debug",
+    "publisher": "Josh Junon",
+    "url": "https://github.com/qix-",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/debug",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/debug/LICENSE"
+  },
+  "detect-libc@2.1.2": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/lovell/detect-libc",
+    "publisher": "Lovell Fuller",
+    "email": "npm@lovell.info",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/detect-libc",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/detect-libc/LICENSE"
+  },
+  "dottie@2.0.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mickhansen/dottie.js",
+    "publisher": "Mick Hansen",
+    "email": "maker@mhansen.io",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/dottie",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/dottie/LICENSE"
+  },
+  "ecdsa-sig-formatter@1.0.11": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/Brightspace/node-ecdsa-sig-formatter",
+    "publisher": "D2L Corporation",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/ecdsa-sig-formatter",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/ecdsa-sig-formatter/LICENSE"
+  },
+  "inflection@1.13.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/dreamerslab/node.inflection",
+    "publisher": "dreamerslab",
+    "email": "ben@dreamerslab.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/inflection",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/inflection/LICENSE"
+  },
+  "jsonwebtoken@9.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/auth0/node-jsonwebtoken",
+    "publisher": "auth0",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/jsonwebtoken",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/jsonwebtoken/LICENSE"
+  },
+  "jwa@2.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/brianloveswords/node-jwa",
+    "publisher": "Brian J. Brennan",
+    "email": "brianloveswords@gmail.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/jwa",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/jwa/LICENSE"
+  },
+  "jws@4.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/brianloveswords/node-jws",
+    "publisher": "Brian J Brennan",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/jws",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/jws/LICENSE"
+  },
+  "lodash.includes@4.3.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.includes",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.includes/LICENSE"
+  },
+  "lodash.isboolean@3.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isboolean",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isboolean/LICENSE"
+  },
+  "lodash.isinteger@4.0.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isinteger",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isinteger/LICENSE"
+  },
+  "lodash.isnumber@3.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isnumber",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isnumber/LICENSE"
+  },
+  "lodash.isplainobject@4.0.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isplainobject",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isplainobject/LICENSE"
+  },
+  "lodash.isstring@4.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isstring",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.isstring/LICENSE"
+  },
+  "lodash.once@4.1.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "url": "http://allyoucanleet.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.once",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash.once/LICENSE"
+  },
+  "lodash@4.17.23": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lodash/lodash",
+    "publisher": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/lodash/LICENSE"
+  },
+  "markdown-to-jsx@9.10.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/quantizor/markdown-to-jsx",
+    "publisher": "Evan Jacobs",
+    "email": "ej@quantizor.dev",
+    "url": "https://quantizor.dev",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/markdown-to-jsx",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/markdown-to-jsx/LICENSE"
+  },
+  "moment-timezone@0.5.48": {
+    "licenses": "MIT",
+    "repository": "https://github.com/moment/moment-timezone",
+    "publisher": "Tim Wood",
+    "email": "washwithcare@gmail.com",
+    "url": "http://timwoodcreates.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/moment-timezone",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/moment-timezone/LICENSE"
+  },
+  "moment@2.30.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/moment/moment",
+    "publisher": "Iskren Ivov Chernev",
+    "email": "iskren.chernev@gmail.com",
+    "url": "https://github.com/ichernev",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/moment",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/moment/LICENSE"
+  },
+  "ms@2.1.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vercel/ms",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/ms",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/ms/license.md"
+  },
+  "nanoid@3.3.11": {
+    "licenses": "MIT",
+    "repository": "https://github.com/ai/nanoid",
+    "publisher": "Andrey Sitnik",
+    "email": "andrey@sitnik.ru",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/nanoid",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/nanoid/LICENSE"
+  },
+  "next@15.5.25": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vercel/next.js",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/next",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/next/license.md"
+  },
+  "pg-connection-string@2.12.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/brianc/node-postgres",
+    "publisher": "Blaine Bublitz",
+    "email": "blaine@iceddev.com",
+    "url": "http://iceddev.com/",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/pg-connection-string",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/pg-connection-string/LICENSE"
+  },
+  "picocolors@1.1.1": {
+    "licenses": "ISC",
+    "repository": "https://github.com/alexeyraspopov/picocolors",
+    "publisher": "Alexey Raspopov",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/picocolors",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/picocolors/LICENSE"
+  },
+  "postcss@8.4.31": {
+    "licenses": "MIT",
+    "repository": "https://github.com/postcss/postcss",
+    "publisher": "Andrey Sitnik",
+    "email": "andrey@sitnik.ru",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/next/node_modules/postcss",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/next/node_modules/postcss/LICENSE"
+  },
+  "react-dom@19.2.8": {
+    "licenses": "MIT",
+    "repository": "https://github.com/react/react",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/react-dom",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/react-dom/LICENSE"
+  },
+  "react@19.2.8": {
+    "licenses": "MIT",
+    "repository": "https://github.com/react/react",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/react",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/react/LICENSE"
+  },
+  "retry-as-promised@7.1.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mickhansen/retry-as-promised",
+    "publisher": "Mick Hansen",
+    "email": "maker@mhansen.io",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/retry-as-promised",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/retry-as-promised/LICENSE"
+  },
+  "safe-buffer@5.2.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/feross/safe-buffer",
+    "publisher": "Feross Aboukhadijeh",
+    "email": "feross@feross.org",
+    "url": "https://feross.org",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/safe-buffer",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/safe-buffer/LICENSE"
+  },
+  "scheduler@0.27.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/react",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/scheduler",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/scheduler/LICENSE"
+  },
+  "semver@7.8.5": {
+    "licenses": "ISC",
+    "repository": "https://github.com/npm/node-semver",
+    "publisher": "GitHub Inc.",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/semver",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/semver/LICENSE"
+  },
+  "sequelize-pool@7.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sushantdhiman/sequelize-pool",
+    "publisher": "Sushant",
+    "email": "sushantdhiman@outlook.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/sequelize-pool",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/sequelize-pool/LICENSE"
+  },
+  "sequelize@6.37.8": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sequelize/sequelize",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/sequelize",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/sequelize/LICENSE"
+  },
+  "sharp@0.35.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/lovell/sharp",
+    "publisher": "Lovell Fuller",
+    "email": "npm@lovell.info",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/sharp",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/sharp/LICENSE"
+  },
+  "source-map-js@1.2.1": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/7rulnik/source-map-js",
+    "publisher": "Valentin 7rulnik Semirulnik",
+    "email": "v7rulnik@gmail.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/source-map-js",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/source-map-js/LICENSE"
+  },
+  "styled-jsx@5.1.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/vercel/styled-jsx",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/styled-jsx",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/styled-jsx/license.md"
+  },
+  "toposort-class@1.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/gustavohenke/toposort",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/toposort-class",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/toposort-class/LICENSE"
+  },
+  "tslib@2.8.1": {
+    "licenses": "0BSD",
+    "repository": "https://github.com/Microsoft/tslib",
+    "publisher": "Microsoft Corp.",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/tslib",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/tslib/LICENSE.txt"
+  },
+  "undici-types@7.18.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/nodejs/undici",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/undici-types",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/undici-types/LICENSE"
+  },
+  "uuid@8.3.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/uuidjs/uuid",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/uuid",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/uuid/LICENSE.md"
+  },
+  "validator@13.15.26": {
+    "licenses": "MIT",
+    "repository": "https://github.com/validatorjs/validator.js",
+    "publisher": "Chris O'Hara",
+    "email": "cohara87@gmail.com",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/validator",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/validator/LICENSE"
+  },
+  "wkx@0.5.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/cschwarz/wkx",
+    "publisher": "Christian Schwarz",
+    "path": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/wkx",
+    "licenseFile": "/Users/revanta.biswas/Desktop/conduit-helix-test/node_modules/wkx/LICENSE.txt"
+  }
+}
+
