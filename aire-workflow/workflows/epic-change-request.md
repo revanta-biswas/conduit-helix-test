@@ -1,19 +1,18 @@
 # WORKFLOW: `epic-change-request <TICKET-ID | description | --from-requirements | --from-spec <path>>` (Mid-Epic Change Request — into the Epic Branch)
 
-> **READ FIRST.** The six non-negotiables at the top of `workflows/dev-implement.md` bind this workflow
-> too: every gate runs (no scope calls), the Gate Ledger is complete before the commit, the work-unit
-> guard (`sh aire-workflow/templates/hooks/check-work-unit.sh --install <unit-key>` right after the story
-> branch is cut) is installed and never bypassed, the claim (In Development + assignee) is made on the
-> external tracker and recorded in the fragment's `## Claim` block, a disclosed gap is never shipped, and
-> the run ends with this workflow's own handoff block verbatim — nothing else in that final message.
+> **READ FIRST.** 🔴 **This workflow amends specifications. It never generates code.** It cuts no story
+> branch, installs no work-unit guard, runs no gate chain and raises no PR — those are `dev-implement`'s,
+> and this run ends by handing off to it. What binds here: a disclosed gap is never shipped, nothing
+> reaches disk before the Phase 9 gate, and the run ends with this workflow's own handoff block verbatim
+> — nothing else in that final message.
 
 ## WHAT THIS WORKFLOW IS
 
 **A requirement changed while the epic cycle is open.** Not "make it do something new" and not "it is
 broken" — the *agreement itself* was revised: a threshold moved, a rule was rewritten, a regulation
 landed, a decision was reversed. This workflow makes that change visible in the cycle it arrives in,
-versions the requirement, routes every story that promised the old text, and delivers the work as ONE
-new story on the epic branch.
+versions the requirement, routes every story that promised the old text, and leaves **one new story,
+ready to build** — then hands the build to `dev-implement`. 🔴 **It amends specs; it never writes code.**
 
 It is the **third mid-epic workflow**, a peer of the other two — not a variant of either:
 
@@ -29,12 +28,12 @@ It is the **third mid-epic workflow**, a peer of the other two — not a variant
 
 | | `ticket-implement` → enhancement/bug cycle | **`epic-change-request` (this workflow)** |
 |---|---|---|
-| Branch | `enhancement/…` or `bug/…` from **base** | `story/…` from the **epic branch** |
-| PR | `[ENH]` / `[BUG]` → base | **`[STORY]` → epic branch** |
+| Branch | `enhancement/…` or `bug/…` from **base** | **none** — specs commit on the epic branch |
+| PR | `[ENH]` / `[BUG]` → base | **none** — `dev-implement` raises the `[STORY]` PR |
 | Cycle | Its own: requirements, design stages, STOP checkpoint, archive | **None** — the epic's state, specs, rubrics and CI are reused |
 | Requirements | Its own scoped `requirements.md` | **The epic's `requirements.md`, amended and versioned in place** (`common/requirement-versioning.md`) |
 | Documents | brief, requirements, impact analysis, design docs, plan | **ONE bundle** — `spec/plans/change-requests/CR-<n>/` |
-| Earlier stories' tests | Not its concern | **Found, changed under authorization, and re-proven** |
+| Earlier stories' tests | Not its concern | **Gherkin + test plans amended here; unit/API/Playwright named for `dev-implement`** |
 | Questions | Several approvals | **ONE — the single gate (Phase 9)** |
 
 ---
@@ -49,7 +48,9 @@ It is the **third mid-epic workflow**, a peer of the other two — not a variant
 3. **It can be triggered by a document edit.** Entry Mode C diffs the operator's own uncommitted
    `requirements.md` edit against the epic branch — drift detection no other workflow performs.
 4. **One gate, everything staged.** Nothing reaches disk until the operator answers Phase 9 (CR16).
-5. **It is the most verbose workflow in the framework, deliberately** (CR13-V / V1–V9).
+5. **It stops at the contract.** It amends requirements, stories, `.feature` files and manual test plans,
+   then hands off — no branch, no code, no gate chain, no PR. The build is `dev-implement`'s job, and
+   keeping it there means code and the tests that assert it change together, under one set of gates.
 
 🔴 **The verbosity contract binds every phase below.** V1 announce each phase · V2 cite evidence on every
 finding · V3 counts before lists before detail · V4 every decision with the alternative it rejected ·
@@ -82,7 +83,7 @@ question, never offers a menu of options, and never asks for a decision mid-run.
   dependency edges, an `architecture.md` amendment, and the push.
 - After approval the run is **fully automatic** through to the PR and the handoff.
 - The sanctioned **halts** stay (they are not questions): a Phase 4 block, a CR12 dependency cycle, a
-  Phase 8 pre-emission failure, SH-4 retry-limit exhaustion, and the Playwright agent-install restart pause.
+  Phase 8 pre-emission failure, and a failed push at Phase 10.4.
 
 ---
 
@@ -91,8 +92,8 @@ question, never offers a menu of options, and never asks for a decision mid-run.
 `workflows/dev-implement.md` Step 1.7 applies to this whole workflow, unchanged: every step runs in the
 session where the keyword was typed; nothing is delegated to a fork, subagent, Workflow-tool run,
 background or remote agent, second session or `claude -p` subprocess. `agents/change-request-analyst.md`
-executes **inline**. The only Agent-tool use is Playwright's own Planner/Generator/Healer inside the
-Playwright UI gate, one call at a time, synchronously. A run inside a fork or subagent HALTS at Phase 0.
+executes **inline**. This workflow makes **no Agent-tool calls at all** — it runs no Playwright gate.
+A run inside a fork or subagent HALTS at Phase 0.
 
 ---
 
@@ -109,16 +110,18 @@ Resolve `aire-workflow/` and load:
   `common/work-unit-artifacts.md`, `common/self-heal-limit-guidance.md`,
   `common/ascii-diagram-standards.md`
 - **`agents/change-request-analyst.md`** — the read-only analyst, executed inline at Phases 2–4.
-- `workflows/dev-implement.md` **in full** — its Step 1.5 (branch + baselines), Steps 4.3/4.5, Part 2,
-  Steps 6 → 6.8 and Sections A–F are executed **by reference** at Phase 10; its Self-Healing Retry
-  Policy and Retry-Limit Report bind this workflow.
+- `workflows/dev-implement.md` — **for its contracts, not its steps.** This workflow never executes its
+  branch, generation, gate-chain or PR steps; it hands those to `dev-implement` (Phase 11). What binds
+  here is Step 1.7 (single-session) and Step 4.5's rule that a `.feature` contract is **read, never
+  rewritten to match code**.
 - `implementation/code-generation.md` (Guardrail — Generation Phase Rules),
   `workflows/code-review.md` + `implementation/code-review.md`, `workflows/remediate.md` +
   `implementation/remediate.md`
 - When `## CI/CD Configuration` records `Enabled: Yes`: `common/ci-pipeline-generation.md` Sections
   4.0d, 4.0f, 4.0i and 6.6
-- 🔴 The Playwright non-negotiables in `workflows/dev-implement.md` apply unchanged — earlier stories'
-  Playwright specs change only through the `playwright-implement` skill's own subagents, never by hand.
+- 🔴 **Playwright specs are never touched here** — they are code-layer tests. A CR that invalidates one
+  names it on the Test Change Authorization list; `dev-implement` regenerates it through the
+  `playwright-implement` skill's own subagents, never by hand.
 
 ---
 
@@ -136,9 +139,13 @@ single gate is not asked again**.
 
 The loops keep their `dev-implement` IDs, plus:
 
-| ID | Loop | Defined in | Verification that must pass to exit |
-|---|---|---|---|
-| **SH-LOOP-15** | Test Impact Reconciliation | `common/self-heal-limit-guidance.md:123` (mechanics) · `common/eval-framework.md` Section 5 (`gates.testImpact`, local-only) | The test/spec diff matches the Test Change Authorization list exactly, every new or amended AC has ≥1 scenario and ≥1 test case, and every amended requirement has a story tracing to its new version |
+🔴 **This workflow runs no gate chain, so it owns no gate loop.** The only bounded loop here is the
+Phase 9 revise-and-re-present cycle, driven by the user's `Request Changes`.
+
+**SH-LOOP-15 (Test Impact Reconciliation)** belongs to the **build**: `dev-implement` runs it against
+the Test Change Authorization list this CR wrote into the bundle. Mechanics:
+`common/self-heal-limit-guidance.md:123`; gate: `common/eval-framework.md` Section 5
+(`gates.testImpact`, local-only).
 
 ---
 
@@ -156,37 +163,28 @@ what the audit records, never a shorter paraphrase.
 
 ---
 
-## 🔴 PARALLEL-SAFE STATE — THIS RUN WRITES ONLY ITS OWN FRAGMENT (`common/parallel-work-state.md`)
+## 🔴 PARALLEL-SAFE STATE — THIS RUN IS AN INTEGRATION-BRANCH WRITER (`common/parallel-work-state.md`)
 
-Other developers build other stories of the same epic at the same time, and the Verification Engineer signs stories off on
-the epic branch. So that none of their PRs conflict on the framework's bookkeeping, **the build path of
-this workflow never writes the shared `runtime-artifacts/audit.md` or `runtime-artifacts/aire-state.md`**:
+This workflow commits **on the epic branch itself** and creates no work-unit branch, so it is an
+**integration-branch writer** in every case — there is no build path and no second mode:
 
-🔴 **Which writer this run is depends on the Phase 4 routing, and is decided there — not before.**
-Phases 0–6 produce audit entries before that is known, so **hold them in memory** and write them to the
-resolved destination once Phase 7 assigns the story number (or once the spec-only path is confirmed),
-with their original timestamps. Never guess the destination early.
+- It writes the **shared** `runtime-artifacts/aire-state.md` and `runtime-artifacts/audit.md` directly,
+  **pulling immediately before and pushing immediately after** the commit
+  (`common/parallel-work-state.md` Section 6), so a concurrent story run never races it.
+- The CR story's Story Tracker row, its dependency-graph node and the requirement deltas go to the
+  **shared** sections — `## Story Tracker`, `spec/plans/dependency-graph.yml` + `## Dependency Graph`,
+  and `## Change Request Additions`.
+- 🔴 **No `runtime-artifacts/stories/…` fragment is created.** Fragments belong to work units that build;
+  the CR story gets one when `dev-implement` claims it, written by that workflow under its own key
+  `story-<N.M>`.
+- 🔴 No State Isolation Check, no work-unit guard install, no evidence folders — all of those are
+  build-time concerns.
 
-**Build path — a work-unit writer** (a CR story is created and built):
-- Every audit entry goes to **`runtime-artifacts/stories/story-<N.M>/audit.md`** (same format plus
-  `**Unit**: "story-<N.M>"`).
-- The story's Story Tracker row, progress and SH counters go to
-  **`runtime-artifacts/stories/story-<N.M>/state.md`**; the CR story's dependency-graph node goes to its
-  `## Dependency Graph Additions` section (the shared `## Dependency Graph` is never edited), and the
-  requirement deltas go to its `## Change Request Additions` section.
-- 🔴 **It never writes the shared `runtime-artifacts/audit.md` or `aire-state.md`.**
-- 🔴 **State Isolation Check before every commit** (`common/parallel-work-state.md` Section 5.5).
+Reads use the **resolved view** (`common/parallel-work-state.md` Section 4), so a story another clone is
+mid-build on is seen at its true state.
 
-**Spec-only path — an integration-branch writer** (no story exists, so there is no fragment):
-- It commits on the epic branch itself, so it **does** write the shared `runtime-artifacts/audit.md` and
-  `aire-state.md`, pulling immediately before and pushing immediately after
-  (`common/parallel-work-state.md` Section 6). No `runtime-artifacts/stories/…` folder is created.
-
-Reads always use the **resolved view** (`common/parallel-work-state.md` Section 4).
-
-🔴 **Unit key is `story-<N.M>`** — the same key `dev-implement` uses, so
-`templates/hooks/check-work-unit.sh` and every evidence path work unchanged. `cr-<n>` is the bundle's
-identifier, never a unit key.
+🔴 **`cr-<n>` is the bundle's identifier, never a unit key.** The only unit key this cycle gains is
+`story-<N.M>`, minted by `dev-implement` when it builds the CR story.
 
 ---
 
@@ -274,12 +272,9 @@ Log the picker and the raw answer.
 
 **V1**: announce the phase, its inputs and its result. Print each precondition with its **resolved value**.
 
-0. **▶ Hand-back first**: if the checked-out branch is a CR story's branch whose fragment
-   (`runtime-artifacts/stories/story-<N.M>/state.md`) holds a `PAUSED —` record (Playwright agent install
-   — continue at the step it names) or a `HALTED —` record, this invocation is the developer handing the
-   work back after a manual fix — the keyword may be bare and the working tree dirty by design. Skip the
-   rest of Phases 0–9 and follow `common/self-heal-limit-guidance.md` Section 4, then continue from the
-   first code gate (Phase 10.4) or the halted gate. Otherwise continue with item 1.
+0. **▶ No hand-back path.** This workflow generates no code and runs no gate chain, so it has no
+   halted-build state to resume. A re-run simply starts a fresh analysis; an earlier run that halted
+   wrote nothing (CR16). A halted **build** of a CR story is handed back to `dev-implement`, not here.
 1. **Fork check** — execute `workflows/dev-implement.md` **Step 1.7** (the framework-wide single-session
    rule), substituting `epic-change-request`. Inside a fork or subagent → HALT with that step's message,
    change nothing.
@@ -513,10 +508,11 @@ spec/plans/change-requests/CR-<n>/
 ```
 
 🔴 **`change-request.md` Section 4 carries the machine-read build-unit marker**
-`CR-BUILDS-STORY: <N.M>` — exactly one line, the story this CR **builds** (spec-only path:
-`CR-BUILDS-STORY: none`). The work-unit guard reads it to require the `testImpact` gate from that story
-and from no other; a story merely listed as affected in Section 3 must never match it. A missing or
-malformed marker fails Phase 8 check (e).
+`CR-BUILDS-STORY: <N.M>` — exactly one line, naming the story this CR created **for `dev-implement`
+to build** (no story created: `CR-BUILDS-STORY: none`). 🔴 The CR itself builds nothing; the marker is
+how the work-unit guard, later and in `dev-implement`'s run, knows that **that** story owes the
+`testImpact` gate — because it carries a Test Change Authorization list. A story merely listed as
+affected in Section 3 must never match it. A missing or malformed marker fails Phase 8 check (e).
 
 **Before composing, read first** — without these the content is generic, and the depth rules are not
 optional: the body of every story being superseded or amended; the changed requirements' full text
@@ -550,8 +546,9 @@ write nothing. Cycles elsewhere are reported and do not block.
 - **`spec/plans/architecture.md`** — only when the change alters a design decision: amend, bump its
   version, and **regenerate** `tests/.evals/rubrics/architecture-rubric.json` from Section 10
   (`implementation/architecture-doc.md` Section 4). 🔴 Never hand-edit a rubric.
-- **Dependency graph** — build path: the fragment's `## Dependency Graph Additions` only; spec-only
-  path: `spec/plans/dependency-graph.yml` and the shared `## Dependency Graph` directly.
+- **Dependency graph** — `spec/plans/dependency-graph.yml` and the shared `## Dependency Graph`
+  directly (this run is always an integration-branch writer). It records the CR story's node with its
+  `requires` / `enables`, and any new edge from a not-yet-started story onto it.
 - **Rule 4 record** — `Requirements coverage verified post-design: [R]/[R] REQ-IDs — [timestamp] (re-verified after CR-<n>)`.
 
 ### 7.5 Coverage check (blocking, fixed silently)
@@ -577,7 +574,7 @@ malformed bundle is never shown to the operator.
 | (b) | **Supersede integrity** — every CR-born story names a real story in `supersedes`, and that story's PR is confirmed merged. |
 | (c) | **Dependency inheritance** — every CR-born story's `requires` is a superset of the superseded story's, minus ids superseded in this same CR. |
 | (d) | **Bundle inventory** — `change-request.md`, `requirements-delta.md`, `impact-ledger.md`, `README.md` all present. |
-| (e) | **Section presence + build marker** — `change-request.md` carries all 10 `## ` sections in order (empty ones written as `(none — <reason>)`), **and exactly one `CR-BUILDS-STORY:` line** whose value is this run's story number, or `none` on the spec-only path. Zero, several, or a value that is not the story being built → fail. |
+| (e) | **Section presence + build marker** — `change-request.md` carries all 10 `## ` sections in order (empty ones written as `(none — <reason>)`), **and exactly one `CR-BUILDS-STORY:` line** whose value is the story this run created for `dev-implement`, or `none` when it created none. Zero, several, or a value naming a story this CR did not create → fail. |
 | (f) | **Fact-only scan (CR14)** — regex for severity adjectives and advisory verbs across every staged artifact; count must be 0. |
 | (g) | **Coverage** — Phase 7.5's result; plus RV-1…RV-7 from `common/requirement-versioning.md`. |
 | (h) | **One CR per run** — exactly one bundle is staged, unless this is a CR11 append (which stages zero new bundles and edits one existing). |
@@ -645,13 +642,13 @@ DECISIONS I MADE FOR YOU  (overrule any with Request Changes)
                (+ requirements-delta.md, impact-ledger.md -- open them to see every citation)
 
 A) Request Changes -- tell me what to change
-B) Approve & Build -- apply the bundle, then build, test and raise the
-   [STORY] PR into <epic-branch>
+B) Approve & Apply -- amend the specs and commit them to <epic-branch>,
+   then hand the build to dev-implement
 
 [Answer]:
 ```
 
-(Spec-only path: option B reads `Approve & Apply — amend the specs and commit them to <epic-branch>`.)
+(There is no build variant of option B — this workflow never generates code.)
 
 🔴 **What this report must NOT do**: paste the `change-request.md` body (it is staged and its path is
 printed — re-printing it buries the decision); reprint the per-phase working state; or list every
@@ -662,7 +659,7 @@ want the proof.
   the user" with their wording), add a Section 10 revision entry, re-run Phase 8, present again.
   🔴 Nothing has been written, so there is nothing to roll back.
 - **`B`** → Phase 10.
-- Any other answer → re-prompt: `Please answer A (Request Changes) or B (Approve & Build).`
+- Any other answer → re-prompt: `Please answer A (Request Changes) or B (Approve & Apply).`
 
 Log the prompt and the complete raw answer.
 
@@ -673,34 +670,17 @@ Log the prompt and the complete raw answer.
 🔴 **Everything below happens only after the Phase 9 `B`.** Writes are ordered; a sub-step failure HALTS
 with rollback instructions (`git status` + `git restore`) rather than leaving a partial apply (CR16).
 
-### 10.1 Tracker actions and the claim (build path; spec-only skips to 10.3)
+### 10.1 Re-assert routing before writing (TOCTOU)
 
-Runs on the refreshed epic-branch checkout, because the story branch name needs the tracker ID. Nothing
-is committed here.
+Re-read every affected story's **snapshot status** and confirm its **live PR merge state** exactly as
+Phase 4 did. Any story that changed state since the analysis → **HALT** and re-run; never write against
+stale routing. Re-check the CR id and story number against `origin/<epic-branch>` (CR12b); renumber,
+and announce, if either was taken.
 
-1. **Re-assert the Phase 4 snapshot statuses and live PR states** (TOCTOU). Any story that changed state
-   since Phase 4 → HALT and re-run; never write against stale routing.
-2. **Re-check the CR id and story number** against `origin/<epic-branch>` (CR12b); renumber if taken.
-3. **Tracker item** (`common/tracker-sync.md`; LOCAL: local only, `Tracker ID` = `LOCAL`): no ticket →
-   create a Story (Section 3 labels/fields, `Built with AIRE v[N]` footer) linked to the Parent Epic
-   (Section 6); ticket given (Mode B) → use it and link it to the Parent Epic if not linked yet. Verify.
-4. **Story Tracker row + claim** — in the fragment `runtime-artifacts/stories/story-<N.M>/state.md`,
-   never the shared table: add Story `<N.M>` and claim it in the same step — `In Development`, `Start`
-   and `Recorded` set, tracker transitioned to In Development, assignee = the operator, `aire-v[N]`
-   label (`common/tracker-sync.md` Sections 4, 5, 9). Record the `## Claim` block.
-5. **Epic sync**: Parent Epic already Ready for Testing → move it back to In Development (authorised by
-   the gate), verify, log.
-6. **Comment on every affected story's tracker item**:
-   `Requirement amended by CR-<n> (<link>): <REQ-IDs@vN>. Delivered by Story <N.M>; re-verified under it.`
+### 10.2 (reserved — no branch, no baselines)
 
-### 10.2 Branch and baselines (build path)
-
-Execute `workflows/dev-implement.md` **Step 1.5** for Story `<N.M>`: the story branch
-`story/<TRACKER-ID>-<N.M>-<kebab-title>` is cut from the refreshed epic branch (its dependency-merge
-check re-confirms every `requires` is merged), the work-unit guard is installed
-(`sh aire-workflow/templates/hooks/check-work-unit.sh --install story-<N.M>`), then the three baselines
-are captured **before any edit** — full suite (Item 4.5), static D1–D7 with bootstrap (Item 4.6), full
-Playwright E2E headless (Item 4.7). The uncommitted fragment from 10.1 carries onto the branch.
+🔴 This workflow cuts **no story branch** and captures **no baselines**. Both belong to the build, which
+`dev-implement` owns (Phase 11). The spec edits are committed on the epic branch itself (10.4).
 
 ### 10.3 Write the bundle and the approved spec edits
 
@@ -718,8 +698,7 @@ In this order, each re-asserting the snapshot status immediately before it:
    CR story and once per affected story scoped to its AMENDED / SUPERSEDED ACs.
 6. **Architecture + rubric** — only when the bundle records a design change; the rubric is regenerated,
    never hand-edited.
-7. **Dependency graph** — build path: the fragment's `## Dependency Graph Additions`; spec-only path:
-   `spec/plans/dependency-graph.yml` + the shared `## Dependency Graph`.
+7. **Dependency graph** — `spec/plans/dependency-graph.yml` + the shared `## Dependency Graph`.
 8. **Rule 4 record** — refresh `Requirements coverage verified post-design: …(re-verified after CR-<n>)`.
 
 **Spec-only path ends here**: update the amended stories' tracker items (AC text + a comment naming the
@@ -730,130 +709,124 @@ emit the spec-only handoff (Phase 11), stop. **Build path**: these edits ride th
 
 **Output (V1)**: per write, the path and its byte/line count.
 
-### 10.4 Build — the COMPLETE gate chain
+### 10.4 Commit the spec edits on the epic branch
 
-Execute `workflows/dev-implement.md` from **Step 4.3** (Playwright Readiness — frontend plans only) and
-**Step 4.5** (behaviour-spec verification) through **Part 2 generation**, then **Steps 6 → 6.8**, with
-these overrides and nothing else changed:
+🔴 **This workflow does not generate code.** It amends the agreement and the contracts that express it,
+then hands the build to `dev-implement` (Phase 11). It cuts no story branch, runs no gate chain, and
+raises no PR.
 
-- **Plan**: `change-request.md` **Section 6 IS the code-generation plan** (it satisfies `dev-implement`
-  Step 4.1); mark its checkboxes as steps complete. No separate plan file.
-- **Generation order**: application change → the authorised test changes from Section 5b (update
-  obsolete assertions, delete dead tests, each traced to its AC) → new tests (Section 5c).
-- **Gate semantics with authorised changes**: in the full regression (Step 6.5), B2 (Step 6.1) and the
-  Playwright E2E regression (Step 6.8), a test green at baseline and red now is a **regression to fix in
-  the application code** — unless it is on the Test Change Authorization list, in which case it must
-  already have been updated and must now pass. A red test the analysis missed may join the list **only**
-  if it asserts an AC classified AMENDED or SUPERSEDED: add it to Section 5b with a Section 10 revision
-  entry, announce it, continue. A red test tracing to an UNCHANGED AC is always a regression.
-- Every gate keeps its SH-LOOP and 3-attempt budget; exhaustion → SH-4 HALT with the Retry-Limit Report.
+1. **Coverage check (blocking, fixed silently)** — every CR-story AC and every AMENDED AC has ≥1
+   scenario and ≥1 test case; nothing remains for a SUPERSEDED AC; every amended requirement has a story
+   tracing to its new version (CR5 — no stale traces).
+2. **Commit on the epic branch** — pull immediately before and push immediately after
+   (`common/parallel-work-state.md` Section 6; this run is an **integration-branch writer**):
+   `[CR-<n>] Amend <REQ-IDs@vN>; Story <N.M> created` with the `AIRE-Version: [N]` trailer.
+   Staged: the CR bundle, `requirements.md`, `stories.md`, `spec/behavior/**`, `spec/test-plans/**`,
+   `spec/plans/architecture.md` + the regenerated rubric when a design decision changed,
+   `spec/plans/dependency-graph.yml`, and the shared `runtime-artifacts/aire-state.md` + `audit.md`.
+3. **Push.** If the push fails, say so and stop — `dev-implement` cannot start until the specs are on
+   origin.
 
-🔴 **Executed by reference, never restated.** No gate, threshold, SH-LOOP ID or retry cap is redefined
-in this file.
+🔴 **No story branch, no work-unit fragment, no `check-work-unit.sh` install, no evidence folders.**
+Those belong to the build, and the build belongs to `dev-implement`. The story is left
+`Ready for Development` and **unclaimed** — `dev-implement`'s own Story Selection makes the claim, as it
+does for every other story.
 
-**Output (V6)**: per gate — name, command, measured value against its threshold, and
-`PASS` / `FAIL` / `ERROR` / `N/A` (the closed vocabulary of `common/eval-framework.md`). Self-heal
-attempts print `attempt n of 3` with the **root cause stated before the fix**:
+### 10.5 What `dev-implement` inherits
 
-```
-PHASE 10.4  GATE CHAIN  (dev-implement Steps 6 -> 6.8, by reference)
-  unitCoverage ....... npm test -- --coverage      changed-lines 94.1% >= 90%   PASS
-  behaviorB1 ......... run.sh b1                   6/6 scenarios, 4/4 @AC tags  PASS
-  behaviorB2 ......... run.sh b2                   31/31 other scenarios        PASS
-  behaviorB3 ......... --                          not the last unit (2.4 open) N/A
-  apiContract ........ npm run test:api            12/12, 401+403 covered       PASS
-  regression ......... npm test                    0 new failures vs baseline   PASS
-  D1_lint ............ eslint --format json        0 new > delta 0              PASS
-  ...
-  SH-LOOP-1 attempt 1 of 3 -- root cause: new branch in approveOver() uncovered
-                              fix: added rules.test.ts "routes at exactly 5000"
-                              re-run: 94.1%  PASS
-```
+The CR leaves behind everything the build needs, and nothing it must re-derive:
 
-### 10.5 Test Impact Reconciliation (SH-LOOP-15)
+| Artifact | State on handoff | Who consumes it |
+|---|---|---|
+| `requirements.md` | amended, `REQ-F-nn@vN` versioned, prior text retained | `dev-implement` Part 1 (REQ-ID thread, Rule 5) |
+| `stories.md` | CR story appended; earlier stories' AMENDED/SUPERSEDED ACs annotated in place | Part 1 planning + Code Review scope |
+| `spec/behavior/story-<N.M>.feature` | **written by the CR**, one `@AC-n` scenario per AC | `dev-implement` Step 4.5 (verifies, never authors) |
+| earlier stories' `.feature` scenarios | **amended by the CR** in place, `@amended-by-cr-<n>` added | B2 tier |
+| `spec/test-plans/**` | **written/amended by the CR** via `ve-implement` WORKFLOW MODE | the Verification Engineer, after the PR merges |
+| `change-request.md` Section 6 | the implementation plan | `dev-implement` Part 1 grounds its own plan on it |
+| **Test Change Authorization list** (Section 5b) | the earlier stories' **unit / API / Playwright** tests that may change, each traced to an AMENDED or SUPERSEDED AC | 🔴 **`dev-implement`** — it updates them during generation |
 
-A deterministic check, after 10.4 and before the review. Mechanics:
-`common/self-heal-limit-guidance.md:123`; gate: `common/eval-framework.md` Section 5
-(`gates.testImpact`, local-only).
+🔴 **The spec/code split is the whole point of the handoff:**
 
-1. `git diff --name-status $(git merge-base origin/<epic-branch> HEAD) -- tests/ spec/behavior/ spec/behavior.feature spec/test-plans/`
-2. Every **modified or deleted** test file or test case maps to a Section 5b row (or is one of the CR
-   story's own new files). A modified or deleted test not on the list → **violation**: restore it from
-   the merge-base and fix the application code instead.
-3. Every Section 5b row is done (an `update` row whose test was left untouched and now fails is a gate
-   failure, not a skip).
-4. Every CR-story AC and every AMENDED AC has ≥1 scenario that executed in B1/B2 and ≥1 test case; no
-   scenario remains for a SUPERSEDED AC.
-5. **CR-specific**: every amended requirement has ≥1 story whose `Covers` names its **new** version
-   (CR5 — no stale traces).
+- **The CR owns the spec layer** — `.feature` contracts and manual test plans. They are the *contract*,
+  they must exist before code, and amending them is a requirement decision, not a coding one.
+- **`dev-implement` owns the code layer** — unit, API, step-definition and Playwright tests. They assert
+  *implementation*, so they change when the code changes, in the same commit, under the same gates.
 
-Write the result to `reports/eval-evidence/story-<N.M>/test-impact-reconciliation.md` and into
-`eval.json` `gates.testImpact`. A failure → fix → re-run the affected 10.4 gates (continuing their
-counters) → re-check; one cycle = one SH-LOOP-15 attempt; cap 3; exhaustion → SH-4.
+Updating an obsolete unit test **before** the code that makes it correct would leave the epic branch red
+with no way to tell a legitimate amendment from a break. So the CR **names** those tests and does not
+touch them; `dev-implement` changes them alongside the code and proves the result with Test Impact
+Reconciliation (SH-LOOP-15).
 
-### 10.6 Review, commit, preflight, PR, attestation, PR review
+### 10.6 Tracker and state
 
-1. **Code Review** — `workflows/dev-implement.md` **Sections A → B → C**, with the AC scope set to the
-   CR story's ACs **plus every AMENDED AC of the affected stories** (as amended) and the `Covers`
-   REQ-IDs of both, read at the **version each story traces to**
-   (`common/requirements-traceability.md` Rule 6). The security pass stays diff-scoped; J1/J2 are
-   blocking. The report adds a **Change Impact Verification** table: each affected story → amended ACs →
-   Met / Partially Met / Not Met with `file:line`.
-2. **Sections D and E** unchanged — including **Section D Step 1.2's Artifact Completeness Check**
-   (SH-LOOP-16, `common/work-unit-artifacts.md` Section 5), which for this unit also requires the
-   `testImpact` evidence (the work-unit guard detects the CR bundle's plan — see
-   `templates/hooks/check-work-unit.sh`). Section D runs it in its own place; it is never run twice or
-   lifted out of Section D. With:
-   - the State Isolation Check, then the commit including 10.3's spec edits, the CR bundle, the
-     reconciliation evidence and the fragment `runtime-artifacts/stories/story-<N.M>/` (never the shared
-     `audit.md` / `aire-state.md`) — `[Story <N.M> / <TRACKER-ID>] CR-<n>: <summary>` +
-     `AIRE-Version: [N]`;
-   - **CR12b re-verification** of the CR id and story number immediately before the push;
-   - `pr-generator` in **WORKFLOW MODE**, target = the epic branch, `[STORY]` prefix; the PR body also
-     carries a `## Change Request` section (the requirement deltas with version transitions, affected
-     stories and amended ACs, the Test Change Authorization list) — **read the body back and verify** it
-     landed;
-   - CI preflight and attestation only when `Enabled: Yes`;
-   - `pr-review` in **AUTO MODE**.
+1. **Tracker item** (`common/tracker-sync.md`; LOCAL: local only, `Tracker ID` = `LOCAL`): create the CR
+   story linked to the Parent Epic (Section 6 labels/fields, `Built with AIRE v[N]` footer), left in the
+   tracker's **Ready for Development** state. Verify. 🔴 Do **not** transition it to In Development and do
+   **not** assign it — `dev-implement` claims it.
+2. **Story Tracker row** in the shared `runtime-artifacts/aire-state.md`: Story `<N.M>`,
+   `Ready for Development`, `Requires` from the bundle, `Recorded` set.
+3. **Dependency graph**: the CR story's node and edges written to `spec/plans/dependency-graph.yml` and
+   the shared `## Dependency Graph`.
+4. **Rule 4 record** refreshed:
+   `Requirements coverage verified post-design: [R]/[R] REQ-IDs — [timestamp] (re-verified after CR-<n>)`.
+5. **Comment on every affected story's tracker item**:
+   `Requirement amended by CR-<n>: <REQ-IDs@vN>. Delivered by Story <N.M>.`
+6. **Epic sync**: Parent Epic already `Ready for Testing` → move it back to In Development (authorised by
+   the gate), verify, log.
 
 ### 10.7 CR13 self-verification
 
 Print the Section 2 predicates of `common/change-request-rules.md` with **computed results** — CR3, CR4,
-CR5, CR6, CR8, CR9, CR10, CR11, CR12, CR12b, CR14, CR16, CR13-V — plus RV-1…RV-7. A predicate that could
-not be computed counts as **fail**.
+CR5, CR6, CR8, CR9, CR11, CR12, CR12b, CR14, CR16, CR13-V — plus RV-1…RV-7. A predicate that could not be
+computed counts as **fail**. 🔴 CR10 is recorded as **staged, not enforced**: the Test Change
+Authorization list is handed to `dev-implement`, which enforces it at its own Test Impact Reconciliation.
 
 ---
 
-## Phase 11 — Handoff (verbatim, the last output)
+## Phase 11 — Handoff to `dev-implement` (verbatim, the last output)
 
-**Build path**:
+**When the CR created a story to build:**
 
 ```
- CR-<n> APPLIED — STORY <N.M> PR RAISED, NOT MERGED. Story <N.M> stays In Development until it merges.
-   PR: <PR URL>  →  target `<epic-branch>`   Bundle: spec/plans/change-requests/CR-<n>/
-   Requirements: <REQ-F-03 → @v2, REQ-F-11 added, REQ-F-07 superseded>
-   Affected stories: <X.Y (AMENDED AC-n), …> — their specs, test plans and tests were updated in this PR.
-   Gates: all PASS / N/A, including Test Impact Reconciliation — scorecard in the PR body.
+  CR-<n> APPLIED -- specs amended. No code was written.
+
+  Requirements : <REQ-F-nn -> @v2, REQ-F-mm added, REQ-F-kk withdrawn>
+  Story <N.M>  : <title>          Ready for Development (unclaimed)
+  Amended      : <Story X.Y AC-n, ...> -- their acceptance criteria, .feature
+                 scenarios and manual test plans were updated in this commit.
+  Bundle       : spec/plans/change-requests/CR-<n>/
+  Commit <sha> pushed to `<epic-branch>`.
+
+  <n> earlier test(s) now assert behaviour the agreement no longer requires.
+  They are listed in the bundle's Test Change Authorization list and are
+  updated by the build -- not here, because changing them before the code
+  exists would leave the branch red with no way to tell an authorised
+  amendment from a break.
 
 NEXT ACTIONS:
-   1.  Review, approve and MERGE the PR into `<epic-branch>` yourself — the framework never merges.
-       Rejected instead? Leave comments on the PR, then type: pr-fix <PR URL>
-   2.  After it merges, the Verification Engineer runs ve-list-work on `<epic-branch>` — Story <N.M>'s test plan includes the
-       re-verification cases for the affected stories.
-   3.  More stories to build? type: dev-implement
+   1.  Build it:  dev-implement <N.M>
+       It reads the CR's plan and the authorization list, writes the code,
+       updates exactly those tests, runs every gate, and raises the [STORY] PR.
+   2.  The Verification Engineer can review the amended test plans now --
+       they are already on `<epic-branch>`.
 
-Type the keywords EXACTLY as shown — any other phrasing is not a framework trigger.
+Type the keyword EXACTLY as shown -- any other phrasing is not a framework trigger.
 ```
 
-**Spec-only path**:
+**Spec-only (nothing was built and nothing needs building — every affected story was not yet started):**
 
 ```
- CR-<n> APPLIED — SPECS AMENDED, no code existed yet, so nothing was built.
-   Requirements: <REQ-F-03 → @v2, …>   Bundle: spec/plans/change-requests/CR-<n>/
-   Amended: <Story X.Y AC-n, …> in stories.md, their .feature scenarios and test plans; tracker updated.
-   Commit <sha> pushed to `<epic-branch>`.
+  CR-<n> APPLIED -- specs amended. Nothing needs building.
 
-NEXT: the amended stories are built as usual — type: dev-implement
+  Requirements : <REQ-F-nn -> @v2, ...>
+  Amended      : <Story X.Y AC-n, ...> -- not started, so their contracts were
+                 corrected in place. No new story was created.
+  Bundle       : spec/plans/change-requests/CR-<n>/
+  Commit <sha> pushed to `<epic-branch>`.
+
+NEXT: those stories are built as usual, against the corrected contracts:
+      dev-implement <X.Y>
 ```
 
 Log which variant was shown.
@@ -905,17 +878,21 @@ Log which variant was shown.
   text retained; ADDED → unversioned; SUPERSEDED → retained and marked.
 - 🔴 **STATE FROM THE GIT SNAPSHOT, MERGE STATE LIVE** (CR9), re-asserted immediately before writing.
 - 🔴 **NEVER CHANGE WORK IN FLIGHT.** A story being built, or with an open PR, blocks the change.
-- 🔴 **ONLY AUTHORISED TESTS CHANGE** (CR10). Every other red test is a regression fixed in the code.
+- 🔴 **THE SPEC/CODE SPLIT.** The CR amends `.feature` contracts and manual test plans. It **names**
+  the earlier stories' unit/API/Playwright tests that the amendment invalidates (CR10) and leaves them
+  untouched — `dev-implement` updates exactly those, alongside the code, and proves it with Test Impact
+  Reconciliation. Every other red test is a regression fixed in the code.
 - 🔴 **CONTRACTS MOVE TOGETHER.** An amended AC moves its `stories.md` text, scenario, test case, tests
   and (UI) Playwright spec in the same PR; scenarios and plans are never rewritten to match code, and
   Playwright specs only through the `playwright-implement` subagents.
-- 🔴 **NEVER FEWER GATES.** Every `dev-implement` gate runs on the CR story, plus Test Impact
-  Reconciliation. "One bundle" means less ceremony only.
+- 🔴 **SPECS ONLY — NEVER CODE.** This workflow amends the agreement and the contracts that express it,
+  then hands off. No story branch, no generation, no gate chain, no PR. Every gate still runs — on the
+  CR story, inside `dev-implement`, where the code and its tests change together.
 - 🔴 **NO STATUS DEMOTION, NO MERGING.** Statuses move only as `dev-implement` and `ve-list-work` define;
   the framework never merges a PR.
-- 🔴 **INTO THE EPIC, AS A STORY.** Branch from the epic branch, `[STORY]` PR into the epic branch, Story
-  Tracker row, dependency-graph node — never a base-branch cycle, never a new `Workflow Type`, never a
-  change to `## Tracker`'s Parent Epic.
+- 🔴 **INTO THE EPIC, AS A STORY.** The CR story joins the epic's Story Tracker and dependency graph as
+  `Ready for Development`, and is built by `dev-implement` like any other — never a base-branch cycle,
+  never a new `Workflow Type`, never a change to `## Tracker`'s Parent Epic.
 - 🔴 **SELF-CONTAINED.** This workflow never reads, cites or delegates to `epic-enhance.md` or
   `epic-bugfix.md`.
 - 🔴 **VERBOSE BY CONTRACT** (CR13-V / V1–V9). No quiet mode, no verbosity flag, no summarising the
