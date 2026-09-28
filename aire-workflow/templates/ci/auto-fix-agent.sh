@@ -74,25 +74,44 @@ case "$HEAD_REF" in
 esac
 
 # ── INFRASTRUCTURE class (Section 6.4) ──
+# 🔴 An infra-class gate (sonar with no reported conditions) is non-repairable and must never consume
+#    a retry — but its presence must NEVER swallow other gates that ALSO failed in the SAME run.
+#    A prior version of this loop called report_and_exit on the FIRST sonar match, unconditionally —
+#    if static/unit/etc. were ALSO in failed-gates.txt as genuinely repairable code defects, this
+#    silently abandoned the entire repair attempt and reported ONLY the sonar infra note, never even
+#    attempting the real code fix. Observed in production exactly this way: static-evals and
+#    unit-coverage both genuinely red, self-repair's whole output was "fix the Sonar connection/secret."
+#    Fix: filter sonar OUT of the working set instead of aborting on it; decline the WHOLE attempt
+#    (Section 6.4's original intent, unchanged) only when NOTHING repairable is left afterward.
+REPAIRABLE_GATES=()
+INFRA_NOTES=()
 for g in "${GATES[@]}"; do
   case "$g" in
     sonar)
-      # Real findings (conditions reported) => code-class. Auth/unreachable/timeout => infra => stop.
+      # Real findings (conditions reported) => code-class, stays in the working set below.
       if [ -f "${RUN_DIR}/sonar-conditions.txt" ] && [ -s "${RUN_DIR}/sonar-conditions.txt" ]; then
-        : # code-class, repair below
+        REPAIRABLE_GATES+=("$g")
       else
-        report_and_exit "sonar failed WITHOUT reported conditions (auth/unreachable/timeout) — infrastructure, not a code defect. Not consuming a retry. Fix the Sonar connection/secret." 1
+        INFRA_NOTES+=("sonar failed WITHOUT reported conditions (auth/unreachable/timeout) — infrastructure, not a code defect. Excluded from this repair attempt; fix the Sonar connection/secret separately.")
       fi
       ;;
+    *) REPAIRABLE_GATES+=("$g") ;;
   esac
 done
+if [ "${#INFRA_NOTES[@]}" -gt 0 ]; then
+  printf 'auto-fix-agent: %s\n' "${INFRA_NOTES[@]}" >&2
+fi
+if [ "${#REPAIRABLE_GATES[@]}" -eq 0 ]; then
+  report_and_exit "every failing gate this run is infrastructure-class (see notes above) — not consuming a retry." 1
+fi
+GATES=("${REPAIRABLE_GATES[@]}")
 
 # ── Retry budget (only a genuinely repairable failure gets this far, so only it consumes an attempt) ──
 LIMIT=$(command -v jq >/dev/null 2>&1 && [ -f "$CONFIG" ] && jq -r '.retryLimitForSelfRepair // 3' "$CONFIG" || echo 3)
 COUNTER="${RUN_DIR}/self-repair-attempt"
 attempt=$(( ( $([ -f "$COUNTER" ] && cat "$COUNTER" || echo 0) ) + 1 ))
 if [ "$attempt" -gt "$LIMIT" ]; then
-  report_and_exit "retry limit ${LIMIT} reached — 3 retries ended. Please suggest next steps. Unresolved: ${GATES[*]}" 1
+  report_and_exit "SELF-REPAIR LIMIT REACHED (${LIMIT} of ${LIMIT} attempts) — I could not fix this on my own. Unresolved gates: ${GATES[*]}. Evidence: ${EVIDENCE_DIR}/ and this run's eval-results artifact. To take over: (1) reproduce locally with the failing gate's command from tests/.evals/config.json, (2) fix the code on this PR's branch — never by skipping a test, suppressing a finding or lowering a threshold — and push, or (3) leave a PR comment describing the problem and type pr-fix <PR number> in Claude Code to have it fixed and re-verified on this PR." 1
 fi
 echo "$attempt" > "$COUNTER"
 

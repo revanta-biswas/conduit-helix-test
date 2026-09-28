@@ -2,14 +2,42 @@
 
 ---
 
+## 0. 🔴 CI/CD IS OPT-IN — this file is loaded and this generation runs ONLY when enabled
+
+**This entire file is conditional on `## CI/CD Configuration` `Enabled: Yes` in
+`runtime-artifacts/aire-state.md`.** That flag is asked and recorded exactly once per epic/bug/
+enhancement cycle — for an epic, at `CLAUDE.md`'s MANDATORY STOP Step 1.2, before this file is ever
+loaded; for a bug/enhancement ticket, at `ticket-implement.md` Step 1.5 (`common/ci-setup-detection.md`),
+which folds the same opt-in into its existing CI Setup Status detection. Reused verbatim on a resumed
+session — never re-asked.
+
+| `## CI/CD Configuration` | What happens |
+|---|---|
+| `Enabled: Yes` (`Source: pre-existing` or `user opt-in`) | This file's contract applies in full — generate/refresh the pipeline as specified below, and every downstream CI-specific gate (Manifest Reconciliation, CI Preflight, CI Attestation, CI self-repair) in `dev-implement.md` / `bug-fix-implement.md` / `enhancement-implement.md` runs as written. |
+| `Enabled: No` (`Source: user opt-out`) | **Do not load this file, do not generate any file it describes, and do not run any CI-specific gate.** The owning workflow goes straight from its local gates + automated code review to the PR raise (`pr-generator`) and the automated PR review (`pr-review`), then its normal completion message — with no CI mention. |
+
+🔴 **Never treat "CI/CD disabled" as a reason to weaken or skip a LOCAL gate.** Unit tests + coverage,
+the behavioural tiers, the Static Eval Gate D1–D7, full regression, and the J1/J2 judge gates inside
+Code Review are unaffected — they are local quality gates, not CI/CD infrastructure, and this opt-out
+covers only the generated pipeline and its CI-specific re-verification gates (Manifest Reconciliation,
+CI Preflight, CI Attestation, CI self-repair).
+
+---
+
+> **Terminology — "the verify job".** The pipeline is split into jobs: `setup`, `static-evals`,
+> `unit-coverage`, `behavior-gherkin`, `judge-gates`, `sonarqube`, `verdict` and `self-repair`. Wherever this
+> document says **"the verify job"**, read it as those gate jobs taken together — everything except
+> `self-repair`. Where one job is meant: base-SHA resolution, the evidence purge and `EVAL_KEY` live in
+> `setup`; the combined `eval.json` upload and the branch-protection status check are the `verdict` job's.
+
 ## 1. 🔴 Generated from the canonical templates — never hand-authored, never re-derived
 
 🔴 **The pipeline is not written by the model.** `templates/ci/` (this same `aire-workflow/`
 directory) holds the canonical, versioned source: `agentic-eval-pipeline.yml.template`, the
 `lib-manifest`/`read-manifest`/`ci-manifest-runner`/`run-static-evals`/`run-evals`/`auto-fix-agent`/
-`validate-pipeline`/`smoke-test-epic` scripts (`.sh` + `.ps1` — the first three are #7a's run-time
-manifest readers, Section 4.0d.1/4.0f), the `behavior/` Containerfile and entry point, and
-`sonar-project.properties.tmpl`. Generation means:
+`validate-pipeline`/`smoke-test-epic`/`resolve-eval-key` scripts (`.sh` + `.ps1` — the first three
+are #7a's run-time manifest readers, Section 4.0d.1/4.0f), the
+`behavior/` Containerfile and entry point, and `sonar-project.properties.tmpl`. Generation means:
 detect the stack, fill the `ci` manifest block in `tests/.evals/config.json` (Section 3 below defines what
 goes in it), **copy** these files into the target repo, and substitute the fixed `${SLOT}` markers.
 Read `templates/ci/TEMPLATE-MANIFEST.md` for the copy table and the complete slot list before generating anything.
@@ -17,6 +45,23 @@ Read `templates/ci/TEMPLATE-MANIFEST.md` for the copy table and the complete slo
 🔴 **Note:** CI pipeline generation invocation never ask the user to characterize
 implementation scope as "partial" or "full". Scope is always derived mechanically — from stack
 detection (Section 3) and, for stage execution, from the PR's own diff (Section 4.0d) — never asked.
+
+🔴 **THE SIZE OF THE JOB IS NEVER A REASON TO GATE IT.** Observed in a real run: the workflow reached
+this section, saw what full generation actually involves (~20 canonical scripts copied, the 700+ line
+YAML template, the V1–V34 validation sweep, the clean-room dry-run, the Section 4.1.2 SonarQube setup
+gate) and, before doing any of it, stopped and presented a fabricated multiple-choice menu —
+"Minimal CI bootstrap (Recommended) / Full CI generation per spec / Defer CI entirely, focus on the
+fix" — asking the user to pick a scope. **None of those three options exist anywhere in this file.**
+That is a fabricated gate, not a documented one, and picking "Minimal" would have silently skipped
+SonarQube setup, the clean-room dry-run and most of V1–V34 — producing a non-compliant pipeline the
+user never actually asked for. The correct behavior at this point is to generate the full pipeline as
+specified, unconditionally, with **zero** prompts of any kind — the job being large, multi-file, or
+time-consuming is not itself a trigger to pause and confirm; the only sanctioned halt in this entire
+procedure is the Section 4.1.2 SonarQube setup gate, presented verbatim, never summarized, never
+offered alongside other "options." If a request for confirmation of ANY kind (a scope choice, a
+"proceed? y/n", a menu, a plan-approval prompt) is about to be shown for CI pipeline generation and it
+is not the literal Section 4.1.2 block, that is a defect — do not show it, generate the pipeline
+instead.
 
 This deletes the failure mode a hand-authored pipeline invites: a model re-writing a constant,
 drifting between the verify and self-repair jobs, or quietly breaking the parser. A pasted pipeline
@@ -224,7 +269,7 @@ tool invocation → a stack that genuinely has no compile step resolves to an **
 | Secrets (D7) | `gitleaks detect` — **prefer the binary/container over `gitleaks/gitleaks-action`** (Section 4.0.3) | — | — | — | — |
 | Unit + coverage (and the `coverageFormat` it emits) | `jest --coverage` / `vitest run --coverage` -> **lcov** | `pytest --cov` -> **cobertura** | `mvn test jacoco:report` -> **jacoco** (🔴 NOT cobertura — a different XML schema) | `go test -coverprofile` -> **gocover** | `dotnet test --collect:"XPlat Code Coverage"` -> **cobertura** |
 | **Behavioural (Gherkin)** — always invoked via `tests/.evals/behavior/run.sh <tier>` inside Podman | `cucumber-js` | `pytest-bdd` | `mvn verify -Dcucumber` | `godog run` | `reqnroll` |
-| E2E | `playwright test` (only when the extension is enabled) | | | | |
+| **Playwright E2E (headless, CI trust gate)** — see Section 3.0g | `npx playwright test tests/e2e/` (only when `ci.playwright.enabled`) | | | | |
 
 🔴 A stage with no resolvable command is emitted as an explicit **skipped step with a `# reason:`
 comment**, never silently dropped and never faked with `echo ok`.
@@ -334,6 +379,46 @@ findings versus baseline". D5 therefore failed on any newly-introduced licence r
 `$AIRE_MAX_CYCLOMATIC_COMPLEXITY`). Never copy the literal number into the command — `eval-framework.md`
 Section 1 is explicit that `thresholds` is the only place a number lives, and a copied value drifts the
 moment one of them changes.
+
+### 3.0f 🔴 Playwright E2E — resolving the start command + readiness URL, and CI's trust-gate role
+
+🔴 **CI never originates Playwright coverage — it only re-executes what the local Playwright UI
+Automation Gate (`implementation/code-generation.md` Step 11d) already generated and ran.** This
+subsection resolves the two facts CI needs to reproduce that run headless, and defines what "trust
+gate" means operationally.
+
+**Resolution — the first work unit that runs the Playwright gate for real writes `ci.playwright` into
+`tests/.evals/config.json`** (`common/eval-framework.md` Section 1), exactly like a manifest fragment
+resolves a new tool: never guessed, always read from something the repo demonstrably has.
+
+| Field | Resolved from |
+|---|---|
+| `enabled` | `true` the first time a work unit's plan includes a Frontend Components Generation step and the Playwright gate actually ran (not merely planned) |
+| `startCommand` | The project's OWN start script (`package.json` `"dev"`/`"start"`, a documented `Makefile` target, or the direct framework invocation) — resolved the same way as every other command in this framework: repo script → direct invocation → never invented |
+| `readinessUrl` | The URL/port the story's System Under Test block already names (or the app's documented default) — the same value the local gate polled before running tests |
+| `testCommand` | Defaults to `npx playwright test tests/e2e/`; a project with a non-default `testDir` or reporter convention overrides it here, once |
+| `backendStartCommand` / `backendReadinessUrl` | 🔴 **Playwright drives a real browser against a real running app — there is nothing to click or assert on otherwise, so whatever the frontend calls must actually be reachable.** These stay `null` when `startCommand` alone already brings up everything the tests need (a monolith serving both, `docker-compose up`, a monorepo dev task like `turbo run dev`/`nx run-many --target=serve`). Resolve them, the same never-invented way as every other command here, **only** when the local gate genuinely needed frontend and backend as two independent processes with no such combined wrapper. `backendReadinessUrl` is mandatory whenever `backendStartCommand` is set — an unresolved readiness check for a real second process is a manifest defect, not something to leave implicit |
+
+🔴 **CREATE IF MISSING, NEVER REGENERATE** (`common/directory-structure.md` Artifact Ownership) — once
+`ci.playwright` is resolved by a work unit, every later work unit and CI both read it as-is; a project
+with no UI at all simply never sets `enabled: true`, and the CI step below then reports `N/A` — never a
+guessed command.
+
+**What "trust gate" means in the generated pipeline**: the CI step (Section 4) installs Playwright +
+browsers, starts the backend first when `backendStartCommand` is resolved (waiting on
+`backendReadinessUrl` before anything else, since the frontend's own requests during the test run
+assume that API is already reachable), then starts the app in the background using the SAME
+`startCommand`, waits on the SAME `readinessUrl`, runs the SAME `testCommand`, and tears BOTH
+processes down — the same specs and the same assertions that already ran and passed locally. 🔴 **The
+one and only difference is the display mode**:
+the local gate runs `--headed` (it is the developer's own machine, and watching the browser is the
+point), while CI runs headless **because a GitHub runner has no display** — a property of the
+environment, never a policy this framework applies locally. 🔴 **CI is NEVER where a Playwright scenario is written, planned,
+or healed** — Planner/Generator/Healer only ever run inside the local gate (Step 11d). A CI failure on
+a scenario that passed locally is therefore always a **provisioning/manifest defect** (a stale
+`startCommand`, a wrong `readinessUrl`, browsers not installed) — triaged and repaired exactly like any
+other CI Preflight/Attestation mismatch (`common/ci-pipeline-generation.md` Section 6.6), never a
+reason to re-run the Planner or to treat the local pass as unproven.
 
 ### 3.0 🔴 THE TEST COMMAND MUST BE NO-TESTS-SAFE — resolve it, and record the runner's zero-tests code
 
@@ -529,35 +614,86 @@ HEAD) and diffs. Emitting the raw command as a CI step re-introduces the whole-t
 
 ---
 
-## 4. Pipeline shape — four stages plus self-repair
+## 4. Pipeline shape — nine jobs, one per gate stage, plus verdict and self-repair
 
 The generated workflow mirrors `common/eval-framework.md` and the local gate order exactly. **CI does
 not introduce new gates and does not relax any.** It is the same contract, re-verified where a human
 can see it.
 
+🔴 **CI-SPLIT-JOBS-PLAN.md's redesign**: the single `verify-and-evaluate` job that used to run every
+gate sequentially, in one runner, is now **one job per gate stage**, each **conditional on the
+directory-structure/config fact `setup` computes** (Section 4.0j) — a stage with nothing to run
+reports `skipped`, an EARNED N/A, never a failure and never a silent pass.
+
 ```
 on: pull_request → [ <base-branch>, 'epic/**', 'bug/**', 'enh/**' ]   (Section 4.0a)
     push        → [ <base-branch> ]        workflow_dispatch
 
-job: verify-and-evaluate
-  ├── Stage 1  Deterministic       tests/.evals/scripts/run-static-evals.sh <base-sha>
-  │                                D1 lint · D2 types · D3 SAST(+SonarQube) · D4 deps · D5 licences
-  │                                D6 complexity · D7 secrets
-  │                                🔴 DELTA-SCOPED vs the base ref — never a whole-tree verdict
-  ├── Stage 2  Behavioural         unit tests + coverage ≥ unitTestCoverageMin, then Gherkin
-  │                                in Podman — B1 (this unit) · B2 (every other feature file)
-  │                                · B3 (whole epic) only on a PR into the base branch
-  ├── Stage 3  Semantic            J1 architecture · J2 security (OWASP) vs tests/.evals/rubrics/*
-  │                                BLOCKING at the config minimums
-  ├── SonarQube               LAST gate step · if: always() · continue-on-error
-  │                                one input to the verdict, never a kill switch
-  ├── Verdict                 🔴 the ONLY step that fails the job — tallies every
-  │                                gate's outcome (Section 4.0c)
+job: setup                                              (needs: —)
+  checkout · resolve EVAL_KEY · resolve base SHA · purge inherited evidence · read manifest ·
+  5x actions/setup-* (permanently present, gated on has_<stack>) · setup other toolchains ·
+  install dependencies · compile/build · detect stage scopes (has_unit_tests/has_behavior_tests/
+  has_e2e_tests/manifest_resolved) · package the built workspace (tar, .git INCLUDED — static-evals/
+  unit-coverage/judge-gates all diff against BASE_SHA and hard-fail or silently mis-score without it) · upload it
+  as the ONE `workspace-<key>` artifact every gate job below downloads instead of re-installing/re-building
+
+job: static-evals                                       (needs: setup — no job-level if:)
+  ├── ci-manifest-runner.sh eval-tools    re-installs semgrep/gitleaks/mypy/etc. (Section 3.2) —
+  │                                        `setup`'s own install put them on ITS runner only; a
+  │                                        `.git`-included, files-only tarball never carries a
+  │                                        system-wide/global tool install to this SEPARATE runner.
+  │                                        Standalone, unconditional mode — never the project's own
+  │                                        diff-scoped `installCommands` (those stay in the tarball)
+  └── Stage 1  Deterministic       tests/.evals/scripts/run-static-evals.sh <base-sha>
+                                    D1 lint · D2 types · D3 SAST(+SonarQube) · D4 deps · D5 licences
+                                    D6 complexity · D7 secrets — DELTA-SCOPED, never whole-tree
+                                    Runs UNCONDITIONALLY; an unresolved manifest degrades to an
+                                    EARNED N/A per gate INSIDE the script (empty ci.roots[]), never a
+                                    job-level skip
+
+job: unit-coverage            (needs: setup, if: needs.setup.outputs.has_unit_tests == 'true')
+  ├── ci-manifest-runner.sh install (+ toolchain)   re-installs project deps for a TOUCHED root
+  │                                    — same class of gap as static-evals' eval-tools reinstall: a
+  │                                    bare `pip install`/`bundle install` (no venv/local vendor path)
+  │                                    resolves outside the repo tree, so a fresh runner's tarball
+  │                                    never has the test runner itself. Stays diff-scoped (unlike
+  │                                    eval-tools) — a root this PR didn't touch is skipped here too
+  └── Stage 2  Behavioural         unit tests + coverage ≥ unitTestCoverageMin
+
+job: behavior-gherkin        (needs: setup, if: needs.setup.outputs.has_behavior_tests == 'true')
+  └── Stage 2  Behavioural         Gherkin in Podman — B1 (this unit) · B2 (every other feature
+                                    file) · B3 (whole epic) only on a PR into the base branch
+
+job: playwright-e2e          (needs: setup, if: needs.setup.outputs.has_e2e_tests == 'true')
+  └── Stage 2  Behavioural         Playwright E2E headless — TRUST GATE, re-executes the local
+                                    Step 11d run, never originates it. Gated on THIS story's own
+                                    tests/e2e/<key>/ having content — a directory fact, never
+                                    ci.playwright.enabled (Section 3.0f still supplies HOW to run it)
+
+job: judge-gates                                        (needs: setup — no job-level if:)
+  └── Stage 3  Semantic            J1 architecture · J2 security (OWASP) vs tests/.evals/rubrics/*
+                                    BLOCKING at the config minimums. Runs UNCONDITIONALLY — J1/J2
+                                    score the diff itself and do not depend on ci.roots[] state
+
+job: sonarqube                    (needs: [setup, unit-coverage] — if: always())
+  ├── Download/restore unit-coverage's coverage report(s)   needs unit-coverage, NOT setup alone
+  │                                    — the setup tarball is packaged BEFORE any test runs, so it
+  │                                    never has coverage data; without this dependency Sonar's
+  │                                    "coverage on new code" measurement finds none and reports 0%
+  └── SonarQube                    one input to the verdict, never a kill switch (Section 4.1)
+
+job: verdict     (needs: [setup, static-evals, unit-coverage, behavior-gherkin, playwright-e2e,
+                          judge-gates, sonarqube], if: always())
+  ├── Download every gate-<name> artifact
+  ├── Verdict                 the ONLY step that fails the job — merge-verdict.sh maps every
+  │                                gate job's needs.<job>.result into the same tally the old single
+  │                                Verdict step used to compute (Section 4.0c)
   └── Stage 4  Scorecard           if: always() — publish eval-summary to the PR + job summary
 
-  🔴 EVERY gate step: id + continue-on-error. NEVER `|| true` (Section 4.0c).
+  EVERY gate job is isolated by construction — a job's own failure never skips a sibling job
+     (they are parallel, independent jobs). NEVER `|| true` inside a gate job's own step (Section 4.0c).
 
-job: self-repair          (needs: verify-and-evaluate, if: failure())
+job: self-repair          (needs: verdict, if: failure())
   └── Claude Code fixes the failure and pushes a commit   — max retryLimitForSelfRepair attempts
 ```
 
@@ -606,6 +742,15 @@ enforce silently does not run, and the PR looks merely "red" rather than "unveri
 | V32 | **The Manifest triage class is WIRED, not just documented** | `auto-fix-agent.*` reads `tests/.evals/_run/manifest-defects.txt` and exits non-zero without repairing when it is non-empty, and it does so **before** the retry counter is written. 🔴 Section 6.4 described this class for a release while three scripts emitted `MANIFEST DEFECT` and **nothing consumed it** — a documented triage class with no consumer is the same defect as a documented gate with no step |
 | V33 | **Self-repair's scope is ENFORCED, not merely instructed** | `auto-fix-agent.*` compares every path it touched (committed **and** working-tree) against its scope and aborts **before the push** on a violation: on a `ci/epic-smoke-*` head branch `src/**` and `tests/**` (outside `tests/.evals/**`) are forbidden; on a work-unit PR `.github/workflows/**`, `tests/.evals/config.json`, `tests/.evals/rubrics/**`, `tests/.evals/ci-manifest.d/**` and `spec/**` are forbidden. A prompt is guidance; this check is what makes the scope binding |
 | V34 | **Every test command is no-tests-safe** | For each `ci.roots[]` entry with a `coverageCommand`, either the command carries the runner's own no-tests flag (`--passWithNoTests`) or the root declares `noTestsExitCode` (Section 3.0). A root with neither turns *"this repo has no suite yet"* into a hard gate failure — the exact condition that once produced 45 minutes of self-repair authoring dummy tests |
+| V35 | **D5/D6 commands reference their configured thresholds** | `run-static-evals.*` exports `AIRE_DISALLOWED_LICENSES` and `AIRE_MAX_CYCLOMATIC_COMPLEXITY`; the resolved D5 and D6 commands must consult them, otherwise the number in `tests/.evals/config.json` is decorative and the gate fails on ANY new finding rather than one that breaches the threshold. |
+| V36 | **Both generated Sonar steps carry the run-time scope guard** | The `sonarqube` job's `Resolve Sonar scope` step exists, the scan step reads `steps.sonarscope.outputs.skip`, and the quality-gate step's guard checks `report-task.txt` — Section 4.1.1b. Without this, a source path that does not exist yet (a greenfield `src/` at the smoke test) fails the scan outright and takes the quality gate down with it |
+| V37 | **`tests/.evals/config.json` validates against `tests/.evals/config.schema.json`** | CI-SPLIT-JOBS-PLAN.md Section 4. `ajv validate -s config.schema.json -d config.json` when `ajv` is available; otherwise a `jq`-based structural fallback (same "if the tool's unavailable, say so" pattern V2 uses for `actionlint`) checking the required top-level keys, plus the cross-field rules a generic schema can't express: `rubricVersion` in `architecture-rubric.json` equals `architecture.md`'s own version; `disallowedLicenses`/`maxCyclomaticComplexity` present whenever D5/D6 are in `ci.gates` (cross-referencing V35); every `tools[]` entry has a matching `toolInstallCommands` entry and vice versa (cross-referencing Section 4.0i.1 P1's declaration-completeness rule, so preflight and generation-time validation agree). `config.json` is the load-bearing input to the whole generated pipeline — this makes a malformed or incomplete manifest a **blocking generation-time gate**, not just a runtime read |
+| V38 | **Every per-stage job conditional reads a `needs.setup.outputs.*` fact, never hardcoded or re-derived — and only the three genuinely conditional jobs carry one** | CI-SPLIT-JOBS-PLAN.md Section 1's own job table + Section 6 (Section 4.0j's own "per-stage job conditionals from directory structure" rule, applied here as a check). `unit-coverage` gates on `needs.setup.outputs.has_unit_tests`; `behavior-gherkin` on `has_behavior_tests`; `playwright-e2e` on `has_e2e_tests`. `static-evals` and `judge-gates` are listed **unconditional** ("--") in Section 1's table and must carry NO job-level `if:` at all — D1-D7 degrade to an earned N/A per gate inside `run-static-evals.sh` on an unresolved manifest, and J1/J2 score the diff regardless of `ci.roots[]` state, so gating either job on `manifest_resolved` would wrongly turn a script-earned N/A into a job-skipped N/A. A job whose `if:` re-derives its own directory check, or is hardcoded to `true`, can disagree with `setup`'s own answer — the same "single manifest fact, read identically by both sides" principle as Section 4.0d, applied to job gating |
+| V39 | **`judge-gates`' `run-evals.sh` step carries `continue-on-error: true`** | `run-evals.sh` runs UNMODIFIED in the split-job pipeline and still computes its OWN internal verdict/exit-code by iterating ALL of `ci.gates` — in this isolated job it can only ever see J1_architecture/J2_security's real results; every other gate has no local file here and is unconditionally marked ERROR "declared but never run" in this job's own private `eval.json` copy, dragging the step's exit code non-zero on EVERY run regardless of what J1/J2 actually scored. Without `continue-on-error`, `needs.judge-gates.result` would be `"failure"` on every single PR forever, permanently poisoning `merge-verdict.sh`'s `failed-gates.txt` tally and firing self-repair on every run chasing a gate that never actually failed. The real J1/J2 verdict stays fully enforced — `merge-verdict.sh` extracts ONLY the J1_architecture/J2_security entries from this job's own `eval.json` — `continue-on-error` only stops this job's structurally-blind exit code from masquerading as that real verdict |
+| V40 | **`auto-fix-agent.*`'s sonar-infrastructure triage filters `sonar` out of the working set, never aborts the whole attempt on it** | Section 6.4's infra-class triage must not let one non-repairable gate swallow OTHER, genuinely repairable gates that failed in the SAME run. A prior version called `report_and_exit`/`ReportAndExit` unconditionally the instant `sonar` appeared in `failed-gates.txt` with no reported conditions — if `static`/`unit`/etc. were ALSO present as real code defects, the entire repair attempt was silently abandoned and the only output was the sonar infra note. Observed in production exactly this way: `static-evals` and `unit-coverage` both genuinely red, self-repair's whole output was "fix the Sonar connection/secret." The correct shape reassigns the gate list (`GATES=("${REPAIRABLE_GATES[@]}")` / `$gates = $repairableGates`) after filtering `sonar` out, and declines the ENTIRE attempt only when nothing repairable is left afterward |
+| V41 | **"Purge inherited evidence" preserves `static/baseline/`, never a bare `rm -rf` of the whole `EVIDENCE_DIR`** | `run-static-evals.sh`'s `delta_diff()` REUSES an already-committed baseline file (`dev-implement.md` Step 4.6 captures and commits it once, on the story branch, before any code is generated — a TRACKED path, never disposable scratch space) instead of re-deriving it via a fragile stash/checkout/restore dance. A bare purge deletes that committed baseline FROM DISK (even though it stays committed in git history), which makes `[ ! -f "$base" ]` look true and forces every gate down the fallback checkout path — which then hits a real git edge case ("untracked working tree files would be overwritten by checkout") and aborts. Observed in production exactly this way, on the first story ever to exercise this interaction (every earlier story touched no changed files under a real root, so it always short-circuited to N/A before reaching this code path). The purge's own job — stopping a locally-committed `eval.json`/`eval-summary.md` from fooling CI into publishing a verdict it never actually computed — has nothing to do with the baseline capture files |
+| V42 | **`sonarqube` depends on `unit-coverage` (`needs: [setup, unit-coverage]`, `if: always()`), never `needs: setup` alone** | `sonarqube` and `unit-coverage` both extract independent copies of the SAME `setup` tarball, packaged BEFORE any test ran — it never contains a coverage report. `unit-coverage` generates one fresh inside its own extracted copy; without this dependency, `sonarqube` (a parallel sibling job with no ordering relationship to `unit-coverage`) can — and, being unbounded by any wait, often will — finish before `unit-coverage` even uploads its `coverage-reports-<key>` artifact, so Sonar's "coverage on new code" measurement finds no data at all and reports 0%, failing the quality gate for genuinely well-covered new code. Observed in production exactly this way, on the first story to reach a real coverage measurement combined with an enabled SonarQube gate. `if: always()` is required BECAUSE of the new dependency — a job with `needs: [X]` is skipped by default whenever X is skipped, and `sonarqube` must stay unconditional even when `unit-coverage`'s own `if: has_unit_tests` is unmet |
+| V43 | **The `verdict` job's "Upload eval artifacts" step lists `tests/.evals/_run/sonar-conditions.txt`, not just `failed-gates.txt` + `reports/eval-evidence/`** | `merge-verdict.sh` already copies the `sonarqube` job's own conditions file to this exact path so `auto-fix-agent.*`'s sonar triage (Section 6.4) can tell a REAL quality-gate finding apart from an infra failure — but that file never reaches self-repair at all unless it is ALSO in this upload list. Without it, self-repair always finds no conditions file, always concludes "infrastructure, not a code defect" regardless of what actually happened, and gives up with a misleading message even on a genuine, fixable Sonar finding. Harmless in the sense that it still stops rather than fabricating a pass, but the diagnosis is wrong every single time a real Sonar finding occurs |
 
 🔴 **V25 and V26 were implemented in `validate-pipeline.sh`/`.ps1` before this table was kept current with
 them — they exist and run today even though they were missing from this list until V27 was added
@@ -848,6 +993,22 @@ of its **own** PR, validated by that PR's own already-working CI run (Section 4.
 covers `story/**` → the epic branch) — adding a second scratch-PR cycle per story would double Actions
 minutes for a case the existing per-story flow already covers correctly.
 
+#### 4.0.7 TEST PLACEMENT CHECK — a LOCAL gate, not a CI template
+
+`common/directory-structure.md` rules 4a/4b state where a test file must live, and the Test Placement
+Verification Gate (`implementation/code-generation.md` Step 11a.6, `SH-LOOP-12` in `workflows/dev-implement.md`
+Step 6.3) proves it on every `dev-implement` run. 🔴 `templates/ci/` ships **no** `check-test-placement.*`
+script, so nothing is copied for it and the generated pipeline has no test-placement step. The run applies
+the rules itself to `git diff --name-only --diff-filter=ACMR <base-sha>...HEAD` — classifying each path as
+`application`, `unit-test`, `api-test` or `other` from the stack's own naming conventions (Go `_test.go`
+and Rust `#[cfg(test)]` co-location are never violations) — and writes
+`reports/unit-test-evidence/<key>/test-placement-check.log` (`common/work-unit-artifacts.md` Section 2.3).
+A project that adds its own `tests/.evals/scripts/check-test-placement.*` is run instead, with the same log.
+
+🔴 This check is **additional** to D1–D7, never folded into one of them and never a substitute for
+`run-static-evals.*` — a repo can lint-clean and type-clean while still writing a unit test under
+`src/`, and D1–D7's thresholds have nothing to say about file location.
+
 ### 4.0a 🔴 TRIGGER — every AIRE integration branch must be covered
 
 AIRE raises PRs into **several** branches, not just the base. A `pull_request` trigger filtered to
@@ -1000,6 +1161,17 @@ the baseline diff decides *who is responsible*. Both are required.
 A step matching any of these is a generation defect, caught by **V7** in Section 4.0.1.
 
 ### 4.0c 🔴 STEP FAILURE ISOLATION — one gate must never skip the others
+
+🔴 **Reframed at JOB level under the nine-job shape (CI-SPLIT-JOBS-PLAN.md Section 1).** Each gate now
+runs in its OWN job (`static-evals`, `unit-coverage`, `behavior-gherkin`, `playwright-e2e`,
+`judge-gates`, `sonarqube`) — jobs are independent and parallel by construction, so Defect A below (one
+gate aborting every later one) cannot recur *between* gates the way it could inside one job. What
+still applies, unchanged, **within** a job that has more than one step (e.g. `sonarqube`'s own scan +
+gate steps) is the isolate-then-decide pattern below. What moved is the FINAL decision: instead of one
+`Verdict` step reading `steps.<id>.outcome` from sibling steps in the same job, the `verdict` job reads
+every gate job's own `needs.<job>.result` and hands it to `merge-verdict.sh` — "isolate, collect, then
+decide once" is now "one job per gate, one verdict job downstream" (Section 4.0j has the job-level
+`if:` half of this redesign).
 
 Two opposite defects show up in generated pipelines, and both destroy the verdict.
 
@@ -1292,9 +1464,20 @@ own.
 **What this requires, in every generated pipeline and every generated script:**
 
 1. **A `Purge inherited evidence` step**, immediately after `Resolve EVAL_KEY` and BEFORE any gate step
-   (including install/build), in the `verify-and-evaluate` job: `rm -rf tests/.evals/_run
-   "reports/eval-evidence/${EVAL_KEY}"`. Everything a gate needs is produced by that gate; anything
-   present beforehand is by definition not this run's.
+   (including install/build), in the `setup` job (single-job pipelines: `verify-and-evaluate`).
+   Everything a gate needs is produced by that gate; anything present beforehand is by definition not
+   this run's — **except `reports/eval-evidence/${EVAL_KEY}/static/baseline/`**, which this step MUST
+   preserve (copy out, `rm -rf tests/.evals/_run "reports/eval-evidence/${EVAL_KEY}"`, restore).
+   🔴 **This is not a minor exception — skipping it is a real, observed production defect.**
+   `run-static-evals.sh`'s `delta_diff()` REUSES that exact committed file (dev-implement.md Step 4.6
+   captures and commits it once, before any code is generated) instead of re-deriving it via a stash/
+   checkout/restore dance; a bare purge deletes it from disk (even though it stays committed in git
+   history), which makes the reuse check look false and forces every gate down the fragile fallback
+   path — which then genuinely aborts with "untracked working tree files would be overwritten by
+   checkout." Every OTHER path under `reports/eval-evidence/${EVAL_KEY}/` — `eval.json`,
+   `eval-summary.md`, the `-head` result files, `judge/` — purges exactly as before; only the
+   committed baseline capture is exempt, and only because it is a raw tool-output snapshot, never a
+   verdict a story could fake CI into republishing (Validation: V41).
 2. **`tests/.evals/_run/` is gitignored** in the generated repo (`common/directory-structure.md`), and
    `auto-fix-agent.*`'s `git add -A` must never stage it. A story's own committed evidence under
    `reports/eval-evidence/story-[N.M]/` is intentionally tracked (Section 5.3) — only the CI-local
@@ -1349,7 +1532,7 @@ for every root it establishes, or it records why a field is genuinely inapplicab
 step to each of the workflows that actually generate code — `workflows/dev-implement.md`,
 `workflows/bug-fix-implement.md`, `workflows/enhancement-implement.md` — placed **after the local gates
 pass and before the commit**: write `tests/.evals/ci-manifest.d/<work-unit-key>.json` (`story-<N.M>.json`,
-`bug-<TICKET-ID>.json`, `enh-<TICKET-ID>.json`) containing an array of the `ci.roots[]`-shaped entries
+`bug-<TICKET-ID>.json`, `enhancement-<TICKET-ID>.json`) containing an array of the `ci.roots[]`-shaped entries
 this work unit established or extended, then re-run `validate-pipeline.{sh,ps1}` before committing.
 `workflows/ticket-implement.md` gets nothing — it is a pure router that hands off to two of the three
 workflows above.
@@ -1585,17 +1768,29 @@ every root this work unit's diff touches:
    `dependsOn`, `toolchainSetup` for a stack outside the built-in five, and `sourcePaths`/`testPaths`
    that actually match the files in this unit's diff.
 
-**P2 — Clean-room execution of the REAL CI entrypoints, provisioned ONLY from the manifest.** In a
-disposable environment built exactly as Section 4.0.1a requires (fresh venv / empty `node_modules` /
-throwaway Podman container from the runner's own base image — **never the agent's ambient shell, and
-never with a manual `pip install` the manifest does not declare**), run the same scripts CI runs, with
-`BASE_SHA="$(git merge-base origin/<integration-branch> HEAD)"`:
+**P2 — Clean-room execution of the REAL CI entrypoints, provisioned ONLY from the manifest.** Run via
+**`tests/.evals/scripts/preflight-clean-room.{sh,ps1}`** (CI-SPLIT-JOBS-PLAN.md Section 5) — this
+replaced the previously inline, loosely worded instructions in this subsection with one concrete
+script `dev-implement.md` Step 2.5 (SH-LOOP-9) calls directly:
+
+- It resolves the **exact same base image the generated CI job runs on**, reading the committed
+  workflow's own `runs-on:` and mapping it to a pinned container tag (e.g.
+  `catthehacker/ubuntu:act-24.04`) — never a generic, unpinned `ubuntu:latest`, and never a second,
+  independently-chosen pin that could drift from what the hosted runner actually uses. A story that
+  touched the behavioural `Containerfile`/`run.sh` uses THAT image instead (P3 below).
+- Inside that pinned container (`podman run`, bind-mounting the repo), it runs, in order: **P1**
+  (declaration-completeness read, no environment needed) → **P2** itself
+  (`ci-manifest-runner.sh install`, `build`, `run-static-evals.sh`, `ci-manifest-runner.sh coverage`,
+  all against `BASE_SHA = git merge-base origin/<integration-branch> HEAD`) → **P3** below.
+- **Same failure/repair contract as 4.0i.2/4.0i.3, unchanged** — this script only makes the
+  *environment* explicit and reproducible; it does not change what counts as a failure or how it is
+  repaired.
+- Falls back to venv/`node_modules` isolation in the ambient shell, with an explicit logged reason,
+  **only** when Podman is genuinely unavailable — the same one permitted exception the behavioural
+  gate already uses, made consistent instead of two different "when Podman's missing" rules.
 
 ```bash
-bash tests/.evals/scripts/ci-manifest-runner.sh install  "$BASE_SHA"   # roots' deps + every eval tool
-bash tests/.evals/scripts/ci-manifest-runner.sh build    "$BASE_SHA"   # where a root declares one
-bash tests/.evals/scripts/run-static-evals.sh            "$BASE_SHA"   # D1-D7
-bash tests/.evals/scripts/ci-manifest-runner.sh coverage  "$BASE_SHA"  # unit tests + coverage
+bash tests/.evals/scripts/preflight-clean-room.sh <integration-branch>
 ```
 
 **P3 — Behavioural provisioning.** The behavioural tiers already run in Podman from the committed
@@ -1656,6 +1851,56 @@ The epic-level smoke test (Section 4.0.6) is the third member of this family and
 it proves the pipeline *and* self-repair work end-to-end in this repo, once, on a zero-diff PR, before
 any story starts. Preflight is the per-story equivalent for the one thing a zero-diff PR can never
 exercise — provisioning for code that did not exist yet.
+
+### 4.0j 🔴 Per-stage job conditionals from directory structure
+
+CI-SPLIT-JOBS-PLAN.md Section 1's literal ask: "conditional checks at their corresponding stages, per
+AIRE directory structure" — as a **skipped job**, not a step conditionally no-op'd inside one job. A
+skipped job shows as a distinct grey row in the Actions UI (clean signal: "not applicable" vs "ran and
+failed"), which is the debuggability win a step-level no-op cannot give.
+
+`tests/.evals/scripts/detect-stage-scopes.{sh,ps1}` runs once, inside the `setup` job, right after
+`Read manifest` (a NEW, separate script from `read-manifest.*` on purpose — that script's contract is
+STACK facts, this one's is DIRECTORY/CONFIG SCOPE facts, the same single-responsibility split the
+framework already uses for `resolve-eval-key.sh` / `read-manifest.sh` / `ci-manifest-runner.sh`). It
+emits, as job outputs the three genuinely conditional downstream jobs' `if:` reads via
+`needs.setup.outputs.*` — 🔴 only THREE jobs are conditional at all, per CI-SPLIT-JOBS-PLAN.md
+Section 1's own job table:
+
+| Fact | True when | Gates |
+|---|---|---|
+| `has_unit_tests` | `tests/unit/` exists and is non-empty | `unit-coverage` |
+| `has_behavior_tests` | `tests/behavior/` exists and is non-empty, or a `spec/behavior.feature` / `spec/behavior/*.feature` is present | `behavior-gherkin` |
+| `has_e2e_tests` | `tests/e2e/${EVAL_KEY}/` — **this work unit's own** Playwright directory — exists and is non-empty | `playwright-e2e` |
+
+`manifest_resolved` (`ci.manifestState == "resolved"`) is also emitted, but it gates **no job-level
+`if:`** — `static-evals` and `judge-gates` run **unconditionally** (Section 1's table lists both
+"--"). D1-D7 degrade to an earned N/A per gate INSIDE `run-static-evals.sh` itself on an unresolved,
+empty-`roots[]` manifest (Section 3.0) — a job-level skip and a script-earned N/A are different
+signals, and this stage always used the second one, even before the split. J1/J2 score the diff's
+architecture/security directly and never depended on `ci.roots[]` at all. `sonarqube` keeps its own
+internal step-level scope guard (V36, `Resolve Sonar scope`) rather than a job-level `if:` too — its
+row in Section 1's table is also "--", with the parenthetical note that the guard stays internal.
+
+🔴 **`has_e2e_tests` is scoped to the work unit, never "does `tests/e2e/` exist anywhere in the
+repo"** — a later story's specs must never make an earlier or unrelated story's CI run Playwright.
+This is also why `playwright-e2e`'s condition is `has_e2e_tests` alone, never `ci.playwright.enabled`
+(Section 3.0f): whether Playwright runs is decided by the directory-structure fact that this story
+generated specs, not by a separate manifest flag to reconcile against it. `ci.playwright.enabled`
+(plus `startCommand`/`readinessUrl`/`testCommand`) stays exactly what the local gate and CI's own
+trust-gate step read for **how** to run it once the directory fact says it **should**.
+
+🔴 **A skipped job is an EARNED N/A, never a failure and never a silent pass** — the same rule the
+framework already enforces at the script level (`common/eval-framework.md` Section 2.4.2), now applied
+at job level. `merge-verdict.sh` (Section 4.0c's job-level aggregation) is what turns
+`needs.<job>.result == "skipped"` into a real `N/A` entry in `eval.json`, never a dropped gate id and
+never a false `PASS`.
+
+**Validation — V38** (Section 4.0.1): every one of `static-evals`/`unit-coverage`/`behavior-gherkin`/
+`playwright-e2e`/`judge-gates`'s own `if:` reads its `needs.setup.outputs.*` fact from the table above,
+verbatim — never a hardcoded `true`/`false`, and never a re-derived directory check inside the job
+itself. The same "single manifest fact, read identically by both sides" principle as Section 4.0d,
+applied to job gating instead of working-directory resolution.
 
 ### 4.1 Stage 1 — SonarQube: generate everything, then ask for the token
 
@@ -1785,10 +2030,13 @@ instructions the user will follow in another window, so it has to read as instru
 Substitute the bracketed values with what was actually generated.
 
 ```
-CI SETUP REQUIRED
+MANUAL STEPS REQUIRED FOR CI SETUP
 
-AIRE has generated everything it can for this repository:
+The items below are things YOU must do manually — outside this session, in your GitHub 
+repository settings and, if you use SonarQube, in your SonarQube account. AIRE cannot
+create secrets or accounts on your behalf.
 
+WHAT AIRE ALREADY GENERATED
   Created   .github/workflows/agentic-eval-pipeline.yml
             all gate steps, the verdict step, and the self repair job
   Created   tests/.evals/scripts/auto-fix-agent.sh
@@ -1799,62 +2047,83 @@ AIRE has generated everything it can for this repository:
   Updated   tests/.evals/config.json
             sonarqube.enabled = true
 
-Three values cannot be generated because they belong to your accounts, not to
-this repository. Add them as GitHub Actions secrets before the pipeline can run:
-
-  CLAUDE_CODE_OAUTH_TOKEN   lets the pipeline fix its own failing gates
-  SONAR_TOKEN               authentication token for SonarQube
-  SONAR_HOST_URL            address of your SonarQube server
-
-  sonar.organization        not a secret. Set it in sonar-project.properties,
-                            currently YOUR_ORG_NAME. See below.
-
-  GITHUB_TOKEN              nothing to do. GitHub provides this automatically and
-                            the pipeline already passes it to the secret scanner.
-
-GET YOUR CLAUDE CODE TOKEN
+------------------------------------------------------------
+STEP 1 — GET AND ADD YOUR CLAUDE CODE TOKEN 
+------------------------------------------------------------
 
   1. Install Claude Code, if you do not already have it:
        npm install -g @anthropic-ai/claude-code
   2. Sign in once, interactively:
        claude
      Complete the browser prompt, then leave with /exit
-  3. Generate a long lived token for CI:
+  3. Generate a long lived token for CI and run the command given below in the terminal:
        claude setup-token
   4. Copy the value it prints. It is shown once.
   5. Prefer an API key instead? Create one at https://console.anthropic.com
      under API Keys, and name the secret ANTHROPIC_API_KEY rather than
      CLAUDE_CODE_OAUTH_TOKEN. The pipeline accepts either.
 
-  Without one of these the gates still run and still block the PR.
-  Only the automatic self repair job is skipped.
+  Add it to GitHub:
+  1. Open this repository on GitHub.
+  2. Go to Settings, then Secrets and variables, then Actions.
+  3. Select New repository secret.
+  4. Name: CLAUDE_CODE_OAUTH_TOKEN
+     Value: the token from claude setup-token.
+     Select Add secret.
 
-NOW CHOOSE HOW YOU RUN SONARQUBE
+If you do not want SonarQube, and Step 1 above is done:
+   type "skip" in chat now to continue.
+
+Else complete Steps 2 and 3 below and then type "proceed" in chat once you are done with the setup
+
+------------------------------------------------------------
+STEP 2 — SET UP SONARQUBE 
+------------------------------------------------------------
+
+  This step has two possible paths. Find your situation below and follow that path manually. 
+
+  IF YOU USE SONARQUBE CLOUD — hosted by Sonar, free for public repositories:
+
+    1. Open https://sonarcloud.io and sign in with your GitHub account.
+    2. On the dashboard, click on + button.
+    3. Select Analyze new project and choose this repository and click on Set up.
+    4. In this project dashboard, navigate to Administration and click on Analysis Method.
+    5. Toggle off the Automatic Analysis if already enabled.
+    6. Click on Profile icon and then click on My Account.
+    7. Click on Access Tokens and Enter a token name and select Generate.
+    8. Copy the token value now. It is shown once and cannot be retrieved later.
+    9. Your SONAR_HOST_URL is https://sonarcloud.io
 
 
-OPTION A - SonarQube Cloud. Hosted by Sonar. Free for public repositories.
+  IF YOU USE SONARQUBE COMMUNITY BUILD — free, self-hosted, you run the server:
 
-  1. Open https://sonarcloud.io and sign in with your GitHub account.
-  2. Select Analyze new project and choose this repository.
-  3. Open My Account, then Security.
-  4. Enter a token name and select Generate.
-  5. Copy the token value now. It is shown once and cannot be retrieved later.
-  6. Your SONAR_HOST_URL is https://sonarcloud.io
+    1. Start the server:
+         podman run -d --name sonarqube -p 9000:9000 docker.io/sonarqube:community
+    2. Wait about ninety seconds, then open http://localhost:9000
+    3. Sign in with username admin and password admin.
+    4. Set a new password when prompted.
+    5. Open My Account, then Security.
+    6. Enter a token name and select Generate. Copy the token value.
+    7. Your SONAR_HOST_URL is the address your CI runner can reach this server on.
+       http://localhost:9000 will not work from a GitHub hosted runner. Use a
+       reachable host name, or run the pipeline on a self hosted runner.
 
-OPTION B - SonarQube Community Build. Free, self-hosted, you run the server.
 
-  1. Start the server:
-       podman run -d --name sonarqube -p 9000:9000 docker.io/sonarqube:community
-  2. Wait about ninety seconds, then open http://localhost:9000
-  3. Sign in with username admin and password admin.
-  4. Set a new password when prompted.
-  5. Open My Account, then Security.
-  6. Enter a token name and select Generate. Copy the token value.
-  7. Your SONAR_HOST_URL is the address your CI runner can reach this server on.
-     http://localhost:9000 will not work from a GitHub hosted runner. Use a
-     reachable host name, or run the pipeline on a self hosted runner.
+  Whichever path you followed, add the token as GitHub secrets:
+  1. Open this repository on GitHub.
+  2. Go to Settings, then Secrets and variables, then Actions.
+  3. Select New repository secret.
+  4. Name: SONAR_TOKEN
+     Value: the token you copied from SonarQube.
+     Select Add secret.
+  5. Select New repository secret again.
+  6. Name: SONAR_HOST_URL
+     Value: your server address.
+     Select Add secret.
 
-SET YOUR SONARQUBE ORGANIZATION NAME
+------------------------------------------------------------
+STEP 3 — SET YOUR SONARQUBE ORGANIZATION NAME 
+------------------------------------------------------------
 
   1. Open sonar-project.properties in this repository.
   2. Find the line:  sonar.organization=YOUR_ORG_NAME
@@ -1862,36 +2131,9 @@ SET YOUR SONARQUBE ORGANIZATION NAME
      under My Organizations, or in the URL of your project page.
   4. Self-hosted SonarQube does not use organizations. Delete the line instead.
 
-IF THIS REPOSITORY IS OWNED BY A GITHUB ORGANIZATION
+After adding the secrets and setting your organization name, 
+      type: "proceed" in chat to continue with SonarQube
 
-  The pipeline scans for secrets using the gitleaks container, which needs no token
-  and no licence. Nothing to do.
-
-  Only if you later switch to the gitleaks-action marketplace action: that action
-  requires a GITLEAKS_LICENSE secret on organization owned repositories. It is free
-  for personal and public repositories. See https://gitleaks.io for a licence key.
-
-ADD THE SECRETS TO GITHUB
-
-  1. Open this repository on GitHub.
-  2. Go to Settings, then Secrets and variables, then Actions.
-  3. Select New repository secret.
-  4. Name: CLAUDE_CODE_OAUTH_TOKEN
-     Value: the token from claude setup-token.
-     Select Add secret.
-  5. Select New repository secret again.
-  6. Name: SONAR_TOKEN
-     Value: the token you copied from SonarQube.
-     Select Add secret.
-  7. Select New repository secret again.
-  8. Name: SONAR_HOST_URL
-     Value: your server address.
-     Select Add secret.
-
-After adding the secrets and setting your organization name, type: proceed
-
-To continue without SonarQube instead, type: skip
-Semgrep and the sixteen rule Security Baseline review still run and still block.
 ```
 
 #### 4.1.3 Handling the answer
@@ -2022,7 +2264,8 @@ without this precondition already in place.
 ## 5. Generated scripts — `tests/.evals/scripts/`
 
 🔴 **These are not generated from scratch.** `run-static-evals`, `run-evals`, `auto-fix-agent`,
-`validate-pipeline` and `smoke-test-epic` are copied verbatim from `templates/ci/*.sh` / `*.ps1`
+`validate-pipeline`, `smoke-test-epic`, `detect-stage-scopes`, `merge-verdict` and
+`preflight-clean-room` are copied verbatim from `templates/ci/*.sh` / `*.ps1`
 (Section 1) — pick the `.sh` or `.ps1` variant per `templates/ci/TEMPLATE-MANIFEST.md`, never author a new one.
 What follows in this section is
 the **contract those copied scripts must satisfy**; if a copied script violates it, the fix belongs in
@@ -2155,9 +2398,15 @@ than a mismatch.
       - name: "Resolve EVAL_KEY"
         id: evalkey
         run: |
-          # branch: story/2-frontend-... -> key: story-2
+          # work unit:      story/2-frontend-...  -> key: story-2
+          # infrastructure: ci/epic-smoke-EPIC-1  -> key: ci-epic-smoke
+          #                 ve/PROJ-9-test-docs   -> key: ve-PROJ-9
           ref="${{ github.head_ref }}"
-          key="$(printf '%s' "$ref" | sed -E 's#^(story|bug|enh)/([^-]+).*#\1-\2#')"
+          key="$(printf '%s' "$ref" \
+                 | sed -E -e 's#^(story|bug|enh)/([^-]+).*#\1-\2#' \
+                          -e 's#^ci/epic-smoke.*#ci-epic-smoke#' \
+                          -e 's#^ci/([^-/]+).*#ci-\1#' \
+                          -e 's#^ve/([^-/]+).*#ve-\1#')"
           case "$key" in */*|"") echo "EVAL_KEY unresolved from '$ref'" >&2; exit 1 ;; esac
           echo "key=$key" >> "$GITHUB_OUTPUT"
 ```
@@ -2165,6 +2414,12 @@ than a mismatch.
 🔴 **Fail loudly if the key still contains `/` or is empty.** A malformed key must stop the run, never
 fall through to `unknown` — `reports/eval-evidence/unknown/` is how a whole cycle's evidence gets orphaned.
 The key CI computes MUST equal the key the local gates used; they address the same directory.
+
+🔴 **The `ci-*` / `ve-*` prefixes are load-bearing, not cosmetic.** A branch that is not a work unit
+has no behaviour contract under test, so `tests/.evals/behavior/run.sh` reads those prefixes and returns
+**N/A (exit 3)** for B1/B2/B3 instead of ERROR (`common/behavior-spec.md` Section 6.0 — the activation
+rule). Without the `ci/` and `ve/` arms above, the epic-level smoke PR and any ve docs PR fail
+`Resolve EVAL_KEY` outright, and a run that did get through would report a false behaviour ERROR.
 
 #### 5.3.2 🔴 Never hardcode a gate result the script did not compute
 
@@ -2424,7 +2679,9 @@ CI secrets required
   attempts halts locally and never reaches CI; CI's 3 attempts apply to failures that appear only in
   the CI environment.
 - **On exhaustion**: stop, post a PR comment naming every unresolved gate, what each attempt changed,
-  and why it did not resolve — closing with *"3 retries ended. Please suggest next steps."* Do not
+  and why it did not resolve — closing with the take-over guidance: reproduce locally with the failing
+  gate's command, fix on the PR branch without weakening any gate and push, or comment the problem on the
+  PR and run `pr-fix <PR>` (`common/self-heal-limit-guidance.md` sets the tone and content). Do not
   push further commits. Do not close or merge the PR.
 - 🔴 **Never let the self-repair job pass the build.** It repairs and re-runs; the verify job's own
   result is the only thing that turns the PR green.
@@ -2581,7 +2838,7 @@ and the entire exchange was spent on a class of failure that neither side owned 
 | Owns | **CI configuration and provisioning**: `tests/.evals/ci-manifest.d/<unit>.json`, the repo's own dependency declarations, `.github/workflows/**`, `tests/.evals/scripts/**`, `tests/.evals/config.json`, `tests/.evals/rubrics/**`, tool pins | **Application code and tests**: `src/**` (or the recorded `## Code Root`) and `tests/**` outside `tests/.evals/**` |
 | Triage classes it repairs | **Manifest** + the provisioning half of **Infrastructure** (a missing tool/dependency declaration is a declaration bug) | **Code** — every row in Section 6.4 marked *Repair* |
 | Never touches | Application source or tests, in response to a CI failure | `.github/workflows/**`, `tests/.evals/config.json`, `tests/.evals/rubrics/**`, `tests/.evals/ci-manifest.d/**`, `spec/**` — enforced, not merely instructed (**V33**) |
-| Budget | The workflow's own 3-attempt loop (`dev-implement` SH-LOOP-9 for preflight, and the CI Attestation Gate's own 3 attempts) | `retryLimitForSelfRepair`, default 3 |
+| Budget | The workflow's own 3-attempt loops (`dev-implement` SH-LOOP-9 for preflight, SH-LOOP-10 for the CI Attestation Gate — both governed by the SELF-HEALING RETRY POLICY: per-loop counter, SH-3 attempt logging, SH-4 exhaustion halt) | `retryLimitForSelfRepair`, default 3 |
 
 **Hand-off rules:**
 

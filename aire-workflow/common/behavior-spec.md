@@ -17,14 +17,14 @@ spec/
     ├── story-1.1.feature                            # one file per work unit
     ├── story-1.2.feature
     ├── bug-PROJ-123.feature
-    └── enh-PROJ-456.feature
+    └── enhancement-PROJ-456.feature
 ```
 
 | File | Scope | Written when | Tagged with |
 |---|---|---|---|
 | `spec/plans/architecture.md` | Whole cycle | End of the design stages (STOP CHECKPOINT) | — |
 | `spec/behavior.feature` | Whole cycle | End of the design stages (STOP CHECKPOINT) | `@REQ-<id>` |
-| `spec/behavior/<work-unit>.feature` | One work unit | Before that unit's code is generated | `@AC-<n>` |
+| `spec/behavior/<work-unit>.feature` | One work unit | **At the STOP CHECKPOINT — all units at once, before ANY code is generated** (`CLAUDE.md` Step 1.7 / `implementation/specs-and-test-plans.md`) | `@AC-<n>` |
 
 🔴 **`architecture.md` is written ONCE for the whole cycle — never per story.** A story does not get its
 own architecture document. If a story needs architectural context, it reads the relevant section of
@@ -48,6 +48,16 @@ authoritative elsewhere — copying it per story only creates something that can
 ## 2. Writing the work-unit feature file
 
 Written **before** the implementation — it is the contract, not a description of what got built.
+
+🔴 **Where it is written**: at the **STOP CHECKPOINT**, for **every** work unit of the cycle in one
+pass, and approved there as a design artifact (`CLAUDE.md` Step 1.7, `bug-fix.md` / `enhancement-implement.md`
+Step 8.5 Item 4.5 — mechanics in `implementation/specs-and-test-plans.md`). The implement workflows
+(`dev-implement` Step 4.5, `bug-fix-implement` Step 4.5, `enhancement-implement` Step 11.5) **read and
+verify** it; they backfill only a genuinely absent file, announced, and 🔴 **never rewrite an approved
+scenario to match the code**. A real spec defect is raised with the user, amended and logged.
+
+Because every unit's file therefore exists before any unit is built, `spec/behavior/` is populated with
+specs for **not-yet-implemented** units. Section 6.0 defines which of them the gate actually runs.
 
 1. **One `Scenario` per acceptance criterion, minimum.** An AC with several distinct outcomes gets a
    scenario per outcome. Every AC must appear.
@@ -226,8 +236,8 @@ database that happens to be running locally. Those are the failures the containe
 
 **When Podman genuinely is absent**: run natively, record
 `"containerised": false, "reason": "podman not installed"` — that **exact** reason, nothing
-invented — surface it loudly in the output, and mark the tier **`PASS (unverified parity)`** rather
-than plain `PASS`. 🔴 **In CI this must never happen**: GitHub-hosted `ubuntu-*` runners ship with Podman, so
+invented — surface it loudly in the output, and mark the tier `PASS` with **`unverified parity — podman not
+installed`** in its Result and evidence manifest (the status vocabulary stays PASS / FAIL / ERROR / N/A). 🔴 **In CI this must never happen**: GitHub-hosted `ubuntu-*` runners ship with Podman, so
 `containerised: false` in a CI run is a pipeline defect to fix, not a result to accept.
 
 🔴 **PODMAN ONLY — never fall back to the Docker CLI.** If Podman is missing, that is the Section 5.1
@@ -349,7 +359,7 @@ Widening scope. Each tier runs only once the previous is green.
 | Tier | Runs | Proves | Loop |
 |---|---|---|---|
 | **B1** | This work unit's `<work-unit>.feature` | I built what was asked | SH-LOOP-7 |
-| **B2** | Every **other** `.feature` file in `spec/behavior/` | I broke nobody else's behaviour | SH-LOOP-7 |
+| **B2** | Every **other ACTIVE** `.feature` file in `spec/behavior/` (Section 6.0) | I broke nobody else's behaviour | SH-LOOP-7 |
 | **B3** | B1 ∪ B2 **+ `spec/behavior.feature`** | The requirement works end to end | SH-LOOP-8 |
 
 ```
@@ -363,11 +373,33 @@ suite (the tier that matters most there: it proves the change broke nothing), B3
 `spec/behavior.feature`. Since there is one work unit, B3 runs on it — record that, do not pretend it
 was skipped.
 
+### 6.0 🔴 Which feature files are ACTIVE (the activation rule)
+
+Every work unit's `.feature` file is written at the STOP CHECKPOINT, **before any code exists**
+(Section 2). So `spec/behavior/` legitimately contains specs for units nobody has started. Running those
+would fail the gate for work that was never claimed to be done — a false negative, not a regression.
+
+**A feature file is ACTIVE when its work unit has been started.** Resolve it from the `## Story Tracker`
+in `runtime-artifacts/aire-state.md`, by the unit key in the filename (`story-1.2` → row `1.2`;
+`bug-PROJ-123` / `enhancement-PROJ-456` → that ticket's row):
+
+| Tracker state of the unit | Active? |
+|---|---|
+| `Ready for Development` (not started) | 🔴 **No** — excluded from B2/B3, and **named in the run's output** so the exclusion is visible, never silent |
+| `In Development` / `Ready for Testing` / done | **Yes** |
+| No tracker row for it, or no state file at all | **Yes** (conservative — preserves legacy behaviour) |
+
+- **B1 is never subject to this rule** — the unit being built is active by definition.
+- **The epic-level pre-handoff smoke test** (`ci-pipeline-generation.md` Section 4.0.6) runs before any
+  unit is started, so **every** file is inactive and **B1/B2/B3 are all `N/A`, not errors**. The same
+  holds for any run whose eval key is not a work unit at all (`ci-*`, `ve-*`): all tiers `N/A`.
+- Record the active/excluded split in the gate's evidence. 🔴 Never report an excluded unit as a pass.
+
 ### 6.1 Detecting the last work unit
 
 🔴 **The trigger is PR MERGE STATE, never the tracker status label.** These are two different facts and
 they lag each other: a story's PR merges during `dev-implement`, but its status only becomes
-`🧪 Ready for Testing` later, when ve signs it off with `ve-list-work`. Keying B3 on the label means a
+`Ready for Testing` later, when ve signs it off with `ve-list-work`. Keying B3 on the label means a
 merged-but-not-yet-signed-off story reads as "still open", B3 defers forever, and the epic gate never
 runs on any cycle.
 
@@ -376,11 +408,11 @@ runs on any cycle.
 1. Read the `## Story Tracker` in `runtime-artifacts/aire-state.md` for each unit's `PR` and `Merged` columns.
 2. **Verify live** — `gh pr view <n> --json state,mergedAt` — do not trust a stale `Merged` column.
 3. A unit counts as **done** when its PR is `MERGED`. Its tracker status is irrelevant here:
-   `🔵 In Development` with a merged PR is **done** for this purpose.
+   `In Development` with a merged PR is **done** for this purpose.
 
 **This is the last work unit → RUN B3** when every other unit's PR is merged. That includes the common
 case you will hit most: *the final story, with all previous stories implemented and their PRs merged,
-still sitting at `🔵 In Development` awaiting ve sign-off.* 🔴 **B3 runs.** Do not defer it because a
+still sitting at `In Development` awaiting ve sign-off.* 🔴 **B3 runs.** Do not defer it because a
 status label has not moved yet.
 
 **Only defer B3** when a unit genuinely has **no merged PR** — no PR raised, or one still open. Record
@@ -400,7 +432,7 @@ Harmless — the same suite runs twice. Note it; do not add locking.
 **Verification**: every scenario passes; for B1 every `@AC-<n>` in the story is executed; for B3 every
 `@REQ-<id>` the cycle covers is executed.
 
-**Evidence** per tier → `reports/behavior-test-evidence/<key>/<b1|b2|b3>/`:
+**Evidence** per tier that runs → `reports/behavior-test-evidence/<key>/<b1|b2|b3>/` (`b3/` only on the last work unit, when B3 runs; a deferred B3 creates no folder — `common/work-unit-artifacts.md` Section 1.1):
 `behavior-test-run.log`, the **mandatory machine-readable** `behavior-test-report.*`, and an
 `evidence-manifest.md` with the image ref + digest, the exact command, whether it ran containerised,
 the tier's file set, and every scenario with its tag and result. 🔴 `containerised` must be `true` — anything else is only valid under the Section 5.1 exception, with its exact reason. A raw log alone does not satisfy it.

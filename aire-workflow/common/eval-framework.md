@@ -63,6 +63,15 @@ newer template introduced. The repo's own file wins.
     "enabled": false,
     "_comment": "Set true when CI generation creates sonar-project.properties and the user answers proceed at the setup gate. Additive to semgrep, never a replacement."
   },
+  "playwright": {
+    "enabled": false,
+    "startCommand": null,
+    "readinessUrl": null,
+    "testCommand": "npx playwright test tests/e2e/",
+    "backendStartCommand": null,
+    "backendReadinessUrl": null,
+    "_comment": "Set true, with startCommand/readinessUrl resolved and testCommand adjusted if needed, the first time a work unit's manifest fragment (implementation/code-generation.md Step 11d) runs the Playwright UI Automation Gate for real. 🔴 testCommand is stored WITHOUT a display flag: the local gate appends --headed (developer's own machine), and CI deliberately appends nothing because a runner has no display. CI's own Playwright step re-executes THIS SAME command set as a trust gate — never the first execution. N/A (not false) when the project genuinely has no UI at all. 🔴 backendStartCommand/backendReadinessUrl stay null when startCommand alone already brings up everything the tests need (a monolith, docker-compose, a monorepo dev task) — set them ONLY when the local gate needed frontend and backend as two genuinely separate processes, resolved the same never-invented way as every other command here."
+  },
   "judge": { "model": "<resolved session model id>", "rubricVersion": "<architecture.md version>" },
   "ci": {
     "baseBranch": "main",
@@ -94,6 +103,7 @@ newer template introduced. The repo's own file wins.
     ],
     "gates": ["D1_lint", "D2_types", "D3_sast", "D4_deps", "D5_licenses", "D6_complexity", "D7_secrets",
               "unitCoverage", "behaviorB1", "behaviorB2", "behaviorB3", "J1_architecture", "J2_security"],
+    "_gatesComment": "🔴 'playwright' is appended here at generation time only once `playwright.enabled` is true (mirrors 'sonarqube's own append-on-enable rule) — never present for a project with no UI at all.",
     "_rootsComment": "🔴 noTestsExitCode is the exit status THIS root's test runner returns when it collects ZERO tests (pytest 5; jest/vitest 1 — prefer adding --passWithNoTests to the command instead; go/maven/gradle/dotnet exit 0 and omit the field). ci-manifest-runner.* records that exit as N/A rather than FAIL, because 'no suite exists yet' is the correct state of a greenfield repo before its first story and of a brownfield repo with no tests — NOT something to self-repair by writing dummy tests. It cannot hide a missing test: coverage_delta() still enforces unitTestCoverageMin on the CHANGED files and records ERROR when one has no coverage data. See ci-pipeline-generation.md Section 3.0.",
     "_comment": "🔴 CI SINGLE SOURCE OF TRUTH. The generated pipeline AND every local step read THIS block — neither one re-authors or independently re-derives any of these facts, `root` included. See ci-pipeline-generation.md Section 4 and Section 4.0d."
   }
@@ -500,7 +510,7 @@ honestly:
 
 ```json
 { "overall": "PASS", "checksRun": 2, "checksTotal": 7,
-  "checksNA": ["D1_lint", "D2_typecheck", "D4_sca", "D5_license", "D6_complexity"] }
+  "checksNA": ["D1_lint", "D2_types", "D4_deps", "D5_licenses", "D6_complexity"] }
 ```
 
 and in the summary line: `Static Eval: PASS (2 of 7 checks ran — 5 N/A, see reasons)`.
@@ -529,8 +539,10 @@ The full contract lives in **`implementation/architecture-doc.md` Section 3–Se
 derive from). Resolve in order and record which link was used in `eval.json`:
 
 1. This cycle's `architecture.md` Section 10.
-2. A versioned rubric already committed at `tests/.evals/rubrics/architecture-rubric.json` from a prior
-   cycle — usable only if the reverse-engineering artifacts still describe the same architecture.
+2. The latest archived rubric (`aire-archives/<type>/<ID>-<slug>/tests/.evals/rubrics/architecture-rubric.json`,
+   newest cycle by `archive-manifest.md` date) — copied into `tests/.evals/rubrics/`, and usable only if the
+   reverse-engineering artifacts still describe the same architecture. (Rubrics are cycle-scoped: `archive-epic`
+   archives and removes them at cycle close, so base carries none between cycles.)
 3. Derive from **Atlas** existing-system truth (`common/helix-atlas-integration.md`) or, if Atlas is
    unavailable, from `spec/plans/atlas-deep-dive.md` and the flat RE docs under `spec/plans/`.
 4. **J1 = `N/A`**, with the reason recorded. **When J1 is `N/A` it does not block** — an absent
@@ -644,23 +656,39 @@ audited amendment. Not to remove the gate.
 | Behavioural **B2** — cumulative (every other feature file) | SH-LOOP-7 | 2 |  |
 | Behavioural **B3** — epic scope (last work unit only) | SH-LOOP-8 | 2 (epic PR) |  |
 | API & contract | SH-LOOP-2 | **local only** |  (when applicable) |
+| Playwright UI automation | SH-LOOP-11 | 2 (trust gate — re-executes, never originates) |  (when applicable) |
+| Playwright E2E regression (every unit, once `tests/e2e/` has specs) | SH-LOOP-13 | **local only** |  |
 | Full regression | SH-LOOP-3 | **local only** |  |
+| Test impact reconciliation (`testImpact` — change and bugfix stories only) | SH-LOOP-15 | **local only** |  |
 | J1 architecture | SH-LOOP-6 | 3 |  (unless `N/A`) |
 | J2 security (OWASP) | SH-LOOP-6 | 3 |  |
-| Code review findings (🔴/🟠) | SH-LOOP-5 | — |  |
+| Code review findings (Blocker / High) | SH-LOOP-5 | — |  |
+| Artifact completeness (pre-commit check — not an `eval.json` gate) | SH-LOOP-16 | — |  |
 
-🔴 **`apiContract` and `regression` are LOCAL-ONLY gates — deliberately, and this table is the single
-place that says so.** They ran at `dev-implement`/`bug-fix-implement`/`enhancement-implement` time and
+🔴 **`apiContract`, `regression`, `playwrightRegression` and `testImpact` are LOCAL-ONLY gates — deliberately,
+and this table is the single place that says so.** (`playwrightRegression` and `testImpact` need a local
+baseline or the change document, which CI does not have.) They ran at `dev-implement`/`bug-fix-implement`/`enhancement-implement` time and
 nowhere else; no step in `agentic-eval-pipeline.yml`, `run-static-evals.*` or `run-evals.*` implements
 either, and neither appears in the `ci.gates` default. They were previously listed here as CI stage 2
 gates, which was simply false — three documents promised a CI enforcement that had never existed.
 Two consequences follow, and both are intentional:
-- 🔴 **Never add either id to `ci.gates`.** A declared gate with no result is now an ERROR
+- 🔴 **Never add any of them to `ci.gates`.** A declared gate with no result is now an ERROR
   (`run-evals.*`), so listing them would fail every PR rather than enforce anything.
 - The **regression** signal is not wholly absent from CI: `ci-manifest-runner.* coverage` runs each
   touched root's full test command, so a break is still caught. What CI has no equivalent of is the
   **baseline diff** that separates "this work unit broke it" from "it was already red" — that
   attribution exists only in the local gate.
+
+🔴 **`playwright` is deliberately NOT local-only — it is the one gate CI genuinely re-executes.** The
+local run (`implementation/code-generation.md` Step 11d) is the FIRST execution and the only one that
+remediates — and it runs **`--headed` on the developer's machine**, exactly as the standalone skill
+always has. CI's copy (`common/ci-pipeline-generation.md` Section 4) re-runs the **same specs** as a
+**trust gate** — headless only because a GitHub runner has no display, never as a policy choice —
+proving the same result reproduces in a clean environment, never originating new coverage and never
+re-opening remediation on its own. A CI-only Playwright failure on
+a gate that passed locally is a CI provisioning/manifest defect (missing browsers, wrong start
+command, wrong readiness URL) — triaged exactly like every other local-vs-CI mismatch, never grounds
+to re-litigate the local result.
 
 #### 2.5.5 🔴 THE STATUS VOCABULARY IS CLOSED — `PASS` · `FAIL` · `ERROR` · `N/A`
 
@@ -672,8 +700,8 @@ Observed in a real story run, all forbidden:
 
 | Written | Why it is a violation | What it actually was |
 |---|---|---|
-| `⚪ Partial — frontend PASS, backend ERROR` | A gate is one status. "Partial" hides an ERROR inside something that reads as a soft pass | **ERROR** |
-| `⚪ Not run — flagged as a follow-up` | Not a status. A declared gate that did not run is not a category of pass | **ERROR** |
+| `Partial — frontend PASS, backend ERROR` | A gate is one status. "Partial" hides an ERROR inside something that reads as a soft pass | **ERROR** |
+| `Not run — flagged as a follow-up` | Not a status. A declared gate that did not run is not a category of pass | **ERROR** |
 | `Not run this pass (time-boxed)` | Same, with a schedule as the excuse | **ERROR** |
 
 🔴 **"Partial" is the tell.** It means some sub-checks ran and some did not — which is precisely
@@ -719,16 +747,16 @@ gate's failure is never offset by another's success.
       { "check": "D1_lint", "path": "eslint.config.js", "tool": "eslint", "preset": "recommended" }
     ],
     "reused": [
-      { "check": "D2_typecheck", "path": "tsconfig.json", "note": "repo's own config, used as-is" }
+      { "check": "D2_types", "path": "tsconfig.json", "note": "repo's own config, used as-is" }
     ]
   },
   "gates": {
     "D1_lint":        { "status": "PASS", "newFindings": 0 },
-    "D2_typecheck":   { "status": "PASS", "errors": 0 },
+    "D2_types":       { "status": "PASS", "errors": 0 },
     "D3_sast":        { "status": "PASS", "new": { "critical": 0, "high": 0, "medium": 2 },
                         "sonarqube": { "enabled": true, "qualityGate": "PASS" } },
-    "D4_sca":         { "status": "PASS", "new": { "critical": 0, "high": 0 } },
-    "D5_license":     { "status": "PASS", "violations": [] },
+    "D4_deps":        { "status": "PASS", "new": { "critical": 0, "high": 0 } },
+    "D5_licenses":    { "status": "PASS", "violations": [] },
     "D6_complexity":  { "status": "PASS", "maxChanged": 9, "threshold": 12 },
     "D7_secrets":     { "status": "PASS", "findings": 0 },
     "unitCoverage":   { "status": "PASS", "value": 93.4, "threshold": 90.0 },
@@ -737,6 +765,9 @@ gate's failure is never offset by another's success.
     "behaviorB2":    { "status": "PASS", "scenarios": "48/48", "featureFiles": 4 },
     "behaviorB3":    { "status": "N/A",  "reason": "not the last work unit — 2 stories still open (1.4, 1.5)" },
     "apiContract":    { "status": "PASS", "endpoints": 3 },
+    "playwright":     { "status": "PASS", "scenarios": "6/6", "headed": true,
+                        "reExecutedInCI": true },
+    "playwrightRegression": { "status": "PASS", "newFailures": 0, "headed": false },
     "regression":     { "status": "PASS", "newFailures": 0 },
     "J1_architecture":{ "status": "PASS", "score": 0.91, "min": 0.85,
                         "rubricSource": "architecture.md#10",
@@ -782,21 +813,23 @@ match this table exactly.
 
 | Gate | Result | Threshold | Status |
 |---|---|---|---|
-| D1 Lint | 0 new findings | ≤ 0 delta |  PASS |
-| D2 Type check | 0 errors | 0 |  PASS |
-| D3 Static security | 0C / 0H / 2M · SonarQube gate PASS | 0C / 0H / ≤5M |  PASS |
-| D4 Dependencies | 0C / 0H | 0C / 0H |  PASS |
-| D5 Licences | 0 violations | none disallowed |  PASS |
-| D6 Complexity | max 9 | ≤ 12 |  PASS |
-| D7 Secrets | 0 findings | 0 |  PASS |
-| Unit coverage | 93.4% | ≥ 90.0% |  PASS |
-| Behavioural B1 (this story) | 12/12 scenarios · 5/5 ACs · podman | 100% |  PASS |
-| Behavioural B2 (cumulative) | 48/48 scenarios · 4 feature files | 100% |  PASS |
-| Behavioural B3 (epic scope) | not the last story — 1.4, 1.5 still open | last unit only | ⚪ N/A |
-| API & contract | 3/3 endpoints | all applicable |  PASS |
-| Regression | 0 new failures | 0 |  PASS |
-| J1 Architecture | 0.91 | ≥ 0.85 |  PASS |
-| J2 Security (OWASP 2025) | 0.92 | ≥ 0.85 |  PASS |
+| D1 Lint | 0 new findings | ≤ 0 delta | PASS |
+| D2 Type check | 0 errors | 0 | PASS |
+| D3 Static security | 0C / 0H / 2M · SonarQube gate PASS | 0C / 0H / ≤5M | PASS |
+| D4 Dependencies | 0C / 0H | 0C / 0H | PASS |
+| D5 Licences | 0 violations | none disallowed | PASS |
+| D6 Complexity | max 9 | ≤ 12 | PASS |
+| D7 Secrets | 0 findings | 0 | PASS |
+| Unit coverage | 93.4% | ≥ 90.0% | PASS |
+| Behavioural B1 (this story) | 12/12 scenarios · 5/5 ACs · podman | 100% | PASS |
+| Behavioural B2 (cumulative) | 48/48 scenarios · 4 feature files | 100% | PASS |
+| Behavioural B3 (epic scope) | not the last story — 1.4, 1.5 still open | last unit only | N/A |
+| API & contract | 3/3 endpoints | all applicable | PASS |
+| Playwright UI automation | 6/6 scenarios · re-executed in CI | 100% | PASS |
+| Playwright E2E regression | 0 new failing specs (14 at baseline) | 0 new | PASS |
+| Regression | 0 new failures | 0 | PASS |
+| J1 Architecture | 0.91 | ≥ 0.85 | PASS |
+| J2 Security (OWASP 2025) | 0.92 | ≥ 0.85 | PASS |
 
 **Verdict**: PASS · judge `<model>` · rubric v1.2.0 (from `architecture.md` v1.2.0)
 **Self-healing**: SH-LOOP-1 1/3 · all other loops 0/3
@@ -805,7 +838,7 @@ match this table exactly.
 ```
 
 **Formatting rules:**
-- Status is exactly one of ` PASS`, ` FAIL`, `⚪ N/A` — an `N/A` row **must** carry its reason in
+- Status is exactly one of `PASS`, `FAIL`, `ERROR`, `N/A` — an `N/A` row **must** carry its reason in
   the Result column.
 - A `FAIL` row is never omitted or softened; the table shows the failing state that halted the run.
 - The J1 breakdown is always present when J1 was scored, including on a PASS. A criterion that scored
@@ -821,11 +854,11 @@ truth; the claim is not.
 
 ## 7. Where this file is invoked
 
-| Flow | Bootstrap + baseline D1–D7 | Static Eval Gate | J1 + J2 | Rubric derivation |
-|---|---|---|---|---|
-| `dev-implement` | Step 1.5 Item 4.6 | Step 6.6 | Section A Auto Code Review (blocking) | STOP CHECKPOINT, from `architecture.md` Section 10 |
-| `bug-fix-implement` | Step 3 Item 5 | Step 7.5 | Step 8a (blocking) | Fallback chain Section 3 |
-| `enhancement-implement` | Step 10 | Step 14.5 | Step 15a (blocking) | Fallback chain Section 3 |
+| Flow | Bootstrap + baseline D1–D7 | Static Eval Gate | Playwright UI Automation (SH-LOOP-11, when applicable) | J1 + J2 | Rubric derivation |
+|---|---|---|---|---|---|
+| `dev-implement` | Step 1.5 Item 4.6 | Step 6.6 | Step 6.7 | Section A Auto Code Review (blocking) | STOP CHECKPOINT, from `architecture.md` Section 10 |
+| `bug-fix-implement` | Step 3 Item 5 | Step 7.5 | Step 7.7 | Step 8a (blocking) | Fallback chain Section 3 |
+| `enhancement-implement` | Step 10 | Step 14.5 | Step 14.7 | Step 15a (blocking) | Fallback chain Section 3 |
 | `code-review` standalone | — | — | Recomputed and reported for the scope reviewed | — |
 | **CI pipeline** | — (runs on a clean checkout) | Stage 1 | Stage 3 (blocking) | — (reads the committed rubric) |
 
@@ -848,8 +881,8 @@ three local flows — never as a separate stage and never after code generation.
 | A criterion scores low with no citation | Defect in the judging pass — re-run that criterion. Never remediate an uncited score. |
 | A **B1 or B2** scenario fails | Fix the code under SH-LOOP-7 (3 attempts). Never edit or skip the scenario. A B2 failure is still THIS unit's problem — it turned that scenario red. |
 | A **B3** scenario fails | Fix under SH-LOOP-8 — its own separate 3-attempt budget, because an epic-scope failure is usually an integration gap between units, not a bug inside one. |
-| B3 would run but other work units are still open | `N/A — deferred`, naming the open units. 🔴 Never reported as a pass. |
-| Podman is not installed | The ONE case where a behaviour tier may run natively. Record `"containerised": false, "reason": "podman not installed"` — that exact reason — and mark the tier `PASS (unverified parity)`. 🔴 Never fall back to the Docker CLI. 🔴 Any other justification for skipping the container ("no browser needed", "backend only", "faster natively") is a **gate violation**, not a pass (`common/behavior-spec.md` Section 5.1). 🔴 In CI this must never occur. |
+| B3 would run but other work units are still open | `N/A — not the last work unit`, naming the units whose PRs are unmerged. 🔴 Never reported as a pass. |
+| Podman is not installed | The ONE case where a behaviour tier may run natively. Record `"containerised": false, "reason": "podman not installed"` — that exact reason — and mark the tier `PASS` (the only four statuses are PASS / FAIL / ERROR / N/A), with `unverified parity — podman not installed` in its Result and evidence manifest. 🔴 Never fall back to the Docker CLI. 🔴 Any other justification for skipping the container ("no browser needed", "backend only", "faster natively") is a **gate violation**, not a pass (`common/behavior-spec.md` Section 5.1). 🔴 In CI this must never occur. |
 | The auto-remediate loop keeps finding issues | Loops under SH-LOOP-5, max 3 rounds, then HALT. |
 | A check has no config in the repo | **Not `N/A` — bootstrap it** (Section 2.3) before the baseline, announce it, commit it. |
 | A check's config already exists | Use it as-is. Never override, upgrade, or add rules. |

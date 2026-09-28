@@ -21,10 +21,10 @@
 - personas.md
 
 ### 1.4 Load Context Project Artifacts (if the user opted in)
-- Read `## Context Project` in `runtime-artifacts/aire-state.md`. **IF `Use Artifacts: Yes`**, load **only** the exact `Artifact Path` recorded there (no auto-scan of the rest of `spec/context-project/existing-knowledge/`) — it describes how the current system works, so use it as background context when planning. **IF `No`** or absent, skip.
+- Read `## Context Project` in `runtime-artifacts/aire-state.md`. **IF `Existing Knowledge: Yes`**, load **only** the exact `Existing Knowledge Path(s)` recorded there (no auto-scan of the rest of `spec/context-project/existing-knowledge/`) — it describes how the current system works, so use it as background context when planning. **IF `No`** or absent, skip.
 
 ### 1.5 Load Context References (if the user opted in)
-- Read `## Context References` in `runtime-artifacts/aire-state.md`. **IF `Use References: Yes`**, load **all** paths listed in `Reference Paths` — these are reference materials for the NEW work (UX wireframes, design mockups, API specs, research docs, etc.). Use them as forward-looking inputs when planning which stages to execute and at what depth. For example: a UI wireframe implies Application Design and Functional Design should run; an API spec implies NFR Requirements should assess performance. **IF `No`** or absent, skip.
+- Read the `New References` fields of `## Context Project` in `runtime-artifacts/aire-state.md`. **IF `New References: Yes`**, load **all** paths listed in `New Reference Path(s)` — these are reference materials for the NEW work (UX wireframes, design mockups, API specs, research docs, etc.). Use them as forward-looking inputs when planning which stages to execute and at what depth. For example: a UI wireframe implies Application Design and Functional Design should run; an API spec implies NFR Requirements should assess performance. **IF `No`** or absent, skip.
 
 ## Step 2: Detailed Scope and Impact Analysis
 
@@ -236,7 +236,7 @@ Create `spec/plans/executions.md`:
 flowchart TD
     Start(["User Request"])
     
-    subgraph PLANNING["🔵 PLANNING PHASE"]
+    subgraph PLANNING["PLANNING PHASE"]
         WD["Workspace Detection<br/><b>STATUS</b>"]
         RE["Reverse Engineering<br/><b>STATUS</b>"]
         RA["Requirements Analysis<br/><b>STATUS</b>"]
@@ -245,24 +245,26 @@ flowchart TD
         AD["Application Design<br/><b>STATUS</b>"]
     end
     
-    subgraph IMPLEMENTATION["🟢 IMPLEMENTATION PHASE"]
+    subgraph IMPLEMENTATION["IMPLEMENTATION PHASE"]
         FD["Functional Design<br/><b>STATUS</b>"]
         NFRA["NFR Requirements<br/><b>STATUS</b>"]
         NFRD["NFR Design<br/><b>STATUS</b>"]
         ID["Infrastructure Design<br/><b>STATUS</b>"]
+        SPECS["Behaviour Specs & Test Plans<br/>(every work unit, before code)<br/><b>ALWAYS</b>"]
         CG["Code Generation<br/>(Planning + Generation)<br/><b>EXECUTE</b>"]
     end
     
-    subgraph veTRACK["🧪 ve TRACK — parallel, ve-initiated"]
-        BT["Test Plan per story<br/><b>/ve-implement</b>"]
+    subgraph veTRACK["ve TRACK — parallel, ve-initiated"]
+        BT["Test Plan execution per story<br/><b>manual, by the ve</b>"]
         QS["ve Sign-off<br/><b>ve-list-work</b>"]
     end
     
     Start --> WD
     WD --> RA
     RA --> WP
-    WP --> CG
-    WP -.->|ve in parallel| BT
+    WP --> SPECS
+    SPECS --> CG
+    SPECS -.->|plans already approved| BT
     BT --> QS
     CG --> QS
     QS --> End(["Complete"])
@@ -275,7 +277,7 @@ flowchart TD
 
 ## Phases to Execute
 
-### 🔵 PLANNING PHASE
+### PLANNING PHASE
 - [x] Workspace Detection (COMPLETED)
 - [x] Reverse Engineering (COMPLETED/SKIPPED)
 - [x] Requirements Analysis (COMPLETED)
@@ -284,7 +286,7 @@ flowchart TD
 - [ ] Application Design - [EXECUTE/SKIP]
   - **Rationale**: [Why executing or skipping]
 
-### 🟢 IMPLEMENTATION PHASE
+### IMPLEMENTATION PHASE
 - [ ] Functional Design - [EXECUTE/SKIP]
   - **Rationale**: [Why executing or skipping]
 - [ ] NFR Requirements - [EXECUTE/SKIP]
@@ -293,13 +295,18 @@ flowchart TD
   - **Rationale**: [Why executing or skipping]
 - [ ] Infrastructure Design - [EXECUTE/SKIP]
   - **Rationale**: [Why executing or skipping]
+- [ ] Behaviour Specs & Test Plans - EXECUTE (ALWAYS, at the STOP CHECKPOINT, ONE approval)
+  - **Rationale**: every work unit's `.feature` contract and manual test plan are written and approved
+    before any code is generated (`implementation/specs-and-test-plans.md`)
 - [ ] Code Generation - EXECUTE (ALWAYS)
   - **Rationale**: Implementation planning and code generation needed
 
-### 🧪 ve TRACK (parallel — ve-initiated, NOT planned or executed by this workflow)
-- Test Plan — run per story by ve with **`/ve-implement`**, in parallel with development
-- ve Sign-off — run by ve with **`ve-list-work`** on the epic branch once story PRs merge
-  - **Rationale**: Test Plan is not a Implementation stage at epic or story level; it is not scheduled here and is never auto-run
+### Verification Engineer TRACK (parallel — ve-initiated, NOT planned or executed by this workflow)
+- Test Plan — authored for every work unit at the STOP CHECKPOINT (above); Verification Engineer reviews it and executes
+  it once the work unit's PR merges, in parallel with development
+- Verification Engineer Sign-off — run by Verification Engineer with **`ve-list-work`** on the epic branch once story PRs merge
+  - **Rationale**: test-plan SIGN-OFF is not a Implementation stage at epic or story level; it is not
+    scheduled here and is never auto-run
 
 ## Package Change Sequence (Brownfield Only)
 [If applicable, list package update sequence with dependencies]
@@ -337,7 +344,7 @@ Update `runtime-artifacts/aire-state.md`:
 
 ## Stage Progress
 
-### 🔵 PLANNING PHASE
+### PLANNING PHASE
 - [x] Workspace Detection
 - [x] Reverse Engineering (if applicable)
 - [x] Requirements Analysis
@@ -345,16 +352,17 @@ Update `runtime-artifacts/aire-state.md`:
 - [x] Workflow Planning
 - [ ] Application Design - [EXECUTE/SKIP]
 
-### 🟢 IMPLEMENTATION PHASE
+### IMPLEMENTATION PHASE
 - [ ] Functional Design - [EXECUTE/SKIP]
 - [ ] NFR Requirements - [EXECUTE/SKIP]
 - [ ] NFR Design - [EXECUTE/SKIP]
 - [ ] Infrastructure Design - [EXECUTE/SKIP]
+- [ ] Behaviour Specs & Test Plans - EXECUTE (ALWAYS)
 - [ ] Code Generation - EXECUTE
 
-### 🧪 ve TRACK (parallel, ve-initiated — not scheduled here)
+### Verification Engineer TRACK (parallel, ve-initiated — not scheduled here)
 - Test Plan per story — `/ve-implement`
-- ve Sign-off — `ve-list-work`
+- Verification Engineer Sign-off — `ve-list-work`
 
 ## Current Status
 - **Lifecycle Phase**: PLANNING
@@ -390,24 +398,24 @@ I've created a comprehensive execution plan based on:
 
 I recommend executing [X] stages:
 
-🔵 **PLANNING PHASE:**
+**PLANNING PHASE:**
 1. [Stage name] - *Rationale:* [Why executing]
 2. [Stage name] - *Rationale:* [Why executing]
 ...
 
-🟢 **IMPLEMENTATION PHASE:**
+**IMPLEMENTATION PHASE:**
 3. [Stage name] - *Rationale:* [Why executing]
 4. [Stage name] - *Rationale:* [Why executing]
 ...
 
 I recommend skipping [Y] stages:
 
-🔵 **PLANNING PHASE:**
+**PLANNING PHASE:**
 1. [Stage name] - *Rationale:* [Why skipping]
 2. [Stage name] - *Rationale:* [Why skipping]
 ...
 
-🟢 **IMPLEMENTATION PHASE:**
+**IMPLEMENTATION PHASE:**
 3. [Stage name] - *Rationale:* [Why skipping]
 4. [Stage name] - *Rationale:* [Why skipping]
 ...
@@ -423,7 +431,7 @@ I recommend skipping [Y] stages:
 > ** <u>**FOR YOUR REVIEW:**</u>**  
 > The execution plan is at: `spec/plans/executions.md`
 
-> **➡ <u>**PROCEEDING AUTOMATICALLY**</u>** to **[Next Stage Name]** 
+> **<u>**PROCEEDING AUTOMATICALLY**</u>** to **[Next Stage Name]** 
 >
 > Each stage listed above runs its own review/approval when it executes.
 > Tell me any time if you want a stage added, removed, or re-scoped[ — including the stages
