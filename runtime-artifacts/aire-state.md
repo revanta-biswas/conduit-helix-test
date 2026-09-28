@@ -95,6 +95,15 @@
 | 1.7 | Home & Article Pages (Server Components) | 1.4, 1.5 | LOCAL | 🧪 Ready for Testing | [#35](https://github.com/revanta-biswas/conduit-helix-test/pull/35) | yes | 2026-09-10 | 2026-09-11 | 2026-09-11 11:25 |
 | 1.8 | Article Editor & Profile Page | 1.3, 1.4 | LOCAL | 🧪 Ready for Testing | [#34](https://github.com/revanta-biswas/conduit-helix-test/pull/34) | yes | 2026-09-09 | 2026-09-11 | 2026-09-11 11:25 |
 | 1.9 | Shared UI Components, Service Layer Elimination & Test Baseline | 1.6, 1.7, 1.8 | LOCAL | 🧪 Ready for Testing | [#36](https://github.com/revanta-biswas/conduit-helix-test/pull/36) | yes | 2026-09-10 | 2026-09-11 | 2026-09-11 11:25 |
+| 1.10 | Article List Read Path Under the Amended REQ-F-17 | 1.4 | LOCAL | 📋 Ready for Development | — | — | — | — | 2026-09-28 (CR-1) |
+
+## Change Request Additions
+
+| CR | Date | Requirements | Story created | Stories amended | Bundle |
+|---|---|---|---|---|---|
+| CR-1 | 2026-09-28 | REQ-F-17 → @v2 (AMENDED) | 1.10 | 1.4 (AC-4) | `spec/plans/change-requests/CR-1/` |
+
+Requirements coverage verified post-design: 33/33 REQ-IDs — 2026-09-28T09:14:46Z (re-verified after CR-1)
 
 ## Dependency Graph
 ```mermaid
@@ -108,6 +117,7 @@ graph TD
     S17["1.7 Home/Article Pages"]
     S18["1.8 Editor/Profile Page"]
     S19["1.9 Components + Services + Tests"]
+    S110["1.10 Article List Read Path (CR-1)"]
 
     S11 --> S12
     S12 --> S13
@@ -122,12 +132,14 @@ graph TD
     S16 --> S19
     S17 --> S19
     S18 --> S19
+    S14 --> S110
 ```
 
 **Ready now (no prerequisites)**: 1.1 only.
 **After 1.1 merges**: 1.2 becomes ready.
 **After 1.2 merges**: 1.3 and 1.4 both become ready — 2 stories in parallel (meets team_size=2 target).
 **After 1.4 merges**: 1.5 becomes ready (in addition to whichever of 1.3/1.6/1.8 are still open).
+**After CR-1 (2026-09-28)**: 1.10 is ready — 1.4 is merged, its only prerequisite.
 **After 1.3 + 1.4 merge**: 1.8 becomes ready. After 1.2 + 1.3 merge: 1.6 becomes ready. After 1.4 + 1.5 merge: 1.7 becomes ready.
 **Last**: 1.9 requires 1.6, 1.7, and 1.8 all merged.
 

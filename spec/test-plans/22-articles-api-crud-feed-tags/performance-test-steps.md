@@ -1,9 +1,15 @@
 # Performance Test Steps — #22 Articles API — CRUD, Feed & Tags
 
 **Purpose**: Verify AC-4's non-functional requirement (REQ-NF-02 / REQ-NF-04): the N+1 enrichment
-loop is replaced by eager `include` loading, so the **number of SQL queries per feed/list request is
-bounded and does NOT scale with the number of articles returned**. Also capture a response-time
-comparison of the new Next.js handlers vs the old Express backend.
+loop is replaced by a read path whose **number of SQL queries per feed/list request is bounded and
+does NOT scale with the number of articles returned**. Also capture a response-time comparison of the
+new Next.js handlers vs the old Express backend.
+
+> **Amended by CR-1 (2026-09-28)** — Story 1.4 AC-4 is AMENDED. REQ-F-17@v2 no longer mandates
+> Sequelize `include` eager loading; either eager loading or a single denormalised read model
+> satisfies it. These cases assert the bounded-query **outcome** and never the mechanism. TC-PERF-01
+> and TC-PERF-02 are unchanged in procedure — only their framing moved off the mechanism. The read
+> path Story 1.10 delivers is covered by `spec/test-plans/28-article-list-read-path/`.
 
 **Scope**: `GET /api/articles`, `GET /api/articles/feed`. Two procedures — (A) query-count vs
 article-count, (B) response-time old-vs-new. Black-box: query counting uses the DATABASE's own query
@@ -24,7 +30,7 @@ log, not application source.
 > If the build or local run fails, that is a **blocker on the dev team** — report it and do not log
 > functional failures against a system that never started.
 
-## Performance targets (from AC-4 / REQ-NF-02, REQ-NF-04)
+## Performance targets (from AC-4 as amended by CR-1 / REQ-F-17@v2, REQ-NF-02, REQ-NF-04)
 | Metric | Target |
 |--------|--------|
 | Queries per `GET /api/articles` (or `/feed`) | **Bounded — constant with respect to article count.** The query count at N=50 must NOT be ~50x the count at N=1. A small fixed number of queries (e.g. count + main-with-includes + a handful of association loads) is acceptable; it must not grow one-or-more per returned article. `TO CONFIRM: the exact bounded ceiling the team commits to (e.g. "≤ 5 queries per list request") — REQ-NF-02 target value.` |
@@ -49,7 +55,7 @@ log, not application source.
 
 | Field | Value |
 |-------|-------|
-| **Traces to** | AC-4 / REQ-NF-02 |
+| **Traces to** | AC-4 (amended by CR-1) / REQ-F-17@v2, REQ-NF-02 |
 | **Type** | Performance (query-count / N+1 regression) |
 | **Priority** | P1 |
 | **Preconditions** | Local instance running; DB query logging enabled; ability to seed exactly N published articles, each with ≥1 tag, ≥1 author, some favorited |
@@ -92,7 +98,7 @@ log, not application source.
 
 | Field | Value |
 |-------|-------|
-| **Traces to** | AC-4 / REQ-NF-02 |
+| **Traces to** | AC-4 (amended by CR-1) / REQ-F-17@v2, REQ-NF-02 |
 | **Type** | Performance (query-count / N+1 regression) |
 | **Priority** | P1 |
 | **Preconditions** | As TC-PERF-01, but the seeded articles are all by authors User A FOLLOWS, so they appear in A's personal feed; DB query logging enabled |

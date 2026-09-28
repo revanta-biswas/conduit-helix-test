@@ -41,7 +41,10 @@ Per user decision (Requirements Analysis Q3): this cycle covers **Migration Stra
 - **REQ-F-14**: Implement `GET /api/tags` as a Route Handler, replacing the existing tags route.
 - **REQ-F-15**: Port JWT authentication as Next.js Middleware (`src/middleware.ts`... — JS: `src/middleware.js`) + `src/lib/auth.js`, replacing `backend/middleware/authentication.js`. Auth uses `httpOnly` cookies set by the login/register Route Handlers (replacing localStorage JWT storage).
 - **REQ-F-16**: Port the custom error class hierarchy (`MyError`, `ForbiddenError`, `NotFoundError`, `UnauthorizedError`, etc.) from `backend/helper/customErrors.js` into `src/lib/errors.js`, and the shared helpers (`slugify`, `appendFollowers`, `appendFavorites`, `appendTagList`) from `backend/helper/helpers.js` into `src/lib/helpers.js`.
-- **REQ-F-17**: Fix the N+1 query pattern: replace the per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop calls with Sequelize `include` eager loading in the Route Handlers that list/feed articles.
+- **REQ-F-17@v2**: Fix the N+1 query pattern: replace the per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop calls in the Route Handlers that list/feed articles with a read path whose query count per request is bounded and constant with respect to the number of articles returned. Either Sequelize `include` eager loading or a single denormalised read model satisfies this; the mechanism is not constrained.
+  > **Amended by CR-1 on 2026-09-28** (was REQ-F-17, which mandated Sequelize `include` eager loading).
+  > Prior text (v1), retained for traceability:
+  > ~~Fix the N+1 query pattern: replace the per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop calls with Sequelize `include` eager loading in the Route Handlers that list/feed articles.~~
 - **REQ-F-18**: Remove `sequelize.sync({ alter: true })` from the new app's startup path; use `sequelize.authenticate()` only, with schema managed by the existing Sequelize CLI migrations (`backend/migrations/`, reused as-is).
 
 ### Frontend Pages (App Router)

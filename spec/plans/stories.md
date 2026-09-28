@@ -91,14 +91,16 @@ deliberate, logged exception — see `spec/spec-generation/story-generation.md`.
 
 **Persona**: Author, End User / Reader
 
-**Covers**: REQ-F-12 (article CRUD + feed slice), REQ-F-14, REQ-F-17, REQ-NF-02, REQ-NF-04
+**Covers**: REQ-F-12 (article CRUD + feed slice), REQ-F-14, REQ-F-17@v2, REQ-NF-02, REQ-NF-04
 
 **Acceptance Criteria**:
 
 1. `GET /api/articles` (global feed, with `author`/`tag`/`favorited`/`limit`/`offset` filters) and `GET /api/articles/feed` (personal feed) are implemented as Route Handlers, replacing the corresponding parts of `backend/controllers/articles.js`.
 2. `POST /api/articles`, `GET/PUT/DELETE /api/articles/:slug` implement full article CRUD, including slug generation via the ported `slugify` helper and tag association on create/update.
 3. `GET /api/tags` returns all tags, replacing the existing tags route.
-4. The N+1 enrichment pattern (per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop calls) is replaced with Sequelize `include` eager loading in every list/feed Route Handler; verified via query logging showing a bounded number of queries per feed request, independent of article count.
+4. (amended by CR-1, 2026-09-28): The N+1 enrichment pattern (per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop calls) is replaced in every list/feed Route Handler with a read path whose query count per request is bounded and independent of article count; either Sequelize `include` eager loading or a single denormalised read model satisfies it. Verified via query logging. Delivered by Story 1.10.
+   > Prior text, retained for traceability:
+   > ~~The N+1 enrichment pattern (per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop calls) is replaced with Sequelize `include` eager loading in every list/feed Route Handler; verified via query logging showing a bounded number of queries per feed request, independent of article count.~~
 5. Every response shape (including error format `{ errors: { body: [...] } }`) matches the existing Conduit/RealWorld API spec exactly, verified by comparing old vs new responses for the same requests across create, read, update, delete, and both feed variants.
 
 ---
@@ -217,6 +219,31 @@ deliberate, logged exception — see `spec/spec-generation/story-generation.md`.
 
 ---
 
+## Story 1.10: Article List Read Path Under the Amended REQ-F-17
+
+**Tracker ID**: LOCAL
+**Requires**: 1.4 (replaces part of Story 1.4's contract and builds on the list/feed code it merged)
+**Change Request**: spec/plans/change-requests/CR-1/
+**Supersedes**: Story 1.4 AC-4
+
+**As an** author and reader
+**I want** article lists and feeds to stay fast without the read mechanism being fixed to one Sequelize pattern
+**So that** the list read path can use whichever bounded-query design fits, while responses stay identical
+
+**Persona**: Author, End User / Reader
+
+**Covers**: REQ-F-17@v2, REQ-NF-02
+
+**Acceptance Criteria**:
+
+1. The article list and feed read paths (`GET /api/articles`, `GET /api/articles/feed`, including the `author`/`tag`/`favorited` filter variants) satisfy REQ-F-17@v2 through either Sequelize `include` eager loading or a single denormalised read model. The choice is recorded in the code-generation plan with the queries it issues.
+2. A list/feed request for a page of N articles issues a bounded number of database queries, constant with respect to N — verified by query counting at N=1 and N=50, where the N=50 count does not exceed the N=1 count by more than the fixed per-request overhead.
+3. Every list/feed response shape is byte-identical to the shape Story 1.4 shipped: `tagList`, `author` (with `following`), `favorited` and `favoritesCount` are populated on every row, with no field null or missing that was populated before.
+4. No list/feed code path contains a `.map`/`for...of`/`forEach` loop issuing an `await` database call per iteration.
+5. Where a denormalised read model is chosen, its refresh path keeps a list row consistent with the article it denormalises: an article created, updated, deleted, favorited, unfavorited or re-tagged is reflected in the next list/feed response for that article.
+
+---
+
 ## Requirements Coverage Matrix
 
 | REQ-ID    | Covering Stories | Status                                                |
@@ -233,7 +260,7 @@ deliberate, logged exception — see `spec/spec-generation/story-generation.md`.
 | REQ-F-14  | 1.4              | ✅ Full                                               |
 | REQ-F-15  | 1.2              | ✅ Full                                               |
 | REQ-F-16  | 1.2              | ✅ Full                                               |
-| REQ-F-17  | 1.4              | ✅ Full                                               |
+| REQ-F-17@v2 | 1.4, 1.10      | ✅ Full (mechanism-widened read path in 1.10)        |
 | REQ-F-18  | 1.2              | ✅ Full                                               |
 | REQ-F-20  | 1.7              | ✅ Full                                               |
 | REQ-F-21  | 1.7              | ✅ Full                                               |
@@ -255,7 +282,7 @@ deliberate, logged exception — see `spec/spec-generation/story-generation.md`.
 | REQ-NF-06 | 1.9              | ✅ Full                                               |
 | REQ-NF-07 | 1.9              | ✅ Full                                               |
 
-**40/40 REQ-IDs fully covered by story ACs.** (Note: `requirements.md` numbers REQ-F IDs non-contiguously by section — 01-05, 10-18, 20-30, 40 — for readability; all 26 functional + 7 non-functional = 33 distinct REQ-IDs are listed above, all covered.)
+**40/40 REQ-IDs fully covered by story ACs** (REQ-F-17@v2 covered by Stories 1.4 and 1.10 after CR-1). (Note: `requirements.md` numbers REQ-F IDs non-contiguously by section — 01-05, 10-18, 20-30, 40 — for readability; all 26 functional + 7 non-functional = 33 distinct REQ-IDs are listed above, all covered.)
 
 ## Granularity Check Outcome
 

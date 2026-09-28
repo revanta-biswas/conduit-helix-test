@@ -572,3 +572,68 @@ LIVE VERIFICATION (localhost:3100 vs Postgres): register->201 + httpOnly cookie 
 **Step 5.5 CI manifest collapse**: n/a — no tests/.evals/ci-manifest.d/ fragments to collapse
 **Workspace reset**: Option A AUTO-SELECTED (auto-triggered by pr-generator; Step 6 question skipped). Cleared: spec/plans/, spec/spec-generation/, spec/behavior/, spec/test-plans/, spec/behavior.feature, reports/, runtime-artifacts/ (audit.md + aire-state.md). Kept: spec/context-project/ (existing-knowledge/, new-references/).
 **Context**: archive-epic skill (release archive) — cycle close for Milestone #2
+
+---
+
+## 2026-09-28T09:15:13Z — epic-change-request (CR-1)
+
+**User Email**: revanta.biswas@3pillarglobal.com
+**TRACKER ITEM**: Story 1.10 (LOCAL) — created by CR-1
+**Epic Link**: none (Tracker Type: LOCAL, Parent Epic: none)
+**AIRE VERSION**: 1.0
+**CHANGE REQUEST**: "CR-1 — Entry Mode A (description) — spec/plans/change-requests/CR-1/"
+
+**User Input** (complete raw input, keyword invocation):
+```
+epic-change-request
+```
+
+**AI Response**: Emitted the Phase 0 opening block, resolved preconditions (epic cycle open on
+`cr-test/epic-nextjs-migration`; `git status --porcelain` empty; no `aire-archives/`; Tracker LOCAL;
+CI/CD SKIPPED), then emitted the Phase 0.5 entry picker because the keyword carried no input, noting
+that option [2] would stop on a clean tree and that the `github` MCP server failed to connect
+(HTTP 401) while the tracker is LOCAL.
+
+**User Input** (complete raw input, entry-picker answer):
+```
+1 REQ-F-17 no longer requires eager loading via Sequelize include; article lists may use a single denormalised read model instead
+```
+
+**AI Response**: Resolved Entry Mode A. Ran Phases 1–8 quietly. Phase 2: REQ-F-17 AMENDED → @v2
+(resolved 1 / unresolved 0); REQ-NF-02 UNCHANGED (outcome, not mechanism). Phase 3 (five walks,
+18 ledger rows, 0 uncited): Story 1.4 covers REQ-F-17 (`stories.md:94`); code confirmed 3/3 sources
+(`d302d1c`, `git show --stat`, `src/lib/services/articles.js:15,88-98,136`); tests located at
+`tests/unit/lib/services/articles.test.js:91`, `tests/behavior/steps/story-1.4_steps.js:98-111,186-187`,
+`spec/behavior/story-1.4.feature:35`, TC-PERF-01/02, TC-INT-05; concurrency scan found 0 in-flight units
+and 0 unmerged `ve/…` branches. Phase 4: Story 1.4 `Ready for Testing` + PR #31 merged → CR-born; no
+block. Phase 5: no CR collision (no `spec/plans/change-requests/` existed). Phase 6: REQ-F-17@v2 minted,
+prior text retained struck through; Story 1.4 `Covers` re-pointed. Phase 7: bundle staged, CR12 Tarjan
+found no SCC of size > 1. Phase 8: 8/8 PASS. Phase 9: presented the single gate.
+
+**Approval prompt presented**: the Phase 9 Change Request Report — 1 requirement amended, 1 story
+affected (Story 1.4, ALREADY BUILT → Story 1.10 CR-born), 5 tests on the Test Change Authorization
+list, 12 files to write (0 outside the allow-list), 6 framework decisions each with its rejected
+alternative; options A) Request Changes, B) Approve & Apply.
+
+**User Input** (complete raw input, gate answer):
+```
+b
+```
+
+**AI Response**: Phase 10 applied. 10.1 re-asserted routing (Story 1.4 still `Ready for Testing`,
+`story/1.4-articles-api` still merged; local 2 ahead / 0 behind origin; CR-1 and story number 1.10
+still free). 10.3 wrote: the 4-file CR bundle; `requirements.md` REQ-F-17@v2 annotation; `stories.md`
+(1.4 `Covers` re-pointed, AC-4 annotated with prior text struck through, Story 1.10 appended, coverage
+matrix rebuilt); `spec/behavior/story-1.10.feature` (10 scenarios, AC-1…AC-5) and `story-1.4.feature`
+AC-4 scenario amended with `@amended-by-cr-1`; test plans via the ve-implement skill in WORKFLOW MODE
+(Story 1.10's new 5-file plan with 23 cases and a re-verification section; Story 1.4's TC-PERF-01,
+TC-PERF-02, TC-INT-05 restated against the outcome); `architecture.md` 1.0.0 → 1.1.0 with ARCH-02
+amended and `architecture-rubric.json` regenerated mechanically from Section 10 (rubricVersion 1.1.0,
+6 criteria, weights 1.0); `dependency-graph.yml` node 1.10 plus 1.4 `enables`; Story Tracker row 1.10
+`Ready for Development` unclaimed; `## Change Request Additions` and the Rule 4 coverage record.
+Tracker actions: none external — Tracker Type LOCAL, Story 1.10 `Tracker ID` = `LOCAL`; Parent Epic
+is `none`, so no Epic transition. No story branch, no work-unit fragment, no gate chain, no PR — the
+build is handed to `dev-implement 1.10`.
+
+**Context**: Mid-epic Change Request on the open epic cycle. Integration-branch writer: pulled
+immediately before the shared-state write and pushes immediately after the commit.

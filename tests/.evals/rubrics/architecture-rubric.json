@@ -1,49 +1,51 @@
 {
   "rubricName": "Architectural Alignment — conduit-helix-test Next.js Migration",
-  "rubricVersion": "1.0.0",
-  "derivedFrom": ["spec/plans/architecture.md#10-verifiable-constraints"],
+  "rubricVersion": "1.1.0",
+  "derivedFrom": [
+    "spec/plans/architecture.md#10-verifiable-constraints"
+  ],
   "evalCriteria": [
     {
       "id": "ARCH-01",
       "metric": "Route Handlers never touch Sequelize directly",
-      "weight": 0.20,
-      "prompt": "Any changed file under src/app/api/**/route.js that imports from src/lib/db/models/* directly (rather than only importing from src/lib/services/*) scores 0.",
+      "weight": 0.2,
+      "prompt": "Any changed file under `src/app/api/**/route.js` that imports from `src/lib/db/models/*` directly (rather than only importing from `src/lib/services/*`) scores 0.",
       "source": "spec/plans/application-design.md (Services — Orchestration Patterns)"
     },
     {
       "id": "ARCH-02",
       "metric": "No N+1 query pattern in list/feed code paths",
-      "weight": 0.20,
-      "prompt": "Any changed Service method returning multiple Articles that contains a .map/for...of/forEach loop issuing an await DB call per iteration (e.g. appendFollowers-style per-article enrichment) scores 0.",
-      "source": "spec/plans/functional-design.md (N+1 Fix — Detailed Design)"
+      "weight": 0.2,
+      "prompt": "Any changed Service method returning multiple Articles that contains a `.map`/ `for...of`/`forEach` loop issuing an `await` DB call per iteration (e.g. `appendFollowers`-style per-article enrichment) scores 0.",
+      "source": "spec/plans/functional-design.md (N+1 Fix — Detailed Design); amended by CR-1 (2026-09-28) per REQ-F-17@v2"
     },
     {
       "id": "ARCH-03",
       "metric": "Auth token never in localStorage",
-      "weight": 0.20,
-      "prompt": "Any changed file under src/ referencing localStorage/sessionStorage in connection with a token, user session, or JWT scores 0.",
+      "weight": 0.2,
+      "prompt": "Any changed file under `src/` referencing `localStorage`/`sessionStorage` in connection with a token, user session, or JWT scores 0.",
       "source": "spec/plans/nfr.md (Security — REQ-NF-01)"
     },
     {
       "id": "ARCH-04",
       "metric": "API response contract parity",
       "weight": 0.15,
-      "prompt": "Any changed Route Handler whose response shape omits, renames, or restructures a field present in the corresponding current backend/controllers/*.js response (verified by reading the original controller) scores 0.",
+      "prompt": "Any changed Route Handler whose response shape omits, renames, or restructures a field present in the corresponding current `backend/controllers/*.js` response (verified by reading the original controller) scores 0.",
       "source": "spec/plans/nfr.md (Non-Functional Targets — API contract parity)"
     },
     {
       "id": "ARCH-05",
       "metric": "No unsafe schema sync",
       "weight": 0.15,
-      "prompt": "Any changed file under src/ containing a sequelize.sync( call with alter or force set to a truthy value scores 0.",
+      "prompt": "Any changed file under `src/` containing a `sequelize.sync(` call with `alter` or `force` set to a truthy value scores 0.",
       "source": "spec/plans/requirements.md (REQ-F-18)"
     },
     {
       "id": "ARCH-06",
-      "metric": "No Axios or react-router-dom in src/",
-      "weight": 0.10,
-      "prompt": "Any changed file under src/ with an import ... from 'axios' or import ... from 'react-router-dom' statement scores 0.",
-      "source": "spec/plans/nfr.md (Maintainability — REQ-NF-05)"
+      "metric": "No Axios or react-router-dom in `src/`",
+      "weight": 0.1,
+      "prompt": "Any changed file under `src/` with an `import ... from 'axios'` or `import ... from 'react-router-dom'` statement scores 0.",
+      "source": "spec/plans/nfr.md (Maintainability — REQ-NF-05) **Weights**: 0.20 + 0.20 + 0.20 + 0.15 + 0.15 + 0.10 = **1.00**"
     }
   ]
 }

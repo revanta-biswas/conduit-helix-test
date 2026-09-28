@@ -2,12 +2,16 @@
 
 **Purpose**: Verify the boundaries between the Route Handlers, the Sequelize/PostgreSQL datastore,
 and the related entities (Article ↔ Tag ↔ Author ↔ Favorite/Follow) behave correctly end-to-end
-through the HTTP surface. Focus is on **eager-loaded enrichment** (AC-4) producing correct joined
-data and **tag-association persistence** across create/update.
+through the HTTP surface. Focus is on **enrichment** (AC-4) producing correct joined data and
+**tag-association persistence** across create/update.
 
-**Scope**: Article + Tag association persistence; author/favorites/following enrichment via Sequelize
-`include`; feed/list joins. All observation is black-box (HTTP responses + optional read-back), no
-source code.
+**Scope**: Article + Tag association persistence; author/favorites/following enrichment; feed/list
+joins. All observation is black-box (HTTP responses + optional read-back), no source code.
+
+> **Amended by CR-1 (2026-09-28)** — Story 1.4 AC-4 is AMENDED. REQ-F-17@v2 no longer mandates
+> Sequelize `include` eager loading; either eager loading or a single denormalised read model
+> satisfies it. TC-INT-05 below asserts that list rows are fully populated — the observable outcome —
+> and no longer names the mechanism. Its procedure is unchanged.
 
 ## System Under Test
 | Item | Value |
@@ -136,12 +140,12 @@ A wrong count or a per-user flag that ignores the caller is a FAIL.
 
 ---
 
-### TC-INT-05 — Eager-loaded list returns fully-joined objects (no lazy-load holes)
+### TC-INT-05 — The list returns fully-populated objects (no lazy-load holes)
 
 | Field | Value |
 |-------|-------|
-| **Traces to** | AC-4 / REQ-F-12, REQ-NF-02 |
-| **Type** | Integration (list eager loading) |
+| **Traces to** | AC-4 (amended by CR-1) / REQ-F-12, REQ-F-17@v2, REQ-NF-02 |
+| **Type** | Integration (list read path) |
 | **Priority** | P1 |
 | **Preconditions** | DB seeded with ≥10 articles across ≥3 authors, varied tags and favorites |
 | **Test data** | `$TOKEN_A` |
@@ -154,11 +158,11 @@ A wrong count or a per-user flag that ignores the caller is a FAIL.
 - For every article element: `author` is a full object (never null / never just an id);
   `tagList` is an array (possibly empty, never null); `favorited` is a boolean; `favoritesCount`
   is an integer.
-- No element is missing any of these — i.e. the eager `include` populated all associations in the
-  single list query, not lazily per row.
+- No element is missing any of these — i.e. the read path populated every association before
+  responding, not lazily per row.
 
 **Pass/Fail criteria**: PASS if all elements are fully hydrated. Any null author, null tagList, or
-missing derived field on any row is a FAIL (indicates a broken/partial include).
+missing derived field on any row is a FAIL (indicates a broken or partially populated read path).
 **Cleanup**: None.
 
 ---

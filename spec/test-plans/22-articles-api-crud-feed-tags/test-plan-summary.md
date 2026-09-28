@@ -20,13 +20,24 @@
 
 **Total: 32 manual test cases across 5 applicable plans.**
 
+## Amendment record
+
+> **CR-1 (2026-09-28)** — Story 1.4 AC-4 is AMENDED. REQ-F-17@v2 no longer mandates Sequelize
+> `include` eager loading; either eager loading or a single denormalised read model satisfies it.
+> Amended in this folder: `performance-test-steps.md` (TC-PERF-01, TC-PERF-02) and
+> `integration-test-steps.md` (TC-INT-05) — restated against the bounded-query outcome rather than
+> the mechanism; procedures unchanged. Every other case in this folder is unchanged.
+> The read path delivered under the amended requirement is covered by Story 1.10's own plan,
+> `spec/test-plans/28-article-list-read-path/`, which also carries a re-verification section for
+> this story's list/feed behaviour. Bundle: `spec/plans/change-requests/CR-1/`.
+
 ## Acceptance Criteria → Test Case Coverage
 | AC | Criterion | Test cases | Covered |
 |----|-----------|------------|---------|
 | AC-1 | `GET /api/articles` (global feed + author/tag/favorited/limit/offset filters) and `GET /api/articles/feed` (personal feed) as Route Handlers | TC-API-01, TC-API-02, TC-API-03, TC-API-04, TC-API-05, TC-E2E-01, TC-E2E-02 | ✅ |
 | AC-2 | `POST /api/articles`, `GET/PUT/DELETE /api/articles/:slug` full CRUD incl. slug generation + tag association | TC-API-06, TC-API-07, TC-API-08, TC-API-09, TC-API-10, TC-API-11, TC-API-12, TC-API-13, TC-API-14, TC-INT-01, TC-INT-02, TC-INT-06, TC-SEC-01, TC-SEC-02, TC-SEC-03, TC-SEC-04, TC-E2E-01 | ✅ |
 | AC-3 | `GET /api/tags` returns all tags | TC-API-15, TC-INT-01, TC-INT-02, TC-E2E-01 | ✅ |
-| AC-4 | N+1 enrichment loop replaced by Sequelize eager `include`; bounded query count per feed request independent of article count | TC-INT-03, TC-INT-04, TC-INT-05, TC-INT-06, TC-PERF-01, TC-PERF-02, TC-PERF-03, TC-E2E-01 | ✅ |
+| AC-4 (amended by CR-1) | N+1 enrichment loop replaced by a bounded-query read path — either Sequelize eager `include` or a single denormalised read model; query count per feed request independent of article count | TC-INT-03, TC-INT-04, TC-INT-05, TC-INT-06, TC-PERF-01, TC-PERF-02, TC-PERF-03, TC-E2E-01 | ✅ |
 | AC-5 | Every response shape (incl. error format `{ errors: { body: [...] } }`) matches the existing Conduit/RealWorld spec exactly, verified old-vs-new across CRUD + both feeds | TC-API-09, TC-API-11, TC-API-16, TC-PERF-03, TC-SEC-04, TC-SEC-05 | ✅ |
 
 **Coverage check**: 5/5 acceptance criteria have at least one happy-path AND at least one

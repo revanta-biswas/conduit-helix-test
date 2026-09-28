@@ -3,7 +3,7 @@ Feature: Articles API — CRUD, Feed & Tags
   I want to create, read, update, delete, and browse articles with fast responses
   So that I can manage my content and discover others' without a slow feed
 
-  # Story 1.4 — Covers REQ-F-12, REQ-F-14, REQ-F-17, REQ-NF-02, REQ-NF-04
+  # Story 1.4 — Covers REQ-F-12, REQ-F-14, REQ-F-17@v2, REQ-NF-02, REQ-NF-04
   # Bound to the articles + tags services public surface.
 
   @AC-2
@@ -31,8 +31,11 @@ Feature: Articles API — CRUD, Feed & Tags
     Then the article count is 1
     And the first listed article is titled "Tagged"
 
-  @AC-4
+  @AC-4 @amended-by-cr-1
   Scenario: A feed page issues a bounded number of DB queries regardless of article count
+    # Amended by CR-1 (2026-09-28): asserts the bounded-query outcome, not the
+    # Sequelize `include` mechanism REQ-F-17@v2 no longer mandates. The ceiling
+    # is delivered by Story 1.10.
     Given a registered author "dan"
     And "dan" has created 5 articles
     When the global article list is requested with query counting on

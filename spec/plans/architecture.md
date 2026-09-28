@@ -1,6 +1,6 @@
 # Architecture — conduit-helix-test Next.js Migration
 
-> **Version**: 1.0.0 · **Generated**: 2026-09-09T06:42:28Z · **AIRE**: v1.0
+> **Version**: 1.1.0 · **Generated**: 2026-09-09T06:42:28Z · **Amended**: 2026-09-28 by CR-1 · **AIRE**: v1.0
 > **Derived from**: spec/plans/atlas-deep-dive.md, spec/plans/epic-brief.md, spec/plans/requirements.md, spec/plans/application-design.md, spec/plans/functional-design.md, spec/plans/nfr.md
 > **Existing-system baseline**: Atlas via Helix MCP · solution_id 960 (conduit-helix-test)
 
@@ -128,7 +128,7 @@ existing PostgreSQL instance; production deployment is Phase 3, deferred outside
 |---|---|---|---|
 | Codebase structure | Two workspaces (`backend/`, `frontend/`), two `package.json` | One `src/` Next.js app (backend + frontend unified); old workspaces untouched this cycle | Migration goal — unify DX |
 | Auth token storage | `localStorage`, `Authorization: Token <jwt>` header | `httpOnly` cookie, Next.js Middleware | REQ-NF-01 — close XSS exposure |
-| Article list/feed queries | `1 + 3N` queries (per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop) | Single eager-loaded query via `include` | REQ-F-17/REQ-NF-02 — N+1 fix |
+| Article list/feed queries | `1 + 3N` queries (per-article `appendFollowers`/`appendFavorites`/`appendTagList` loop) | A read path whose query count per request is bounded and independent of article count — eager loading via `include`, or a single denormalised read model | REQ-F-17@v2/REQ-NF-02 — N+1 fix (mechanism widened by CR-1) |
 | Schema management | `sequelize.sync({ alter: true })` on every boot | `sequelize.authenticate()` only; Sequelize CLI migrations are the sole schema source | REQ-F-18 — remove production schema-alter risk |
 | Auth validation | Non-empty checks only; no email format, no password length, no username uniqueness | Tightened: email format, 8-char password minimum, username format + uniqueness | Functional Design Q&A (user chose to tighten) |
 | Frontend data fetching | 14 Axios service files | Direct `fetch` in Server Components / Server Actions | REQ-F-27/REQ-NF-05 |
@@ -149,13 +149,15 @@ existing PostgreSQL instance; production deployment is Phase 3, deferred outside
 
 ### ARCH-02 — No N+1 query pattern in list/feed code paths
 - **Constraint**: Any Service method that returns a list of Articles (feed, global list, tag/author/
-  favorited filters) issues a single eager-loaded query using `include`, never a per-row follow-up
-  query for followers, favorites, or tags.
+  favorited filters) resolves every row's followers, favorites and tags in a number of queries that is
+  bounded and independent of the number of articles returned — never a per-row follow-up query. The
+  mechanism is not constrained: eager loading via `include` and a single denormalised read model both
+  satisfy this.
 - **Verifiable as**: Any changed Service method returning multiple Articles that contains a `.map`/
   `for...of`/`forEach` loop issuing an `await` DB call per iteration (e.g. `appendFollowers`-style
   per-article enrichment) scores 0.
 - **Weight**: 0.20
-- **Source**: spec/plans/functional-design.md (N+1 Fix — Detailed Design)
+- **Source**: spec/plans/functional-design.md (N+1 Fix — Detailed Design); amended by CR-1 (2026-09-28) per REQ-F-17@v2
 
 ### ARCH-03 — Auth token never in localStorage
 - **Constraint**: The JWT session token is set and read exclusively via an `httpOnly` cookie; no
