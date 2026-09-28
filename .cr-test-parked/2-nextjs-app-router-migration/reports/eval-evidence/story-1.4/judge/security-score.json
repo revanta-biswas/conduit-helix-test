@@ -1,0 +1,15 @@
+{
+  "gate": "J2_security", "rubricVersion": "1.0.0", "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (articles/tags services + handlers)",
+  "criteria": [
+    {"id":"SEC-01","owasp":"A01:2025","weight":0.20,"score":1.0,"citation":"src/lib/services/articles.js assertAuthor","reason":"update/delete are author-only (ForbiddenError 403); create/feed require a session. Public list/single reads are intentionally anonymous."},
+    {"id":"SEC-02","owasp":"A07:2025","weight":0.20,"score":"N/A","reason":"No new auth/session code. Excluded."},
+    {"id":"SEC-03","owasp":"A05:2025","weight":0.15,"score":1.0,"reason":"All queries via Sequelize builder + where objects; tag/author filters are parameterised where-clauses, no raw SQL."},
+    {"id":"SEC-04","owasp":"A04:2025","weight":0.15,"score":"N/A","reason":"No secret/crypto handling. Excluded."},
+    {"id":"SEC-05","owasp":"A02:2025","weight":0.10,"score":1.0,"reason":"Errors mapped to the Conduit envelope; no verbose disclosure."},
+    {"id":"SEC-06","owasp":"A06:2025","weight":0.10,"score":"N/A","reason":"No follow/comment threat-model logic in this story. Excluded."},
+    {"id":"SEC-07","owasp":"A10:2025","weight":0.10,"score":1.0,"reason":"Every handler try/catches -> mapped error envelope; no leak."}
+  ],
+  "weightedScore": 1.0, "min": 0.85, "verdict": "PASS",
+  "note": "4 of 7 applicable, all 1.0; SEC-02/04/06 N/A."
+}

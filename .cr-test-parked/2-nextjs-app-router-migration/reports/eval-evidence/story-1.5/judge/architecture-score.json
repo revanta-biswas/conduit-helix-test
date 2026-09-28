@@ -1,0 +1,10 @@
+{"gate":"J1_architecture","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (src/lib/services/{favorites,comments}.js, src/app/api/articles/[slug]/{favorite,comments}/**)",
+"criteria":[
+{"id":"ARCH-01","weight":0.20,"score":1.0,"reason":"Favorite/comment handlers import only lib/services + auth + errors; no model import."},
+{"id":"ARCH-02","weight":0.20,"score":1.0,"reason":"Favorites reuses articles.get's N+1-free enrichment; comments.list eager-loads author in ONE query (no per-row loop, unlike the legacy appendFollowers loop it replaces)."},
+{"id":"ARCH-03","weight":0.20,"score":1.0,"reason":"No localStorage."},
+{"id":"ARCH-04","weight":0.15,"score":1.0,"reason":"{article}/{comments}/{comment}/{message} shapes match the Conduit spec; 200/201/401/403/404/422 preserved."},
+{"id":"ARCH-05","weight":0.15,"score":1.0,"reason":"No sequelize.sync."},
+{"id":"ARCH-06","weight":0.10,"score":1.0,"reason":"No axios/react-router."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"All 6 applicable, all 1.0."}

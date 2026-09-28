@@ -1,0 +1,11 @@
+{"gate":"J2_security","rubricVersion":"1.0.0","judgeModel":"claude-sonnet-5",
+"scope":"changed-files (feed-params + home/article assemblers + Server Component pages)",
+"criteria":[
+{"id":"SEC-01","owasp":"A01:2025","weight":0.20,"score":"N/A","reason":"Public read pages; no owned-resource mutation. Excluded."},
+{"id":"SEC-02","owasp":"A07:2025","weight":0.20,"score":"N/A","reason":"No auth code. Excluded."},
+{"id":"SEC-03","owasp":"A05:2025","weight":0.15,"score":"N/A","reason":"No new queries (composes services). Excluded."},
+{"id":"SEC-04","owasp":"A04:2025","weight":0.15,"score":"N/A","reason":"No secrets/crypto. Excluded."},
+{"id":"SEC-05","owasp":"A02:2025","weight":0.10,"score":1.0,"reason":"Tag values are encodeURIComponent-escaped in links; markdown-to-jsx sanitises by default (no dangerouslySetInnerHTML, no script execution). No permissive config."},
+{"id":"SEC-06","owasp":"A06:2025","weight":0.10,"score":"N/A","reason":"No business-logic threat surface. Excluded."},
+{"id":"SEC-07","owasp":"A10:2025","weight":0.10,"score":1.0,"reason":"Article Server Component catches NotFoundError -> not-found view; other errors re-thrown to the framework boundary, no state disclosure."}],
+"weightedScore":1.0,"min":0.85,"verdict":"PASS","note":"2 of 7 applicable (SEC-05/07), all 1.0. markdown-to-jsx XSS surface reviewed: it does not use dangerouslySetInnerHTML and escapes by default."}

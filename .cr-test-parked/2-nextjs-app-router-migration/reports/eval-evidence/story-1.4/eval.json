@@ -1,0 +1,20 @@
+{
+  "key":"story-1.4","trackerId":"#22","evalFrameworkVersion":"1.0.0","rubricVersion":"1.0.0",
+  "judgeModel":"claude-sonnet-5","scope":"changed-files",
+  "gates":{
+    "D1_lint":{"status":"PASS","newFindings":0},"D2_types":{"status":"N/A","reason":"plain JS"},
+    "D3_sast":{"status":"PASS","newFindings":0},"D4_deps":{"status":"PASS","newFindings":0},
+    "D5_licenses":{"status":"PASS","disallowed":0},"D6_complexity":{"status":"PASS","newFindings":0},
+    "D7_secrets":{"status":"PASS","newFindings":0},
+    "unitCoverage":{"status":"PASS","coverage":94.27,"min":90.0,"tests":"74/74"},
+    "behaviorB1":{"status":"PASS","scenarios":"12/12","containerised":true},
+    "behaviorB2":{"status":"PASS","scenarios":"29/29","containerised":true},
+    "behaviorB3":{"status":"N/A","reason":"not the last work unit"},
+    "apiContract":{"status":"PASS","tests":"10/10"},
+    "regression":{"status":"PASS","newFailures":0,"suite":"74/74"},
+    "J1_architecture":{"status":"PASS","score":1.0,"min":0.85},
+    "J2_security":{"status":"PASS","score":1.0,"min":0.85}
+  },
+  "overall":"PASS","checksNA":["D2_types","behaviorB3"],
+  "ciNote":"CI generation skipped this cycle; all gates local."
+}

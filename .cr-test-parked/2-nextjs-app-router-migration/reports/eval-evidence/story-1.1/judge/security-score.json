@@ -1,0 +1,20 @@
+{
+  "gate": "J2_security",
+  "rubricVersion": "1.0.0",
+  "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (src/lib/db, src/app)",
+  "criteria": [
+    { "id": "SEC-01", "owasp": "A01:2025", "weight": 0.20, "score": "N/A", "reason": "No endpoints / resource-ownership code in this story. Excluded." },
+    { "id": "SEC-02", "owasp": "A07:2025", "weight": 0.20, "score": "N/A", "reason": "No auth/session/login code in this story (Story 1.2). Excluded." },
+    { "id": "SEC-03", "owasp": "A05:2025", "weight": 0.15, "score": 1.0, "citation": "src/lib/db/*", "reason": "All DB access is through the Sequelize ORM query builder; no raw/concatenated SQL string with user input anywhere in the diff." },
+    { "id": "SEC-04", "owasp": "A04:2025", "weight": 0.15, "score": 1.0, "citation": "src/lib/db/config.js", "reason": "No hardcoded credentials or JWT secret; every value is read from process.env. A unit test asserts no literal password assignment exists." },
+    { "id": "SEC-05", "owasp": "A02:2025", "weight": 0.10, "score": 1.0, "citation": "src/lib/db/config.js, next.config.js", "reason": "No verbose error disclosure, no permissive CORS introduced; logging defaults to off and is only enabled via an explicit env flag." },
+    { "id": "SEC-06", "owasp": "A06:2025", "weight": 0.10, "score": "N/A", "reason": "No business logic (self-follow, toggles, comment-delete auth) in this story. Excluded." },
+    { "id": "SEC-07", "owasp": "A10:2025", "weight": 0.10, "score": "N/A", "reason": "No Route Handler error paths in this story. Excluded." }
+  ],
+  "applicableWeightSum": 0.40,
+  "weightedScore": 1.0,
+  "min": 0.85,
+  "verdict": "PASS",
+  "note": "4 of 7 criteria N/A (excluded, weights renormalised to 1.0 over the 3 applicable criteria). All applicable criteria scored 1.0. securityVulnerabilitiesAllowed=0 respected — no vulnerability cited."
+}

@@ -1,0 +1,10 @@
+=== FULL REGRESSION — Story 1.1 (post-change) ===
+--- legacy suite (npm run test) ---
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+ Test Files  no tests
+      Tests  no tests
+     Errors  3 errors
+
+--- new src suite (vitest.src.config.js) ---
+ Test Files  3 passed (3)
+      Tests  16 passed (16)

@@ -1,0 +1,14 @@
+{
+  "gate": "J1_architecture", "rubricVersion": "1.0.0", "judgeModel": "claude-sonnet-5",
+  "scope": "changed-files (src/lib/services/{articles,tags}.js, src/lib/helpers.js, src/app/api/{articles,tags}/**)",
+  "criteria": [
+    {"id":"ARCH-01","weight":0.20,"score":1.0,"citation":"src/app/api/articles/**, tags/route.js","reason":"Handlers import only lib/services + lib/auth + lib/errors; no model import."},
+    {"id":"ARCH-02","weight":0.20,"score":1.0,"citation":"src/lib/services/articles.js buildEnrichmentContext/enrichPage","reason":"THE N+1 fix: list/feed eager-load tagList+author (1 query) then enrich via page-wide batched queries (favorites ids, grouped counts, following ids) mapped in memory via helpers.articleToJSON which does ZERO DB access. A unit test asserts <=6 queries for a 5-article page."},
+    {"id":"ARCH-03","weight":0.20,"score":1.0,"reason":"No localStorage anywhere."},
+    {"id":"ARCH-04","weight":0.15,"score":1.0,"reason":"Responses match Conduit {articles,articlesCount}/{article}/{tags} shapes; 200/201/401/403/404/422 codes preserved."},
+    {"id":"ARCH-05","weight":0.15,"score":1.0,"reason":"No sequelize.sync in changed src (the sync export is a re-export for query-count testing only, never called at runtime)."},
+    {"id":"ARCH-06","weight":0.10,"score":1.0,"reason":"No axios/react-router import."}
+  ],
+  "weightedScore": 1.0, "min": 0.85, "verdict": "PASS",
+  "note": "All 6 criteria applicable, all 1.0. ARCH-02 is the headline constraint for this story and is verified by a query-count test."
+}
