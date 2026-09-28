@@ -66,9 +66,14 @@ each phase show the required shape, not fixed wording.
 **The run asks exactly one thing: approve the staged Change Request.** It never asks a clarifying
 question, never offers a menu of options, and never asks for a decision mid-run.
 
-- **Input comes with the keyword.** A bare `epic-change-request` stops with one usage line —
-  `Usage: epic-change-request <TICKET-ID | "description of the change" | --from-requirements | --from-spec <path>>` —
-  and asks nothing.
+- **Input usually comes with the keyword** — `epic-change-request "<change>"`, a ticket ID,
+  `--from-requirements` or `--from-spec <path>`. When it does, the entry mode is already known and the
+  run goes **straight to analysis**: the gate stays the only question.
+- **A bare `epic-change-request` gets a front door instead of a usage line** (Phase 0.5): a short
+  welcome and a 4-way picker for *how you want to describe the change*. That is a **routing question**,
+  not a clarifying one — it asks which input the user has, never what the change means. It is the only
+  question that can precede the gate, it is asked **once**, and passing input with the keyword skips it
+  entirely. 🔴 Everything after it stays unchanged: no clarifying questions, no mid-run decisions.
 - **Where a decision is needed, the framework decides, and the bundle says so.** Every such decision is
   written into `change-request.md` Section 9 with its reason **and the alternative it rejected** (V4).
   The operator overrules any of them with **Request Changes** — that is the only channel, and it is enough.
@@ -187,6 +192,86 @@ identifier, never a unit key.
 
 ## Phase 0 — 🔴 Single-Session Check + Preconditions
 
+**Emit this first, verbatim, before any work:**
+
+```
+-------------------------------------------------------------------
+  AIRE Change Request -- a requirement changed mid-epic
+-------------------------------------------------------------------
+
+  Something you already agreed has been revised. I work out what that
+  touches -- which requirements move, which stories promised the old
+  text, and which tests assert it -- then show you one report and ask
+  you once.
+
+  For each affected story I decide one of three things, and tell you why:
+
+    ALREADY BUILT       its code is merged, so I do NOT edit it.
+                        A new story replaces the part that changed.
+    NOT STARTED YET     no code exists, so its spec is amended in place.
+                        No new story needed.
+    NOTHING COVERS IT   the requirement is new to the epic.
+                        A new story is created for it.
+
+  Two ground rules:
+    - Nothing is written to disk until you approve.
+    - A story being built right now, or with an open PR, stops me
+      rather than having its contract changed under it.
+```
+
+Then work **quietly** through Phases 0–8 (V1), emitting only a progress note when a step takes real
+time, and only a halt when something blocks. The findings surface once, at Phase 9.
+
+---
+
+## Phase 0.5 — Entry picker (ONLY when the keyword carried no input)
+
+🔴 **Skip this phase entirely when the keyword carried a ticket ID, a description,
+`--from-requirements` or `--from-spec <path>`** — the mode is already known, and the run goes straight
+to Phase 1. This is a **routing** question (which input do you have), never a clarifying one (what does
+your change mean); it is asked once and never re-asked.
+
+```
+  How do you want to describe the change?
+
+  [1] Describe it in plain English
+      -> "orders over 5000 need supervisor approval"
+      -> I find which requirements and stories that affects.
+
+  [2] I already edited spec/plans/requirements.md
+      -> I diff your uncommitted edit against the epic branch
+         and show you what it breaks. I will NOT rewrite your wording.
+
+  [3] Point me at a separate spec or document
+      -> I analyse it as a proposed amendment, without touching
+         requirements.md yet.
+
+  [4] It came from a ticket
+      -> Give me the ID; I fetch it and use it as the change.
+
+  [5] Exit -- do nothing.
+
+  Type 1, 2, 3, 4 or 5:
+```
+
+Branch on the answer, then continue at Phase 1 with the mode already resolved:
+
+| Answer | Next | Resolves to |
+|---|---|---|
+| **1** | `What's the change? Describe it in your own words.` — take the reply verbatim as the change statement | Mode A |
+| **2** | continue immediately | Mode C |
+| **3** | `Path to the spec or document? (relative to the project root)` — read it; if the path does not exist, say so and re-ask once, then exit | Mode D |
+| **4** | `Which ticket? (<the configured tracker>'s ID)` — fetch it per `common/tracker-sync.md` Section 8 | Mode B |
+| **5** | Exit with `Nothing was analysed and nothing was written.` | — |
+
+🔴 **Answer 2 with a clean tree** is the one case worth catching early: say
+`spec/plans/requirements.md has no uncommitted change — edit it first, or pick [1] to describe the
+change instead.` and exit. It saves the user reaching Phase 0's CR2 check only to be told the same thing.
+
+Log the picker and the raw answer.
+
+
+
 **V1**: announce the phase, its inputs and its result. Print each precondition with its **resolved value**.
 
 0. **▶ Hand-back first**: if the checked-out branch is a CR story's branch whose fragment
@@ -233,18 +318,7 @@ identifier, never a unit key.
 
 **Output (V1/V3)** — a checklist with the resolved value beside each item:
 
-```
-PHASE 0  PRECONDITIONS
-  epic cycle .......... OPEN   PROJ-50  epic/PROJ-50-payment-portal @ a1b2c3d
-  workflow type ....... epic   (no bug/enhancement cycle recorded)
-  tracker ............. JIRA   project PROJ
-  CI/CD ............... Enabled: Yes
-  working tree ........ CLEAN  (mode A/B/D rule)
-  requirements.md ..... present  19 requirements, 0 versioned
-  story tracker ....... 12 stories  (7 merged, 1 in development, 4 ready for development)
-  archive ............. absent (cycle open)
-  PASS -- continuing to Phase 1.
-```
+**Emits nothing on success** (V1) — the resolved values go to the audit trail and the report's header. A failed precondition is a **halt** and prints immediately: what was expected, what was found, and the exact command to fix it.
 
 A failed precondition prints **what was expected, what was found, and the exact command to fix it**.
 
@@ -275,14 +349,7 @@ code, and record it as an assumption in `change-request.md` Section 9 **with the
 
 Log the invocation and the capture verbatim.
 
-```
-PHASE 1  ENTRY MODE
-  resolved ....... C (drift)
-  why ............ argument was --from-requirements
-  snapshot-from .. git show origin/epic/PROJ-50-payment-portal:spec/plans/requirements.md
-  snapshot-to .... spec/plans/requirements.md (working tree, modified by you)
-  consequence .... requirements.md prose will NOT be rewritten; only version annotations are applied.
-```
+**Emits nothing** (V1). The resolved mode, its reason and the snapshot pair are recorded and appear in the report header.
 
 ---
 
@@ -299,24 +366,7 @@ CR3 and the run HALTS (a halt, not a question).
 **Output (V2/V3)** — counts first, then the before/after for every changed requirement; unchanged
 requirements are a count only:
 
-```
-PHASE 2  REQUIREMENT DIFF  (anchored on REQ-ID)
-  AMENDED 1 | ADDED 1 | SUPERSEDED 1 | UNCHANGED 16 | UNRESOLVED 0
-
-  REQ-F-03  AMENDED   -> @v2
-    before | Payments above 1000 USD require a supervisor approval before submission.
-    after  | Payments above 5000 USD require a supervisor approval before submission.
-    delta  | threshold 1000 -> 5000
-    cite   | requirements.md:88
-
-  REQ-F-11  ADDED     (new, unversioned -- never @v1)
-    after  | Every supervisor override is recorded in an immutable audit trail.
-    cite   | requirements.md:141
-
-  REQ-F-07  SUPERSEDED  (text retained, marked)
-    before | Payments below the threshold may be approved by the submitting user alone.
-    cite   | requirements.md:104
-```
+**Emits nothing** beyond a progress note if the scan is slow (`Analysing <N> requirements…`). The classifications and before/after text go to `requirements-delta.md` and the report's REQUIREMENTS block. 🔴 An unresolved REQ-ID is a **halt** and prints immediately.
 
 ---
 
@@ -348,29 +398,7 @@ Emit the impact tags (CR8): `affects_requirements`, `affects_stories`, `affects_
 
 **Output (V2/V3)** — counts first, then the ledger with an evidence cell on **every** row, then the tags:
 
-```
-PHASE 3  IMPACT LEDGER  (requirement first)
-  3 requirements changed -> 2 stories covered, 1 uncovered -> 4 ACs -> 9 tests
-
-  REQ-F-03@v2  AMENDED
-    Story 2.1  AC-2  AMENDED    cite stories.md:141 (Covers: REQ-F-03)
-                                code src/approval/rules.ts:40-58  agreement 3/3
-                                tests  tests/unit/approval/rules.test.ts:31
-                                       spec/behavior/story-2.1.feature:22 (@AC-2)
-                                       spec/test-plans/PROJ-102-approval/TC-INT-04
-    Story 2.4  AC-1  AMENDED    cite stories.md:203 (Covers: REQ-F-03)
-                                no code yet -- story not started
-  REQ-F-11     ADDED
-    (no covering story)         searched every Covers line: 0 matches -> new story
-  REQ-F-07     SUPERSEDED
-    Story 2.4  AC-3  SUPERSEDED cite stories.md:207
-
-  Concurrency: none -- no in-flight unit or open ve/... PR touches these paths.
-  Unresolved:  none.
-
-  affects_requirements: 3   affects_stories: 2   affects_shipped: true
-  code_touched: true        doc_only: false
-```
+**Emits nothing** beyond a progress note (`Tracing <N> stories…`). The complete evidence chain — every citation, every agreeing source, every test path — is written to `impact-ledger.md`; the report shows one row per affected story and cites that file.
 
 ---
 
@@ -385,36 +413,45 @@ edited. 🔴 **Merge state is confirmed live** (`gh pr view <branch> --json stat
 `git branch --merged <epic-branch>`) and is the authority over any tracker label
 (`common/behavior-spec.md` Section 6.1). Both are re-asserted immediately before the Phase 10 writes (TOCTOU).
 
-| Story state (git snapshot) | PR state (live) | Route | Why |
-|---|---|---|---|
-| `Ready for Development` | — | **spec-only amendment** | No code exists; amend ACs, scenarios and test cases in place |
-| `In Development` | no PR yet | 🔴 **HALT — blocked** | Never change a spec under an in-flight build |
-| `In Development` | PR open, unmerged | 🔴 **HALT — blocked** | Its code is not on the epic branch yet → comment on that PR and run `pr-fix <PR>`, or merge it and re-run |
-| `In Development` | PR **merged** | **CR-born story supersedes it** | Code is on the branch; change it through a new story |
-| `Ready for Testing` | merged | **CR-born story**, **status NOT demoted** | the Verification Engineer already signed off; re-verification rides the CR story's test plan |
-| no story `Covers` the REQ | — | **new story** | A net-new requirement needs a new story |
+| Story state (git snapshot) | PR state (live) | What the user is told | Route (internal) | Why |
+|---|---|---|---|---|
+| `Ready for Development` | — | **NOT STARTED YET** → its spec is amended in place; no new story | `spec-only` | No code exists, so the contract can be corrected directly |
+| `In Development` | no PR yet | **BEING BUILT RIGHT NOW** → blocked | 🔴 **HALT** | Never change a spec under an in-flight build |
+| `In Development` | PR open, unmerged | **HAS AN OPEN PR** → blocked | 🔴 **HALT** | Its code is not on the epic branch yet → comment on that PR and run `pr-fix <PR>`, or merge it and re-run |
+| `In Development` | PR **merged** | **ALREADY BUILT** → a new story replaces the part that changed | `CR-born` | Code is merged; it is never edited in place |
+| `Ready for Testing` | merged | **ALREADY BUILT, SIGNED OFF** → a new story replaces the part that changed; status **not** demoted | `CR-born` | The Verification Engineer already signed off; re-verification rides the CR story's test plan |
+| no story `Covers` the REQ | — | **NOTHING COVERS IT** → a new story is created | `new` | A requirement new to the epic needs its own story |
+
+🔴 **Say the outcome, then the internal term** (V3). The report leads with what happened and why —
+`ALREADY BUILT (PR #31 merged) -> Story 1.10 replaces its contract for AC-4  [CR-born]` — so a reader
+who has never opened `common/change-request-rules.md` understands it, while the bracketed term keeps
+every row traceable to the CR9 rule that produced it.
 
 - **Every affected story is `Ready for Development`** → the **spec-only path**: Phases 5–9 and 10.3 run,
   no CR story is created, nothing is built; Phase 10.3 ends with a direct commit on the epic branch.
-- **Any block** → 🔴 **HALT before writing anything**, listing every blocking story, its state, its PR
-  and the exact way forward. Log it. (A halt, not a question.)
+- **Any block** → 🔴 **HALT before writing anything.** Emit it in the same plain language as the report,
+  so the user knows what to do without reading a rule file:
+
+```
+  CANNOT PROCEED -- 1 story is mid-flight
+
+  1.6  Auth Pages & Session
+       BEING BUILT RIGHT NOW (claimed, no PR yet)
+       Its contract cannot change while someone is building against it.
+
+  What to do:
+    - finish and merge Story 1.6, then run epic-change-request again, or
+    - if it already has a PR open, put this change on that PR:  pr-fix <PR>
+
+  Nothing was written.
+```
+
+Log it. (A halt, not a question.)
 
 **Output (V4)** — per story: snapshot status **and its source**, live PR state, the chosen route, and
 the rule that selected it:
 
-```
-PHASE 4  ROUTING
-  status source: git show origin/epic/PROJ-50-payment-portal:runtime-artifacts/aire-state.md
-                 + runtime-artifacts/stories/*/state.md   (working tree NOT trusted)
-
-  STORY      SNAPSHOT STATUS      PR          ROUTE                  RULE
-  2.1        Ready for Testing    #61 merged  CR-born supersede      CR9 row 5
-  2.4        Ready for Development  --        spec-only amendment    CR9 row 1
-  (new)      --                     --        new story              CR9 row 6
-
-  Blocked: none.
-  Path: BUILD (a CR story is created and built).
-```
+**Emits nothing on success** — the routing table is the report's STORIES block. 🔴 A **block** prints immediately as a halt, naming every blocking story, its state, its PR and the exact way forward, and the run stops without writing anything.
 
 When a story blocks, the block is named in full — story, state, PR, and the exact way forward — and the
 run HALTS there without writing anything.
@@ -431,12 +468,7 @@ Glob `spec/plans/change-requests/CR-*/change-request.md` and grep each affected 
   the **existing** `CR-<n>` number through every later phase.
 - **No collision** → say so explicitly. 🔴 **Never silence** (V1).
 
-```
-PHASE 5  COLLISION CHECK (CR11)
-  scanned ..... spec/plans/change-requests/CR-*/change-request.md  (2 bundles)
-  result ...... no open CR touches Story 2.1, Story 2.4
-  action ...... drafting a new CR
-```
+**Emits nothing** — the result (a collision and its CR, or none) appears as one line in the report header.
 
 ---
 
@@ -456,16 +488,7 @@ the same class as Rule 3's gap A.
 
 **Output (V3)**:
 
-```
-PHASE 6  VERSIONING
-  REQ-F-03  v1 -> @v2   prior text retained
-  REQ-F-11  added, unversioned
-  REQ-F-07  superseded, text retained and marked
-  Covers re-pointed:
-    Story 2.1  Covers: REQ-F-03    -> REQ-F-03@v2   (CR-born story inherits)
-    Story 2.4  Covers: REQ-F-03    -> REQ-F-03@v2   (spec-only amendment)
-  stale traces remaining: 0
-```
+**Emits nothing** — version transitions appear in the report's REQUIREMENTS block and in full in `requirements-delta.md`.
 
 ---
 
@@ -539,23 +562,7 @@ SUPERSEDED AC; every amended requirement has a story tracing to its new version.
 **Output (V3)** — a file-by-file manifest of what **will** be written, grouped by CR16 allow-list
 bucket, each with a line count, marked clearly as *staged, not written*:
 
-```
-PHASE 7  STAGED IN MEMORY  --  NOTHING IS ON DISK YET
-  (a) CR bundle .................. 4 files
-        spec/plans/change-requests/CR-3/change-request.md        184 lines
-        spec/plans/change-requests/CR-3/requirements-delta.md     96 lines
-        spec/plans/change-requests/CR-3/impact-ledger.md          71 lines
-        spec/plans/change-requests/CR-3/README.md                 24 lines
-  (b) requirements.md ............ 0 files   SKIPPED -- entry mode C, you edited it
-  (c) stories.md ................. 1 file    +38 / -0 (ACs annotated, never deleted)
-  (d) behaviour specs ............ 3 files   1 new, 2 amended in place
-  (e) test plans ................. 3 folders via ve-implement (WORKFLOW MODE)
-  (f) architecture + rubric ...... 0 files   no design decision changed
-  (g) fragment ................... 2 files   runtime-artifacts/stories/story-3.1/
-  (j) CI manifest ................ 1 file    tests/.evals/ci-manifest.d/story-3.1.json
-      outside allow-list ......... 0         (CR16)
-  CR id / story number re-read from origin immediately before assignment (CR12b).
-```
+**Emits nothing** — the manifest appears in the report as per-bucket counts (`CR bundle 4 · specs 2 · test plans 2 · …`), not as a file-by-file listing. 🔴 A CR12 dependency cycle is a **halt** and prints immediately.
 
 ---
 
@@ -577,17 +584,7 @@ malformed bundle is never shown to the operator.
 
 **Output (V1)** — all eight with **computed results**, never bare ticks:
 
-```
-PHASE 8  PRE-EMISSION VALIDATION
-  (a) route coverage ........ 3/3 affected REQ-IDs routed exactly once      PASS
-  (b) supersede integrity ... 1/1 CR-born names a merged story (#61)        PASS
-  (c) dependency inherit .... expected [1.3] actual [1.3] missing []        PASS
-  (d) bundle inventory ...... 4/4 files staged                              PASS
-  (e) section presence ...... 10/10 sections, 2 written as (none)           PASS
-  (f) fact-only scan ........ severity 0, advisory 0                        PASS
-  (g) coverage + RV-1..7 .... ACs 4/4 scenario+case; RV all pass            PASS
-  (h) one CR per run ........ 1 bundle staged                               PASS
-```
+**Emits nothing on success** — all eight results are computed, recorded in the audit trail, and summarised in the report as `pre-emission: 8/8 PASS`. 🔴 Any failure is a **halt**: it prints the failed check, the offending file and the remediation, and the report is never shown.
 
 On failure: print the failed check, the offending file/section, the rule violated, and the remediation.
 Do **not** proceed to Phase 9.
@@ -596,10 +593,13 @@ Do **not** proceed to Phase 9.
 
 ## Phase 9 — 🚦 THE SINGLE GATE (CR16 / V5)
 
-The **only** question in the run. Show everything that will be written, **plus the full
-`change-request.md` body inline** — never a summary (V5) — then halt.
+**This is where the whole run surfaces.** Phases 0–8 worked quietly; everything they found is
+presented **here, once**, as one scannable report — then the run halts for the only question it asks.
 
 🔴 **Nothing has been written to disk at this point.**
+
+**Shape (V3): counts → table → decisions.** Every number is real; the deep evidence is in the bundle
+and is **cited, never pasted** (V2/V3/V5). The report fits on roughly one screen.
 
 ```
 +-------------------------------------------------------------------+
@@ -607,39 +607,42 @@ The **only** question in the run. Show everything that will be written, **plus t
 |  Nothing has been written to disk.                                |
 +-------------------------------------------------------------------+
 
-ENTRY MODE : <A|B|C|D> <explanation>
-EPIC       : <EPIC-ID>  branch <epic-branch> @ <sha>
-BUNDLE     : spec/plans/change-requests/CR-<n>/
+  <one-line summary of the change, in the user's own words>
 
-REQUIREMENTS
-  <REQ-ID>  AMENDED   -> @vN   <what differed>
-  <REQ-ID>  ADDED            <one line>
-  <REQ-ID>  SUPERSEDED       <one line>
-  ... <N> unchanged
+  Entry mode  : <A description | B ticket <ID> | C your requirements.md edit | D spec file>
+  Epic branch : <epic-branch> @ <sha>          Tracker: <TYPE>
+  Bundle      : spec/plans/change-requests/CR-<n>/     (staged, not written)
+  Collision   : <none | appending to CR-<m>>           Pre-emission: 8/8 PASS
 
-STORIES                       STATE            PR       ROUTE
-  Story <X.Y> <title>         <status>         <state>  <route>
-  (new)       <title>         --               --       new story <N.M>
+WHAT CHANGED IN THE AGREEMENT    <A> amended, <B> added, <C> withdrawn, <D> untouched
+  <REQ-ID> -> @vN   <what differs, one line>
 
-  Blocked: <list | none>.
+WHAT THAT MEANS FOR YOUR STORIES     Blocked: <none | N -- see below>
+  <N.M>  <title>
+         ALREADY BUILT (PR #<n> merged)
+         -> Story <X.Y> replaces its contract for <AC-n>          [CR-born]
+  <N.M>  <title>
+         NOT STARTED YET
+         -> its acceptance criteria and spec are amended in place  [spec-only]
+  --     (nothing covers <REQ-ID>)
+         -> new Story <X.Y>                                        [new]
 
-TEST CHANGE AUTHORIZATION      <n> tests may change; <m> are regression guards
-  <file>  "<test>"  <action>  <AC> <class>
+  Nothing already built is edited in place. <X> new, <Y> amended, <Z> untouched.
 
-WILL BE WRITTEN  (<N> files, all inside the allow-list)
-  CR bundle ........ <n>     specs/features ... <n>     test plans ... <n>
-  stories.md ....... <n>     requirements.md .. <n>  <(Mode C -- you edited it)>
-  tracker/state .... <n>
+TESTS          <n> may change; <m> stay as regression guards
+  <file>  <test>  <action>  <- <AC-n> <class>
+  ...  full list in the bundle
+
+WRITES         <N> files, all inside the allow-list
+  CR bundle <n> · requirements.md <n> · stories.md <n> · specs <n> · test plans <n>
+  architecture+rubric <n> · state <n>        outside allow-list: 0
 
 DECISIONS I MADE FOR YOU  (overrule any with Request Changes)
-  1. <decision> -- <why>.
-     Rejected: <alternative>.
+  1. <decision> -- <why>.  Rejected: <alternative>.
+  2. ...
 
-+-------------------------------------------------------------------+
-|  FULL change-request.md BODY FOLLOWS -- read it before answering. |
-+-------------------------------------------------------------------+
-
-<... complete staged change-request.md body, rendered inline, never summarised ...>
+  Full detail: spec/plans/change-requests/CR-<n>/change-request.md
+               (+ requirements-delta.md, impact-ledger.md -- open them to see every citation)
 
 A) Request Changes -- tell me what to change
 B) Approve & Build -- apply the bundle, then build, test and raise the
@@ -649,6 +652,11 @@ B) Approve & Build -- apply the bundle, then build, test and raise the
 ```
 
 (Spec-only path: option B reads `Approve & Apply — amend the specs and commit them to <epic-branch>`.)
+
+🔴 **What this report must NOT do**: paste the `change-request.md` body (it is staged and its path is
+printed — re-printing it buries the decision); reprint the per-phase working state; or list every
+citation when the ledger holds them. The user decides from this screen and opens the bundle when they
+want the proof.
 
 - **`A`** → revise the staging (a requested change to a Section 9 decision moves that row to "decided by
   the user" with their wording), add a Section 10 revision entry, re-run Phase 8, present again.
@@ -885,10 +893,12 @@ Log which variant was shown.
 
 ## Critical Rules
 
-- 🔴 **THE ONLY QUESTION IS THE SINGLE GATE.** No clarifying questions, no option menus, no mid-run
-  decisions. Decisions the framework makes are written into Section 9 **with their rejected alternative**
-  and overruled only via Request Changes. Missing input stops with a usage line; blocks, cycles,
-  pre-emission failures and retry limits are halts, not questions.
+- 🔴 **THE GATE IS THE ONLY DECISION QUESTION.** No clarifying questions, no option menus mid-run, no
+  decisions asked of the user after analysis starts. Decisions the framework makes are written into
+  Section 9 **with their rejected alternative** and overruled only via Request Changes. The single
+  exception is the **Phase 0.5 entry picker**, shown only when the keyword carried no input — it routes
+  on which input the user has, never on what the change means, and is skipped whenever input was given.
+  Blocks, cycles, pre-emission failures and retry limits are halts, not questions.
 - 🔴 **NOTHING ON DISK BEFORE THE GATE** (CR1 / CR16). Everything is staged in memory; every written path
   falls inside the `common/change-request-rules.md` Section 4 allow-list.
 - 🔴 **REQUIREMENTS ARE VERSIONED, NEVER RENUMBERED OR DELETED** (CR4). AMENDED → `@v<N+1>` with prior
