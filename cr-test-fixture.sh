@@ -37,7 +37,11 @@ status() {
 restore() {
   [ -d "$ARCHIVE" ] || die "archive not found at $ARCHIVE"
 
-  git branch --show-current > "$ORIG_BRANCH_FILE"
+  # Record the origin branch only when we are NOT already on the test branch,
+  # so a re-run never records the test branch as its own origin.
+  if [ "$(git branch --show-current)" != "$TEST_BRANCH" ]; then
+    git branch --show-current > "$ORIG_BRANCH_FILE"
+  fi
   git checkout -b "$TEST_BRANCH" 2>/dev/null || git checkout "$TEST_BRANCH"
 
   # The framework sync (CLAUDE.md, aire-workflow/, .claude/skills/) is typically
